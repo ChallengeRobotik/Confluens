@@ -51,8 +51,8 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .badge{display:inline-block;background:rgba(250,235,20,.15);color:var(--y);padding:2px 10px;border-radius:99px;font-size:14px}
 </style></head><body><main id="app"></main>
 <script>
-const PROD=false; // true = blocage des moyens d'inspection (site officiel)
-if(PROD){const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
+const PROD=true;
+if(PROD){document.addEventListener("selectstart",e=>e.preventDefault());document.addEventListener("dragstart",e=>e.preventDefault());setInterval(()=>{if(innerWidth>900&&(outerWidth-innerWidth>200||outerHeight-innerHeight>260))document.body.innerHTML="<p style='padding:40px;color:#faeb14;font:24px sans-serif'>Inspection désactivée.</p>"},1000);const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
 // ^ = arrêt du sens 1 seulement, ~ = arrêt du sens 2 seulement. Ordre = sens 1. Sens 2 = inverse.
 const LINES=[
@@ -70,16 +70,16 @@ const LINES=[
 function build(m,x){const ex=new Set(x.split("|")),a=m.split("|"),f=l=>l.map(s=>s.replace(/^[\^~]/,"")).filter(s=>!ex.has(s));
  return[f(a.filter(s=>s[0]!="~")),f(a.filter(s=>s[0]!="^")).reverse()]}
 const DATA={};LINES.forEach(([n,j,x,m])=>DATA[n]={j,s:build(m,x)});
-const $=document.getElementById("app"),sid=Math.random().toString(36).slice(2,10);
+const A=document.getElementById("app"),sid=Math.random().toString(36).slice(2,10);
 let line=null,dir=0,i=0,dl=0;
 function push(){if(!line)return;fetch(`${DB}/live/${line}/${sid}.json`,{method:"PUT",body:JSON.stringify({dir,stop:DATA[line].s[dir][i],delta:dl,t:Date.now()})}).catch(()=>{})}
 function leave(){fetch(`${DB}/live/${line}/${sid}.json`,{method:"DELETE"}).catch(()=>{})}
 if(location.hash==="#seed")fetch(DB+"/lines.json",{method:"PUT",body:JSON.stringify(Object.fromEntries(Object.entries(DATA).map(([k,v])=>[k,{jours:v.j,sens1:v.s[0],sens2:v.s[1]}])))});
 addEventListener("pagehide",()=>{if(line)leave()});
-function home(){line=null;$.innerHTML=`<div class="v"><div class="tag">#régulation</div><h1>lignes</h1></div><div class="grid">${Object.entries(DATA).map(([n,d],k)=>`<button class="chip" style="animation-delay:${k*50}ms" data-l="${n}"><b>${n.replace("N","Noct. ")}</b><small>vers ${d.s[0].at(-1)}</small><br><span class="badge">${d.j}</span></button>`).join("")}</div>`;
- $.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{line=b.dataset.l;dir=0;i=0;dl=0;view();push()})}
+function home(){line=null;A.innerHTML=`<div class="v"><div class="tag">#régulation</div><h1>lignes</h1></div><div class="grid">${Object.entries(DATA).map(([n,d],k)=>`<button class="chip" style="animation-delay:${k*50}ms" data-l="${n}"><b>${n.replace("N","Noct. ")}</b><small>vers ${d.s[0].at(-1)}</small><br><span class="badge">${d.j}</span></button>`).join("")}</div>`;
+ A.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{line=b.dataset.l;dir=0;i=0;dl=0;view();push()})}
 function view(){const d=DATA[line],s=d.s[dir],last=s.length-1;
- $.innerHTML=`<div class="top"><button class="btn g" id="bk">← Lignes</button><div><span class="tag">#ligne</span> <b style="color:var(--y);font-size:28px">${line.replace("N","Noct. ")}</b> <span class="badge">${d.j}</span></div></div>
+ A.innerHTML=`<div class="top"><button class="btn g" id="bk">← Lignes</button><div><span class="tag">#ligne</span> <b style="color:var(--y);font-size:28px">${line.replace("N","Noct. ")}</b> <span class="badge">${d.j}</span></div></div>
  <div class="dir">${d.s.map((x,k)=>`<button class="btn g ${k==dir?"on":""}" data-d="${k}">Direction ${x.at(-1)}</button>`).join("")}</div>
  <div class="cols"><section class="card v"><div class="lab">Destination</div><div class="dest">${s.at(-1)}</div>
  <div class="lab">${i==last?"Terminus":i==0?"Départ":"Prochain arrêt"}</div><div class="next" id="nx">${s[i]}</div>
@@ -89,7 +89,7 @@ function view(){const d=DATA[line],s=d.s[dir],last=s.length-1;
  <div class="ctl"><button class="btn g" id="m5">−5</button><button class="btn g" id="m1">−</button><button class="btn g" id="p1">+</button><button class="btn g" id="p5">+5</button></div>
  <p class="lab" style="margin-top:16px">+ = retard · − = avance (minutes)</p></section></div>`;
  $("#bk").onclick=()=>{leave();home()};
- $.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{dir=+b.dataset.d;i=0;view();push()});
+ A.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{dir=+b.dataset.d;i=0;view();push()});
  $("#adv").onclick=()=>{if(i<last)i++;else{dir=1-dir;i=0;view();push();return}upd();push()};
  [["m5",-5],["m1",-1],["p1",1],["p5",5]].forEach(([id,v])=>$("#"+id).onclick=()=>{dl+=v;upd();push()});
  upd(true)}
