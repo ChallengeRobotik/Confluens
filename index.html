@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Régulation Bus</title>
+<style>
+@font-face{font-family:Parisine;src:url(fonts/Parisine-Regular.woff2);font-weight:400;font-style:normal}
+@font-face{font-family:Parisine;src:url(fonts/Parisine-Bold.woff2);font-weight:700;font-style:normal}
+@font-face{font-family:Parisine;src:url(fonts/Parisine-Italic.woff2);font-weight:400;font-style:italic}
+:root{--bg:#031a24;--bg2:#06303d;--teal:#0b6f86;--y:#faeb14;--w:#fff;--ok:#5be3a0;--late:#ff6b5e;--m:rgba(255,255,255,.62)}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%}
+body{font-family:Parisine,"Trebuchet MS",system-ui,sans-serif;color:var(--w);background:radial-gradient(120% 80% at 80% 0,var(--bg2),var(--bg) 70%) fixed;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.12;background:repeating-linear-gradient(90deg,transparent 0 7px,#5fd 7px 8px);animation:rain 6s linear infinite}
+@keyframes rain{to{background-position:0 400px}}
+main{position:relative;max-width:1100px;margin:auto;padding:clamp(16px,4vw,40px)}
+.tag{font-size:clamp(16px,2.6vw,26px);font-weight:400}
+h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:700;letter-spacing:-.02em;margin-bottom:.25em}
+.v{animation:in .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.chip{background:rgba(11,111,134,.35);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:16px;color:var(--w);font:inherit;text-align:left;cursor:pointer;transition:transform .2s,background .2s,border-color .2s;animation:in .5s both;backdrop-filter:blur(6px)}
+.chip:hover,.chip:focus-visible{transform:translateY(-4px) scale(1.03);background:rgba(11,111,134,.7);border-color:var(--y);outline:0}
+.chip b{display:block;font-size:clamp(30px,5vw,44px);color:var(--y)}
+.chip small{color:var(--m)}
+.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.btn{font:inherit;font-weight:700;border:0;border-radius:14px;padding:14px 20px;cursor:pointer;background:var(--y);color:#021;transition:transform .15s,opacity .2s}
+.btn:active{transform:scale(.95)}.btn.g{background:rgba(255,255,255,.12);color:var(--w)}
+.dir{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 18px}
+.dir button{flex:1 1 200px}
+.dir .on{background:var(--y);color:#021}
+.cols{display:grid;grid-template-columns:1.3fr 1fr;gap:18px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}}
+.card{background:rgba(3,26,36,.62);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:clamp(16px,3vw,28px);backdrop-filter:blur(8px)}
+.lab{color:var(--m);font-style:italic;font-size:15px}
+.dest{font-size:clamp(22px,4vw,36px);font-weight:700;margin:2px 0 14px}
+.next{font-size:clamp(34px,7vw,72px);font-weight:700;color:var(--y);line-height:1.05;min-height:2.1em;animation:in .45s both}
+.bar{height:8px;background:rgba(255,255,255,.14);border-radius:9px;margin:16px 0;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--y);border-radius:9px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.list{list-style:none;padding:0;margin:0;position:relative}
+.list li{position:relative;padding:9px 0 9px 28px;font-size:clamp(16px,2.4vw,20px);animation:in .5s both;opacity:.9}
+.list li:before{content:"";position:absolute;left:3px;top:50%;width:11px;height:11px;margin-top:-5px;border-radius:50%;border:2px solid var(--y)}
+.list li:after{content:"";position:absolute;left:8px;top:calc(50% + 7px);bottom:-50%;width:2px;background:var(--teal)}
+.list li:last-child:after{display:none}
+.list li.t:before{background:var(--y)}
+.delta{text-align:center}
+.num{font-size:clamp(64px,14vw,120px);font-weight:700;line-height:1;transition:color .4s;font-variant-numeric:tabular-nums}
+.st{font-size:20px;font-weight:700;letter-spacing:.06em;transition:color .4s}
+.ctl{display:flex;gap:10px;justify-content:center;margin-top:14px}
+.ctl .btn{min-width:64px;font-size:26px}
+.act{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}.act .btn{flex:1 1 220px;font-size:20px}
+.badge{display:inline-block;background:rgba(250,235,20,.15);color:var(--y);padding:2px 10px;border-radius:99px;font-size:14px}
+</style></head><body><main id="app"></main>
+<script>
+const PROD=false; // true = blocage des moyens d'inspection (site officiel)
+if(PROD){const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
+const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
+// ^ = arrêt du sens 1 seulement, ~ = arrêt du sens 2 seulement. Ordre = sens 1. Sens 2 = inverse.
+const LINES=[
+["134","lun–ven","Nicola Leuthe|Les Moulins|Giraudoux - Prett|Ampère|Parc de la Brèche|Aimé Césaire|Brévannes-lès-Roses - Lazare Carnot","Chaillot-Batignolles RER|Karakert|Alphand|Général de Gaulle|Chemin des Dames|Les Fleurs|Hôtel de Ville de Chaillot-Batignolles|~Barrès - République|Les Lotis - République|Boris Vian|Église Saint-Louis|Saussaye - Castillon|Jaurès - Poirée|Jaurès - Ferry|Groupe Scolaire Bergmann|Bourveuil|Amélie Nothomb|Rue des Défenseurs de Verdun|Henri Barbusse|Saint-Marc|République - Oradour-sur-Glâne|Valmy - Europe|Dampierre - Grenelle|Les Hauts d’Arlande|Les Barentins|Place du Général Leclerc|Sous-Préfecture – Champagne|Nicola Leuthe|Les Moulins|Giraudoux - Prett|Ampère|Parc de la Brèche|Aimé Césaire|Brévannes-lès-Roses - Lazare Carnot"],
+["135","lun–jeu","","Bonneuil-sur-Marne - Place Stensele|^Les Sillons|^Dumont d’Urville|^Saint-Maur - Courboules|~Commerce|~Rabelais|~Courboules - Jean Moulin|Bismarck - Courboules|Saint-Gilles|Blanche - Saint-Louis|Benjamin|Lion d’Or|Fort de Limeil|Berthéopôle|Marguerite - Alexandre Dumas|8 Mai 1945|Auriol|Saint-Sever|Cramain - Université RER|Ludwig Ahgren|Saint-Siméon|Boulevard National - Mac Mahon|La Vallée|Rue de l’Arche|Finlande|Narbérale RER|Cité des Erables|Pépinière|Stalingrad|Marx Dormoy|Pont de Chaillot|Jean-Baptiste Clément|Roses|Pénélope|Chaillot-Batignolles RER"],
+["142","lun–ven","Berthier|Pont de Perret|Le Grand Mail|Mayenne|Wilson - Diderot|Frédéric Clément|Archevêché|Joliot-Curie - Lénine|Mairie du Port-Perret|Noailles – Port-Perret - Métro|Cauchoise|Rue des Étudiants|Aspern-Essling|Noailles-le-Pont - Place Charras","Chaillot-Batignolles RER|Carnot|Estivallière|Villette|~Olympe de Gouges|Corentin - Laitières|Vercingetorix|Voltaire|Pradier – St-Sébastien|Rue de Cherbourg|Robert-André Vivien|Pont de Narbérale - Quai Bourbon|^Bourbon - Arsenal|Alma|Labille-Guiard|~Armorique|Les Clamarts|~Romanée-Conti|^Pont d’Austerlitz|Insurrection - Pont d’Arlande|Marceau|Bleuzen|Port-Perret - Village|Berthier|Pont de Perret|Le Grand Mail|Mayenne|Wilson - Diderot|Frédéric Clément|Archevêché|Joliot-Curie - Lénine|Mairie du Port-Perret|Noailles – Port-Perret - Métro|Cauchoise|Rue des Étudiants|Aspern-Essling|Noailles-le-Pont - Place Charras"],
+["149","lun–ven","","Chaillot-Batignolles RER|Karakert|Alphand|Général de Gaulle|Chemin des Dames|Les Fleurs|Clovis|Cimetière|Proudhon - Taine|Rue de Bréon|^Molière|^Allée Royale|^Pagnol - Gilberte Brossolette|^Ledru-Rollin|^Charcot|~Lycée Corneille|~Arthur Rimbaud|~Germaine Sablon|Pasteur|Mairie du Petit-Passy|Meuniers - Bobillot|Carnot|Place des Victoires|Gambetta|Église du Petit-Passy"],
+["233","lun–ven","","Narbérale RER|Parmentier|L’Orme|Marcel Dassault|Maurice Barrès|Pont de Batignolles|Ernestine|Gallieni - Raffet|~Barbès|Hôtel de Ville de Chaillot-Batignolles"],
+["257","lun–jeu","","Berthée - Rosenberg|^Anquetil|^Berthelot|~Cramain – Berthelot|Cramain - Université RER|Ludwig Ahgren|Saint-Siméon|Boulevard National - Mac Mahon|Fédération|Verdier|Maréchal de Lattre de Tassigny|Carrefour Joliot-Curie|Rue de l’Hôtel de Ville|Résistance - Joliot-Curie|Résistance - Sadi Carnot|Port d’Espagne|Notre-Dame de l’Insurrection|Les Clamarts|^Pont d’Austerlitz|~Fabre d’Églantine|Maréchal Lyautey|Barbusse - Pont d’Arlande|Jauneau|Pasteur|Cimetière - Floquet|Jules Bobillot|Hôtel de Ville d’Arlande|Auguste Marin|Pasqua|~Barbara|Les Hauts d’Arlande"],
+["315","lun–ven","André Breton|Sainte-Barbe|Félix Faure|Émile Cossonneau|Bougainville|Maurois – Général de Maud’Huy|Hôpital René Laënnec|Château Margaux|Galvani|Bréon – Ville RER|Division Leclerc|Saint-Antoine|Hôtel des Bêtes|Bréon – École Normale|Bréon – Saint-Servan RER","Chaillot-Batignolles RER|Pénélope|Pont de Chaillot|Marx Dormoy|La Prairie|Voltaire – Docteur Bauer|Stade Coubertin|Célinaire|Chemin de Fer - Pont Gabrielle|Estivallière|Lycée Christophe Colomb|Houssaye – Alphand|Houssaye – De Gaulle|André Breton|Sainte-Barbe|Félix Faure|Émile Cossonneau|Bougainville|Maurois – Général de Maud’Huy|Hôpital René Laënnec|Château Margaux|^Galvani|^Bréon – Ville RER|~Bréon – Saint-Servan RER|Division Leclerc|Saint-Antoine|Hôtel des Bêtes|Bréon – École Normale"],
+["316","lun–ven","Dampierre - Nothomb|Wilson - Navigation|La Miséricorde - Nina Simone|Sidi Bel Abbès|Brossard - Jean Jaurès|Rue Noire|Saint-Similien|Henri Barbusse|Convention - Courcerin|Les Pommiers|Paul Bert|Gambetta|Pont de Narbérale - Quai Bourbon|Robert-André Vivien","Créteil - Valenton - Métro|~Théâtre de Valenton|Ida Grinspan|XXIe Siècle|Charles Floquet - Halévy|Charlot|Reims - Séverine|Cimetière - Carnot|Hôtel de Ville de Denfert-la-Roche|Noémie|Marronniers|Garibaldi|Saint-Éloi - Dagobert|Les Cloux|Bir-Hakeim|Watteau|Place Nationale|^Boulevard National - République|Pyrénées|Gaspard|Cramain - Université RER|Ludwig Ahgren|Boieldieu|Cramain - Stadium|^Institut de Scandinavie|Hôtel de Ville de Cramain|Union|Cyrano de Bergerac|Mairie de Narbérale|Carrefour Joliot-Curie|~Puvis de Chavanne|Soufflot|~Les Bergères|~Rue de Cherbourg|Robert-André Vivien|^Pont de Narbérale - Quai Saint-Lazare|Pont de Narbérale - Quai Bourbon|Gambetta|Paul Bert|Les Pommiers|Convention - Courcerin|Henri Barbusse|Saint-Similien|Rue Noire|Brossard - Jean Jaurès|Sidi Bel Abbès|La Miséricorde - Nina Simone|Wilson - Navigation|Dampierre - Nothomb"],
+["433","lun–ven","Escadrille Normandie Niémen|Lamy|Général Duval|Mirabeau|Petit Cramain|8 Mai 1945|Hôpital Saint-Marceau|Édouard Manet|Berthée - Cramain RER|Buffon|Stalingrad|Henri Becquerel|Clément Ader|Berthée - Duvernet Métro|Rue de Sarazel|Le Parc|Alma Cité Jardins|Paul Bert","Sarazel Place d’Armes|Alma Cité Jardins|Le Parc|Rue de Sarazel|Berthée - Duvernet Métro|Clément Ader|Henri Becquerel|Stalingrad|Buffon|Berthée - Cramain RER|Édouard Manet|Hôpital Saint-Marceau|8 Mai 1945|Paul Bert|Petit Cramain|Mirabeau|Général Duval|Lamy|Escadrille Normandie Niémen|Clemenceau|Louison Bobet|Bastion|~Résistance|~Résistance (Joliot-Curie)|^Résistance (Lénine)|Rue de l’Hôtel de Ville|Carrefour Joliot-Curie|Les Mordacs|Klaver|Alma|Narbérale RER"],
+["N76","nuit lun–ven","","Gare de Boissy-Saint-Léger|Bretagne|Rue de l’Industrie|Camélias|Les Fontaines|Gare de Sarazel|Arago|Clément Ader - Charcot|Mail Salengro|Bel Air|Place d’Armes|Alma - Cité Jardins|Gallieni - Carnot|Pierre et Marie Curie|Métro - Coeur de Berthée|^Thérèse|~Lacépède|Gracieuse - Les Irlandais|Hôtel de Ville de Berthée|Broca - Juline|Rue de Provence|~Rosenberg|^Anquetil|^Berthelot|Cramain - Université RER - République|Sophie Barat|Maillol|Rubens - Banquier|Clemenceau|Louison Bobet|Bastion|Résistance|Rue de l’Hôtel de Ville|Carrefour Joliot-Curie|Les Mordacs|Klaver|Alma|Narbérale RER|Cité des Érables|Pépinière|Stalingrad|Marx Dormoy|Pont de Chaillot|Pénélope|Chaillot-Batignolles RER|Lagarde|Rue Rataud|Campagne Première|Bourdelle - Moisant|Gisèle Halimi|Malar|La Roseraie - Saint-Exupéry|Aquitaine|Le Canal|Florian - Duffour|~Moulin de la Tour|^Division Leclerc|^Gare de Bréon - Ville - Saint-Servan|~Bréon - Ville RER|~Galvani|Château Margaux|Hôpital René Laënnec|Aturéen - Général de Maud’Huy|Docteur Armand Brillard|Lamartine|^18 Juin 1940|~Les Platanes|Rue des Martyrs de Châteaubriand|République|Trait d’Union|Meyer|Général Leclerc|Gare du Plessin-Mendinel - Val de Seine"]
+];
+function build(m,x){const ex=new Set(x.split("|")),a=m.split("|"),f=l=>l.map(s=>s.replace(/^[\^~]/,"")).filter(s=>!ex.has(s));
+ return[f(a.filter(s=>s[0]!="~")),f(a.filter(s=>s[0]!="^")).reverse()]}
+const DATA={};LINES.forEach(([n,j,x,m])=>DATA[n]={j,s:build(m,x)});
+const $=document.getElementById("app"),sid=Math.random().toString(36).slice(2,10);
+let line=null,dir=0,i=0,dl=0;
+function push(){if(!line)return;fetch(`${DB}/live/${line}/${sid}.json`,{method:"PUT",body:JSON.stringify({dir,stop:DATA[line].s[dir][i],delta:dl,t:Date.now()})}).catch(()=>{})}
+function leave(){fetch(`${DB}/live/${line}/${sid}.json`,{method:"DELETE"}).catch(()=>{})}
+if(location.hash==="#seed")fetch(DB+"/lines.json",{method:"PUT",body:JSON.stringify(Object.fromEntries(Object.entries(DATA).map(([k,v])=>[k,{jours:v.j,sens1:v.s[0],sens2:v.s[1]}])))});
+addEventListener("pagehide",()=>{if(line)leave()});
+function home(){line=null;$.innerHTML=`<div class="v"><div class="tag">#régulation</div><h1>lignes</h1></div><div class="grid">${Object.entries(DATA).map(([n,d],k)=>`<button class="chip" style="animation-delay:${k*50}ms" data-l="${n}"><b>${n.replace("N","Noct. ")}</b><small>vers ${d.s[0].at(-1)}</small><br><span class="badge">${d.j}</span></button>`).join("")}</div>`;
+ $.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{line=b.dataset.l;dir=0;i=0;dl=0;view();push()})}
+function view(){const d=DATA[line],s=d.s[dir],last=s.length-1;
+ $.innerHTML=`<div class="top"><button class="btn g" id="bk">← Lignes</button><div><span class="tag">#ligne</span> <b style="color:var(--y);font-size:28px">${line.replace("N","Noct. ")}</b> <span class="badge">${d.j}</span></div></div>
+ <div class="dir">${d.s.map((x,k)=>`<button class="btn g ${k==dir?"on":""}" data-d="${k}">Direction ${x.at(-1)}</button>`).join("")}</div>
+ <div class="cols"><section class="card v"><div class="lab">Destination</div><div class="dest">${s.at(-1)}</div>
+ <div class="lab">${i==last?"Terminus":i==0?"Départ":"Prochain arrêt"}</div><div class="next" id="nx">${s[i]}</div>
+ <div class="bar"><i id="pg"></i></div><ul class="list" id="ls"></ul>
+ <div class="act"><button class="btn" id="adv"></button></div></section>
+ <section class="card delta v" style="animation-delay:.1s"><div class="lab">Écart horaire</div><div class="num" id="nm"></div><div class="st" id="st"></div>
+ <div class="ctl"><button class="btn g" id="m5">−5</button><button class="btn g" id="m1">−</button><button class="btn g" id="p1">+</button><button class="btn g" id="p5">+5</button></div>
+ <p class="lab" style="margin-top:16px">+ = retard · − = avance (minutes)</p></section></div>`;
+ $("#bk").onclick=()=>{leave();home()};
+ $.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{dir=+b.dataset.d;i=0;view();push()});
+ $("#adv").onclick=()=>{if(i<last)i++;else{dir=1-dir;i=0;view();push();return}upd();push()};
+ [["m5",-5],["m1",-1],["p1",1],["p5",5]].forEach(([id,v])=>$("#"+id).onclick=()=>{dl+=v;upd();push()});
+ upd(true)}
+function $(q){return document.querySelector(q)}
+function upd(){const s=DATA[line].s[dir],last=s.length-1,n=$("#nx");
+ n.style.animation="none";n.offsetWidth;n.style.animation="";n.textContent=s[i];
+ $("#pg").style.width=(last?i/last*100:0)+"%";
+ $("#adv").textContent=i<last?"Arrêt suivant →":"Terminus · changer de sens ⇄";
+ $("#ls").innerHTML=s.slice(i+1,i+8).map((x,k)=>`<li class="${k?"":"t"}" style="animation-delay:${k*60}ms">${x}</li>`).join("")||`<li class="t">Fin de service du sens</li>`;
+ const nm=$("#nm"),st=$("#st"),c=dl>0?"var(--late)":dl<0?"var(--ok)":"var(--y)";
+ nm.textContent=(dl>0?"+":"")+dl;nm.style.color=st.style.color=c;
+ st.textContent=dl>0?"EN RETARD":dl<0?"EN AVANCE":"À L’HEURE";
+ nm.animate([{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:300,easing:"ease-out"})}
+home();
+</script></body></html>
