@@ -115,6 +115,19 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 .chk:hover{transform:translateY(-2px);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));border-color:rgba(255,255,255,.4)}
 .chk:has(input:checked){border-color:var(--y);box-shadow:0 6px 20px rgba(0,0,0,.28),inset 0 0 0 1px rgba(250,235,20,.35);background:linear-gradient(145deg,rgba(250,235,20,.14),rgba(255,255,255,.05))}
 .chk input{accent-color:var(--y);width:18px;height:18px;flex:none;cursor:pointer}
+.chk .bus-ph{flex:none;height:34px;width:auto;max-width:96px;object-fit:contain}
+.bus-ph.big{display:block;height:64px;width:auto;max-width:100%;object-fit:contain;margin-top:8px}
+.hint{color:var(--m);margin:6px 0 0;font-size:16px;line-height:1.4;max-width:560px}
+.steps{display:flex;gap:8px;margin:14px 0 6px}.steps i{width:34px;height:6px;border-radius:6px;background:rgba(255,255,255,.2)}.steps i.on{background:var(--y)}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;margin-bottom:18px}
+.bcard{position:relative;display:block;padding:0;margin:0;border:3px solid rgba(255,255,255,.22);border-radius:18px;overflow:hidden;background:rgba(3,26,36,.6);cursor:pointer;font:inherit;color:#fff;text-align:left;transition:transform .15s,border-color .15s}
+.bcard:hover{transform:translateY(-2px)}
+.bcard .bimg{display:block;width:100%;height:auto;margin:0;padding:0}
+.bcard .bn{display:block;padding:8px 12px;font-weight:700;font-size:14.5px;background:rgba(0,0,0,.4)}
+.bcard .tick{position:absolute;top:0;right:0;width:30px;height:30px;display:none;align-items:center;justify-content:center;background:var(--y);color:#021;font-weight:900;border-bottom-left-radius:14px}
+.bcard.on{border-color:var(--y)}.bcard.on .tick{display:flex}
+.bcard .gr{position:absolute;top:8px;left:8px;font-size:11px;font-weight:700;color:#021;background:var(--ok);padding:2px 8px;border-radius:8px}
+.bcard.free{cursor:default}.bcard.free:hover{transform:none}
 .chk.free{border-style:dashed;border-color:rgba(91,227,160,.45)}
 .chk .tag-free{margin-left:auto;font-size:11px;color:var(--ok);font-weight:700;letter-spacing:.04em;white-space:nowrap}
 
@@ -177,6 +190,9 @@ body:before{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;b
 @media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}}
 </style></head><body><main id="app"></main>
 <script>
+const GAME_OFFSET=36e5;
+(()=>{const D=Date,n=D.now.bind(D);class G extends D{constructor(...a){a.length?super(...a):super(n()+GAME_OFFSET)}static now(){return n()+GAME_OFFSET}}window.Date=G})();
+
 const PROD=true;
 if(PROD){document.addEventListener("selectstart",e=>e.preventDefault());document.addEventListener("dragstart",e=>e.preventDefault());const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
@@ -238,23 +254,51 @@ const IMG={"257":"1795185323-257.png","134":"1795185378-257-1.png","135":"179518
 const img=(n,c)=>`<img class="${c}" src="${N+IMG[n]}" alt="${n}">`;
 const DATA={};
 LINES.forEach(([n,j,x,m])=>DATA[n]={j,s:build(m,x),c:LINE_COLOR[n]||"#0b6f86"});
+const TERM={"135":["Bismarck - Courboules","Chaillot-Batignolles RER"],"134":["Chaillot-Batignolles RER","Sous-Préfecture – Champagne"],"257":["Berthée - Rosenberg","Les Hauts d’Arlande"],"142":["Port-Perret - Village","Chaillot-Batignolles RER"],"315":["Chaillot-Batignolles RER","Houssaye – De Gaulle"],"433":["Narbérale RER","Clemenceau"],"N76":["Chaillot-Batignolles RER","Rosenberg"],"233":["Hôtel de Ville de Chaillot-Batignolles","Narbérale RER"],"316":["Hôtel de Ville de Denfert-la-Roche","Rue de Cherbourg"],"149":["Pasteur","Chaillot-Batignolles RER"],"242":["Port-Perret - Village","Gare de Cramain - Université"]};
+const normS=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const findS=(a,k)=>{k=normS(k);let i=a.findIndex(t=>normS(t)===k);return i<0?a.findIndex(t=>normS(t).includes(k)):i};
+Object.entries(TERM).forEach(([n,[A,B]])=>{const d=DATA[n];if(!d)return;
+  for(const k of [0,1]){const a=d.s[k],i=findS(a,A),j=findS(a,B);
+    if(i>=0&&j>i){const sl=a.slice(i,j+1);d.s[k]=sl;d.s[1-k]=[...sl].reverse();return}}
+  for(const k of [0,1]){const a=d.s[k],i=findS(a,A),j=findS(a,B);
+    if(i>=0&&j>=0&&j<i){const sl=a.slice(j,i+1);d.s[k]=sl;d.s[1-k]=[...sl].reverse();return}}
+  console.warn("Terminus introuvable",n,A,B)});
 
 // Catalogue bus (payants cochables + gratuits inclus)
+const B="https://image.noelshack.com/fichiers/2026/47/6/";
+const BUS_IMG={
+  "Solaris Urbino 18 GNV":B+"1795266525-prendre-mon-service-3.png",
+  "Citelis 12 Hybride":B+"1795266662-prendre-mon-service-4.png",
+  "Volvo 7900E":B+"1795266699-prendre-mon-service-5.png",
+  "Alstom Aptis":B+"1795266727-prendre-mon-service-6.png",
+  "Volvo 7800E":B+"1795266754-prendre-mon-service-7.png",
+  "Citelis 12 Diesel":B+"1795266817-prendre-mon-service-8.png",
+  "Heuliez GX337 Electrique":B+"1795266981-prendre-mon-service-9.png",
+  "Heuliez GX337 GNV":B+"1795270064-prendre-mon-service-10.png",
+  "MAN A37 Hybride":B+"1795270701-prendre-mon-service-11.png",
+  "MAN A37 Diesel":B+"1795270980-prendre-mon-service-12.png",
+  "MAN A21 GNV":B+"1795271382-prendre-mon-service-13.png",
+  "Urbanway 12 GNV":B+"1795271650-prendre-mon-service-15.png",
+  "Urbanway 12 Hybride":B+"1795271958-prendre-mon-service-16.png",
+  "Urbanway 12 Diesel":B+"1795272202-prendre-mon-service-17.png"
+};
+const busImg=(n,c="bus-ph")=>BUS_IMG[n]?`<img class="${c}" src="${BUS_IMG[n]}" alt="${n}" loading="lazy">`:"";
 const PAID_BUSES=[
-  "Solaris Urbino 18m GNV",
+  "Solaris Urbino 18 GNV",
   "Heuliez GX337 Electrique",
   "Heuliez GX337 GNV",
-  "Iveco Urbanway 12 Diesel",
-  "Iveco Urbanway 12 Hybride",
-  "Iveco Urbanway 12 GNV",
-  "Man Lion's City 12 Hybride",
-  "Man Lion's City 12 GNV",
-  "Volvo 7900 Electrique 18m"
+  "Urbanway 12 Diesel",
+  "Urbanway 12 Hybride",
+  "Urbanway 12 GNV",
+  "MAN A37 Hybride",
+  "MAN A37 Diesel",
+  "MAN A21 GNV",
+  "Volvo 7800E"
 ];
 const FREE_BUSES=[
   "Alstom Aptis",
-  "Citelis Hybride",
-  "Citelis Diesel",
+  "Citelis 12 Hybride",
+  "Citelis 12 Diesel",
   "Volvo 7900E"
 ];
 
@@ -275,13 +319,16 @@ const $=q=>document.querySelector(q);
 let line=null,dir=null,i=0,dl=0,startIdx=0,end=0;
 
 // État Fiches de service
-const F_PREF_KEY="regulation_fiches_pref_v5";
+const F_PREF_KEY="regulation_fiches_pref_v6";
+let fStep=1;
 let fState=JSON.parse(localStorage.getItem(F_PREF_KEY)||"null")||{
-  selectedPaid:[...PAID_BUSES],
+  selectedPaid:[],
   lineCount:2,
   prefLines:[],
   generated:null
 };
+if(fState.generated&&fState.generated.v!==2)fState.generated=null;
+fState.selectedPaid=(fState.selectedPaid||[]).filter(b=>PAID_BUSES.includes(b));
 function saveFState(){
   try{localStorage.setItem(F_PREF_KEY,JSON.stringify({
     selectedPaid:fState.selectedPaid,
@@ -334,8 +381,8 @@ const SCHED={
     1:{first:365,last:1325,bands:[[365,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1325,20]]}
   },
   "N76":{
-    0:{first:1410,last:1740,bands:[[1410,1740,30]]},
-    1:{first:1425,last:1755,bands:[[1425,1755,30]]}
+    0:{first:1436,last:1856,bands:[[1436,1856,30]]},
+    1:{first:1410,last:1830,bands:[[1410,1830,30]]}
   }
 };
 
@@ -559,14 +606,14 @@ function pickDepotForLine(lineCode){
   return Math.random()<0.65?"berthee":"courcelles";
 }
 
+const BUS18=["Solaris Urbino 18 GNV","Volvo 7800E"];
 function pickBus(lineCodes){
   const pool=[...fState.selectedPaid,...FREE_BUSES];
-  const candidates=pool.length?pool:[...FREE_BUSES];
-  const prefersSolaris=candidates.includes("Solaris Urbino 18m GNV")&&lineCodes.some(l=>l==="257"||l==="135");
-  if(prefersSolaris&&Math.random()<0.78){
-    return "Solaris Urbino 18m GNV";
-  }
-  return candidates[Math.floor(Math.random()*candidates.length)];
+  const heavy=lineCodes.some(l=>l==="257"||l==="135");
+  const w=pool.map(b=>BUS18.includes(b)?(heavy?3:0.5):1);
+  let r=Math.random()*w.reduce((x,y)=>x+y,0);
+  for(let k=0;k<pool.length;k++){r-=w[k];if(r<=0)return pool[k]}
+  return pool[0];
 }
 
 function pickLinesForSheet(count,prefs){
@@ -601,184 +648,121 @@ function findNextScheduleTs(lCode,dIdx,fromTs){
 // Détermine les bornes (startIdx, endIdx) d'une course (règle spécifique 316 : Mairie de Denfert-la-Roche <-> Soufflot)
 function resolveLineBounds(lCode,dirIdx){
   const stops=DATA[lCode].s[dirIdx];
-  if(lCode==="316"){
-    const iDenfert=stops.findIndex(s=>s.toLowerCase().includes("denfert-la-roche"));
-    const iSoufflot=stops.findIndex(s=>s.toLowerCase().includes("soufflot"));
-    if(iDenfert!==-1&&iSoufflot!==-1){
-      return{
-        startIdx:Math.min(iDenfert,iSoufflot),
-        endIdx:Math.max(iDenfert,iSoufflot)
-      };
-    }
-  }
   return{startIdx:0,endIdx:stops.length-1};
 }
 
+// ===== Règles de service : on ne prend une ligne qu'à un terminus (partiel ou complet) =====
+function canonStop(t){const n=normS(t);
+  if(n.includes("chaillot batignolles rer"))return"chaillot";
+  if(n.includes("rosenberg"))return"rosenberg";
+  if(n.includes("narberale rer")&&!n.includes("pont"))return"narberale";
+  if(n.includes("cramain universite")&&!n.includes("republique")&&!n.includes("berthelot"))return"cramain";
+  if(n.includes("boulevard national")&&n.includes("mac mahon"))return"macmahon";
+  if(n.includes("federation"))return"federation";
+  if(n.includes("la vallee"))return"vallee";
+  return n}
+// Points de haut-le-pied depuis chaque dépôt (minutes estimées, à ajuster)
+const DEPOT_HLP={
+  berthee:{vallee:3,macmahon:5,federation:6,narberale:5,cramain:8,chaillot:15},
+  courcelles:{chaillot:4}
+};
+const DEPOT_START=new Set([...Object.keys(DEPOT_HLP.berthee),...Object.keys(DEPOT_HLP.courcelles)]);
+function lineNodes(){const out=[];for(const L in DATA)for(const d of [0,1]){const st=DATA[L].s[d];out.push({L,d,from:canonStop(st[0]),to:canonStop(st.at(-1))})}return out}
+const MAX_WAIT=20;
+function legEnd(n,cur,first){
+  const hl=first?(DEPOT_HLP[n.from==="chaillot"?"courcelles":"berthee"][n.from]||5):4;
+  const dep=findNextScheduleTs(n.L,n.d,cur+hl*60000);
+  return{wait:(dep-cur)/60000-hl,end:dep+Math.max(5,DATA[n.L].s[n.d].length*STOP_MIN)*60000}}
+function buildChain(count,prefs,mw=MAX_WAIT){
+  const nodes=lineNodes();
+  const run=rep=>{let best=[],bs=-1;
+    for(let t=0;t<500;t++){
+      const ch=[];let cur=null,ts=nowRound();
+      while(ch.length<count){
+        const c=nodes.filter(n=>(cur===null?DEPOT_START.has(n.from):n.from===cur)&&(rep||!ch.some(x=>x.L===n.L))&&legEnd(n,ts,cur===null).wait<=mw);
+        if(!c.length)break;
+        const w=c.map(n=>(prefs.includes(n.L)?5:1)*(0.3+Math.random()));
+        let r=Math.random()*w.reduce((x,y)=>x+y,0),k=0;while(k<c.length-1&&(r-=w[k])>0)k++;
+        ts=legEnd(c[k],ts,cur===null).end;ch.push(c[k]);cur=c[k].to}
+      const sc=ch.length*100+ch.filter(n=>prefs.includes(n.L)).length*10+Math.random();
+      if(sc>bs){bs=sc;best=ch}}
+    return best};
+  let best=run(false);if(best.length<count){const b2=run(true);if(b2.length>best.length)best=b2}
+  return best}
+
 function generateDaySheet(){
   const count=Math.min(5,Math.max(1,+fState.lineCount||1));
-  const assignedLines=pickLinesForSheet(count,fState.prefLines||[]);
+  let chain=buildChain(count,fState.prefLines||[]);
+  if(!chain.length)chain=buildChain(count,fState.prefLines||[],Infinity);
+  const assignedLines=chain.map(n=>n.L);
   const bus=pickBus(assignedLines);
-  const firstDepotKey=pickDepotForLine(assignedLines[0]);
-  const firstDepot=DEPOTS[firstDepotKey];
-
+  const startKey=chain[0].from;
+  const depotKey=startKey==="chaillot"?"courcelles":"berthee";
+  const firstDepot=DEPOTS[depotKey];
+  const hlpMin=DEPOT_HLP[depotKey][startKey]||5;
   let curTs=nowRound();
-  const segments=[];
-
-  segments.push({type:"walk",bus,depot:firstDepot.name,startTime:fmt(curTs)});
-
-  assignedLines.forEach((lCode,idx)=>{
-    const d=DATA[lCode];
-    const dirIdx=idx%2;
-    const allStops=d.s[dirIdx];
+  const segments=[{type:"walk",bus,depot:firstDepot.name,startTime:fmt(curTs)}];
+  chain.forEach((n,idx)=>{
+    const lCode=n.L,dirIdx=n.d,d=DATA[lCode];
     const bounds=resolveLineBounds(lCode,dirIdx);
-    const routeStops=allStops.slice(bounds.startIdx,bounds.endIdx+1);
-    const originStop=routeStops[0];
-    const destStop=routeStops.at(-1);
-
-    const hlpMin=4+(idx*2);
-    const earliestRun=curTs+(idx===0?hlpMin*60000:0);
-    const baseSchedDep=findNextScheduleTs(lCode,dirIdx,earliestRun);
-    const matchedDep=baseSchedDep+bounds.startIdx*STOP_MIN*60000;
-    const hlpStart=matchedDep-hlpMin*60000;
-
-    segments.push({
-      type:"hlp",
-      line:lCode,
-      color:d.c,
-      depot:idx===0?firstDepot.name:DEPOTS[pickDepotForLine(lCode)].name,
-      to:originStop,
-      vers:allStops.at(-1),
-      mins:hlpMin,
-      depTime:fmt(hlpStart),
-      arrTime:fmt(matchedDep)
-    });
-
+    const routeStops=d.s[dirIdx].slice(bounds.startIdx,bounds.endIdx+1);
+    const originStop=routeStops[0],destStop=routeStops.at(-1);
+    let matchedDep;
+    if(idx===0){
+      matchedDep=findNextScheduleTs(lCode,dirIdx,curTs+hlpMin*60000);
+      segments.push({type:"hlp",line:lCode,color:d.c,depot:firstDepot.name,to:originStop,vers:destStop,mins:hlpMin,depTime:fmt(matchedDep-hlpMin*60000),arrTime:fmt(matchedDep)});
+    }else{
+      matchedDep=findNextScheduleTs(lCode,dirIdx,curTs+4*60000);
+      segments.push({type:"break",line:lCode,color:d.c,at:originStop,startTime:fmt(curTs),endTime:fmt(matchedDep),mins:Math.max(1,Math.round((matchedDep-curTs)/60000))});
+    }
     const legMins=Math.max(5,routeStops.length*STOP_MIN);
     const arrTs=matchedDep+legMins*60000;
-    segments.push({
-      type:"run",
-      line:lCode,
-      color:d.c,
-      dirIdx,
-      startIdx:bounds.startIdx,
-      endIdx:bounds.endIdx,
-      depTs:matchedDep,
-      from:originStop,
-      to:destStop,
-      startTime:fmt(matchedDep),
-      endTime:fmt(arrTs),
-      mins:legMins
-    });
-
+    segments.push({type:"run",line:lCode,color:d.c,dirIdx,startIdx:bounds.startIdx,endIdx:bounds.endIdx,depTs:matchedDep,from:originStop,to:destStop,startTime:fmt(matchedDep),endTime:fmt(arrTs),mins:legMins});
     curTs=arrTs;
-
-    if(idx<assignedLines.length-1){
-      const nextL=assignedLines[idx+1];
-      const nextDir=(idx+1)%2;
-      const nextHlpMin=4+((idx+1)*2);
-      const nextDepSlot=findNextScheduleTs(nextL,nextDir,curTs+5*60000);
-      const nextBoardTs=Math.max(curTs+5*60000,nextDepSlot-nextHlpMin*60000);
-      const pauseMins=Math.max(5,Math.round((nextBoardTs-curTs)/60000));
-      segments.push({
-        type:"break",
-        line:nextL,
-        color:DATA[nextL].c,
-        at:destStop,
-        startTime:fmt(curTs),
-        endTime:fmt(nextBoardTs),
-        mins:pauseMins
-      });
-      curTs=nextBoardTs;
-    }
   });
-
-  fState.generated={
-    createdAt:Date.now(),
-    bus,
-    depot:firstDepot,
-    lineCount:count,
-    lines:assignedLines,
-    segments
-  };
+  fState.generated={v:2,createdAt:Date.now(),bus,depot:firstDepot,lineCount:chain.length,lines:assignedLines,segments};
   saveFState();
 }
 
 function fichesMenu(){
   setLineTheme(null);
-  if(fState.generated){
-    renderSheetView();
+  if(fState.generated){renderSheetView();return}
+  const dots=`<div class="steps"><i class="${fStep===1?"on":""}"></i><i class="${fStep===2?"on":""}"></i></div>`;
+  if(fStep===1){
+    const card=(b,free)=>{const on=free||fState.selectedPaid.includes(b);
+      return `<button type="button" class="bcard ${on?"on":""} ${free?"free":""}" title="${b}" data-b="${b.replace(/"/g,"&quot;")}" ${free?"disabled":""}>${busImg(b,"bimg")}<span class="tick">✓</span></button>`};
+    A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-home">${ic("g")} Lignes</button></div>
+    <div class="v"><div class="tag">#ma-fiche · étape 1 sur 2</div><h1 style="font-size:clamp(34px,7vw,70px)">mes bus</h1>
+    <p class="hint">Coche les véhicules que tu possèdes. Ton choix est gardé sur cet appareil.</p>${dots}</div>
+    <div class="ctl" style="justify-content:flex-start;margin:0 0 14px;gap:10px"><button type="button" class="btn g" id="all-on" style="font-size:15px;min-width:0">Tout cocher</button><button type="button" class="btn g" id="all-off" style="font-size:15px;min-width:0">Tout décocher</button></div>
+    <div class="bgrid" id="paid-list">${PAID_BUSES.map(b=>card(b,false)).join("")}${FREE_BUSES.map(b=>card(b,true)).join("")}</div>
+    <div class="act"><button type="button" class="btn" id="f-next">Suivant ${ic("d")}</button></div>`;
+    $("#f-home").onclick=()=>home();
+    const refresh=()=>{A.querySelectorAll(".bcard:not(.free)").forEach(c=>c.classList.toggle("on",fState.selectedPaid.includes(c.dataset.b)))};
+    A.querySelectorAll(".bcard:not(.free)").forEach(c=>c.onclick=()=>{const n=c.dataset.b;
+      fState.selectedPaid=fState.selectedPaid.includes(n)?fState.selectedPaid.filter(x=>x!==n):[...fState.selectedPaid,n];saveFState();refresh()});
+    $("#all-on").onclick=()=>{fState.selectedPaid=[...PAID_BUSES];saveFState();refresh()};
+    $("#all-off").onclick=()=>{fState.selectedPaid=[];saveFState();refresh()};
+    $("#f-next").onclick=()=>{fStep=2;fichesMenu()};
     return;
   }
   const allCodes=Object.keys(DATA);
-  A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-home">${ic("g")} Lignes</button></div>
-  <div class="v"><div class="tag">#fiches-de-service</div><h1 style="font-size:clamp(38px,8vw,86px)">ma fiche</h1></div>
-
-  <div class="card v" style="margin-bottom:16px">
-    <div class="f-grid" id="paid-list">
-      ${PAID_BUSES.map(b=>{
-        const checked=fState.selectedPaid.includes(b);
-        return `<label class="chk"><input type="checkbox" data-b="${b.replace(/"/g,"&quot;")}" ${checked?"checked":""}><span>${b}</span></label>`;
-      }).join("")}
-      ${FREE_BUSES.map(b=>`<label class="chk free"><input type="checkbox" checked disabled><span>${b}</span><span class="tag-free">GRATUIT</span></label>`).join("")}
-    </div>
-  </div>
-
+  A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-back">${ic("g")} Mes bus</button></div>
+  <div class="v"><div class="tag">#ma-fiche · étape 2 sur 2</div><h1 style="font-size:clamp(34px,7vw,70px)">mes lignes</h1>
+  <p class="hint">Combien de lignes veux-tu faire aujourd’hui, et lesquelles te tentent ? Le reste est tiré au sort.</p>${dots}</div>
   <div class="card v" style="margin-bottom:16px">
     <div class="lab" style="margin-bottom:10px">Nombre de lignes (1 à 5)</div>
-    <div class="ctl" style="justify-content:flex-start;margin-top:0;margin-bottom:18px">
-      ${[1,2,3,4,5].map(n=>`<button type="button" class="btn g ${fState.lineCount===n?"on":""}" data-cnt="${n}" style="min-width:52px;font-size:18px">${n}</button>`).join("")}
-    </div>
-
-    <div class="line-cards" id="pref-cards">
-      ${allCodes.map(c=>{
-        const active=(fState.prefLines||[]).includes(c);
-        const t1=DATA[c].s[0].at(-1),t2=DATA[c].s[1].at(-1);
-        return `<button type="button" class="lcard ${active?"on":""}" data-l="${c}" style="--lc:${DATA[c].c}">
-          ${img(c,"l-ico")}
-          <div class="term-v">
-            <span>${t1}</span>
-            <span class="sep-v">${ic("bas")}</span>
-            <span>${t2}</span>
-          </div>
-        </button>`;
-      }).join("")}
-    </div>
+    <div class="ctl" style="justify-content:flex-start;margin-top:0;margin-bottom:18px">${[1,2,3,4,5].map(n=>`<button type="button" class="btn g ${fState.lineCount===n?"on":""}" data-cnt="${n}" style="min-width:52px;font-size:18px">${n}</button>`).join("")}</div>
+    <div class="line-cards" id="pref-cards">${allCodes.map(c=>{const active=(fState.prefLines||[]).includes(c);
+      return `<button type="button" class="lcard ${active?"on":""}" data-l="${c}" style="--lc:${DATA[c].c}">${img(c,"l-ico")}<div class="term-v"><span>${DATA[c].s[0][0]}</span><span class="sep-v">${ic("bas")}</span><span>${DATA[c].s[0].at(-1)}</span></div></button>`}).join("")}</div>
   </div>
-
-  <div class="act" style="margin-top:0">
-    <button type="button" class="btn" id="gen-sheet">Générer ma fiche de service ${ic("d")}</button>
-  </div>`;
-
-  $("#f-home").onclick=()=>home();
-  A.querySelectorAll("#paid-list input[data-b]").forEach(inp=>{
-    inp.onchange=()=>{
-      const name=inp.dataset.b;
-      if(inp.checked){if(!fState.selectedPaid.includes(name))fState.selectedPaid.push(name)}
-      else{fState.selectedPaid=fState.selectedPaid.filter(x=>x!==name)}
-      saveFState();
-    };
-  });
-  A.querySelectorAll("[data-cnt]").forEach(btn=>{
-    btn.onclick=()=>{
-      fState.lineCount=+btn.dataset.cnt;
-      saveFState();
-      fichesMenu();
-    };
-  });
-  A.querySelectorAll("#pref-cards .lcard").forEach(card=>{
-    card.onclick=()=>{
-      const l=card.dataset.l;
-      if(!Array.isArray(fState.prefLines))fState.prefLines=[];
-      if(fState.prefLines.includes(l))fState.prefLines=fState.prefLines.filter(x=>x!==l);
-      else fState.prefLines.push(l);
-      saveFState();
-      card.classList.toggle("on");
-    };
-  });
-  $("#gen-sheet").onclick=()=>{
-    generateDaySheet();
-    renderSheetView();
-  };
+  <div class="act" style="margin-top:0"><button type="button" class="btn" id="gen-sheet">Générer ma fiche de service ${ic("d")}</button></div>`;
+  $("#f-back").onclick=()=>{fStep=1;fichesMenu()};
+  A.querySelectorAll("[data-cnt]").forEach(btn=>btn.onclick=()=>{fState.lineCount=+btn.dataset.cnt;saveFState();fichesMenu()});
+  A.querySelectorAll("#pref-cards .lcard").forEach(card=>card.onclick=()=>{const l=card.dataset.l;
+    if(!Array.isArray(fState.prefLines))fState.prefLines=[];
+    fState.prefLines=fState.prefLines.includes(l)?fState.prefLines.filter(x=>x!==l):[...fState.prefLines,l];saveFState();card.classList.toggle("on")});
+  $("#gen-sheet").onclick=()=>{generateDaySheet();renderSheetView()};
 }
 
 function launchLineRegulation(seg){
