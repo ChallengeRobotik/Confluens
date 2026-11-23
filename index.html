@@ -1,11 +1,15 @@
 <!doctype html>
 <html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00266b">
+<meta name="description" content="Régulation bus : départs en temps réel, partiel libre et fiches de service.">
 <title>Régulation Bus</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300266b'/%3E%3Ctext x='32' y='46' font-family='Arial' font-weight='700' font-size='40' text-anchor='middle' fill='%23fff'%3ER%3C/text%3E%3C/svg%3E">
 <style>
-@font-face{font-family:Parisine;src:url(fonts/Parisine-Regular.woff2);font-weight:400;font-style:normal}
-@font-face{font-family:Parisine;src:url(fonts/Parisine-Bold.woff2);font-weight:700;font-style:normal}
-@font-face{font-family:Parisine;src:url(fonts/Parisine-Italic.woff2);font-weight:400;font-style:italic}
+@font-face{font-family:Parisine;src:url(Parisine-Regular.otf) format("opentype");font-weight:400;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Bold.otf) format("opentype");font-weight:700;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Italic.otf) format("opentype");font-weight:400;font-style:italic;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-BoldItalic.otf) format("opentype");font-weight:700;font-style:italic;font-display:swap}
+
+
+
 :root{--bg:#031a24;--bg2:#06303d;--teal:#0b6f86;--lc:#0b6f86;--y:#faeb14;--w:#fff;--ok:#5be3a0;--late:#ff6b5e;--m:rgba(255,255,255,.68)}
 *{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
 html,body{min-height:100%}
@@ -18,7 +22,7 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .v{animation:in .55s cubic-bezier(.2,.8,.2,1) both}
 @keyframes in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
 
-/* Grille accueil */
+
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(168px,1fr));gap:14px;align-items:stretch}
 .chip{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:10px;height:100%;min-height:215px;padding:16px;line-height:1.3;border-radius:18px;color:var(--w);font:inherit;text-align:left;cursor:pointer;transition:transform .2s,background .2s,border-color .2s,box-shadow .2s;animation:in .5s both;position:relative;overflow:hidden}
 .chip:before{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--lc,var(--y))}
@@ -29,13 +33,13 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .chip .badge{flex:none;margin-top:auto;white-space:normal;border-radius:14px;font-size:12.5px;line-height:1.35}
 @media(max-width:520px){.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.chip{min-height:200px;padding:14px}}
 
-/* Flèches RATP */
+
 .arr{display:inline-block;height:.82em;width:auto;vertical-align:-.08em;object-fit:contain;pointer-events:none}
 .arr-dbl{display:inline;height:1.05em;max-height:18px;width:auto;vertical-align:-.18em;margin:0 5px;object-fit:contain;pointer-events:none}
 .btn .arr{height:.9em;margin:0 4px}
 .btn-idl{height:24px;width:auto;object-fit:contain;border-radius:4px;vertical-align:middle;pointer-events:none}
 
-/* Navigation & Boutons */
+
 .top{display:flex;justify-content:flex-start;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
 .top .lg{height:48px;width:auto;border-radius:8px;display:block}
 .top .btn{height:48px;display:inline-flex;align-items:center;gap:8px}
@@ -48,7 +52,7 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .btn.sheet-go{background:rgba(255,255,255,.14);color:var(--w);border:1px solid rgba(255,255,255,.24)}
 .btn.sheet-go:hover{background:rgba(255,255,255,.24);border-color:rgba(255,255,255,.45)}
 
-/* Colonnes & Cartes */
+
 .cols{display:grid;grid-template-columns:1.35fr 1fr;gap:18px}
 @media(max-width:820px){.cols{grid-template-columns:1fr}}
 .card{border-radius:26px;padding:clamp(18px,3vw,28px)}
@@ -57,11 +61,11 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .next{font-size:clamp(32px,6.5vw,66px);font-weight:700;color:var(--y);line-height:1.08;min-height:2em;animation:in .45s both}
 .rm{margin:6px 0 0;font-size:14px;color:var(--m);font-variant-numeric:tabular-nums;min-height:1.4em}
 
-/* Barre de progression couleur ligne */
+
 .bar{height:9px;background:rgba(255,255,255,.14);border-radius:9px;margin:16px 0;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:var(--lc,var(--y));border-radius:9px;transition:width .8s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 12px var(--lc,var(--y))}
 
-/* Frise des prochains arrêts aux couleurs de la ligne */
+
 .list{list-style:none;padding:0;margin:4px 0 0;position:relative}
 .list li{position:relative;padding:11px 0 11px 42px;font-size:clamp(16px,2.4vw,20px);animation:in .5s both;opacity:.92;background:linear-gradient(var(--lc,var(--teal)),var(--lc,var(--teal))) 8px 0/4px 100% no-repeat}
 .list li:first-child{background-size:4px 50%;background-position:8px 100%;font-weight:700;opacity:1}
@@ -71,12 +75,12 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .list li.t:before{border-color:var(--lc,var(--y));box-shadow:0 0 0 3px var(--y),0 0 12px var(--lc,var(--y))}
 .tm{float:right;color:var(--m);font-size:14px;font-variant-numeric:tabular-nums;margin-left:12px}
 
-/* Pastille arrêt courant */
+
 .nx{display:flex;align-items:center;gap:.35em}
 .dot{flex:none;width:.68em;height:.68em;border-radius:50%;background:#fff;border:.15em solid var(--lc,#000);box-shadow:0 0 0 3px rgba(255,255,255,.35),0 0 16px var(--lc,transparent);animation:pop .5s both}
 @keyframes pop{from{transform:scale(.3)}to{transform:none}}
 
-/* Écart horaire */
+
 .delta{text-align:center;display:flex;flex-direction:column;justify-content:center}
 .num{font-size:clamp(64px,14vw,120px);font-weight:700;line-height:1;transition:color .4s;font-variant-numeric:tabular-nums;margin:8px 0}
 .st{font-size:20px;font-weight:700;letter-spacing:.06em;transition:color .4s}
@@ -85,13 +89,13 @@ h1{font-size:clamp(54px,13vw,150px);line-height:.95;color:var(--y);font-weight:7
 .act{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
 .act .btn{flex:1 1 210px;font-size:18px;padding:15px 18px}
 
-/* Destination cards */
+
 .dcs{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0}
 .dc{font:inherit;color:var(--w);text-align:left;cursor:pointer;border-radius:22px;padding:clamp(18px,3vw,30px);transition:transform .2s,border-color .2s,background .2s;animation:in .5s both;position:relative;overflow:hidden}
 .dc:before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lc,var(--y))}
 .dc b{display:flex;align-items:center;gap:10px;color:var(--y);font-size:clamp(24px,4.5vw,42px);line-height:1.15;margin:6px 0 10px}
 
-/* Menus déroulants et inputs corrigés */
+
 .sel-wrap{position:relative;display:block;width:100%}
 .sel-wrap:after{content:"";position:absolute;right:16px;top:50%;width:16px;height:16px;margin-top:-8px;background:url("https://image.noelshack.com/fichiers/2026/47/5/1795191436-fleche-ratp-bas-blanche.png") center/contain no-repeat;pointer-events:none;opacity:.85}
 select{font:inherit;width:100%;padding:14px 44px 14px 16px;border-radius:14px;background-color:#052631 !important;color:#fff !important;border:1px solid rgba(255,255,255,.28);appearance:none;-webkit-appearance:none;-moz-appearance:none;cursor:pointer;color-scheme:dark}
@@ -109,7 +113,7 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 .empty{padding:32px;text-align:center;line-height:1.6}
 .empty b{color:var(--y)}
 
-/* Fiches de service stylisées */
+
 .f-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:12px}
 .chk{display:flex;align-items:center;gap:12px;padding:14px 16px;border-radius:18px;background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.22);cursor:pointer;font-size:14.5px;font-weight:700;line-height:1.25;transition:transform .18s,background .18s,border-color .18s,box-shadow .18s;position:relative;overflow:hidden}
 .chk:hover{transform:translateY(-2px);background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));border-color:rgba(255,255,255,.4)}
@@ -145,7 +149,7 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 .f-meta{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .f-launch-bar{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px;padding-top:14px;border-top:1px solid rgba(255,255,255,.14)}
 
-/* Timeline style fiche de service : points alignés au milieu exact de chaque carte */
+
 .f-sheet{display:grid;grid-template-columns:36px 1fr;gap:0 16px;align-items:start;position:relative}
 .f-rail{position:relative;width:36px;min-height:100%}
 .f-rail-line{position:absolute;left:50%;width:4px;margin-left:-2px;background:repeating-linear-gradient(to bottom,#fff 0 8px,transparent 8px 15px);z-index:0}
@@ -153,7 +157,7 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 
 .f-blocks{display:flex;flex-direction:column;gap:14px}
 
-/* Arrondi gauche collé au bord (style .dc) */
+
 .f-card{border-radius:22px;padding:20px 22px 20px 26px;position:relative;overflow:hidden;animation:in .45s both}
 .f-card.walk{background:linear-gradient(135deg,rgba(235,240,245,.22),rgba(210,220,230,.10))}
 .f-card.hlp{background:linear-gradient(135deg,rgba(235,240,245,.22),rgba(210,220,230,.10))}
@@ -167,7 +171,7 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 .f-title{font-size:clamp(20px,3.2vw,28px);font-weight:700;line-height:1.15}
 .f-sub{font-size:clamp(16px,2.5vw,22px);font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:3px}
 
-/* Frise interne Haut-le-pied */
+
 .f-route{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px}
 .f-route:before{content:"";position:absolute;left:6px;top:9px;bottom:9px;width:4px;border-radius:2px;background:var(--lc,var(--y))}
 .f-pt{position:relative;display:flex;align-items:center;gap:14px;font-size:17px;font-weight:700;z-index:1}
@@ -178,26 +182,178 @@ select optgroup{background-color:#031820 !important;color:var(--y) !important;fo
 .f-endpoints{margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.14);display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;font-size:14px}
 .f-endpoints b{display:block;color:var(--m);font-weight:400;font-style:italic;font-size:12.5px}
 
-/* Partiel libre entre deux arrêts */
+
 .part-box{display:grid;grid-template-columns:1fr 1fr auto;gap:12px;align-items:end;margin-top:12px}
 @media(max-width:700px){.part-box{grid-template-columns:1fr}}
 
-/* Glassmorphism & Fond animé */
+
 body:before{content:"";position:fixed;inset:-25%;z-index:0;pointer-events:none;background:radial-gradient(38% 38% at 20% 30%,rgba(11,150,180,.75),transparent 70%),radial-gradient(30% 30% at 80% 18%,rgba(250,235,20,.24),transparent 70%),radial-gradient(42% 42% at 72% 80%,rgba(0,180,140,.55),transparent 70%),radial-gradient(34% 34% at 14% 86%,rgba(40,90,220,.5),transparent 70%);filter:blur(28px);animation:drift 20s ease-in-out infinite alternate}
 @keyframes drift{0%{transform:translate(0,0) rotate(0) scale(1)}50%{transform:translate(5%,-4%) rotate(10deg) scale(1.18)}100%{transform:translate(-5%,4%) rotate(-8deg) scale(1.05)}}
 .card,.chip,.dc,.btn.g,.f-card{background:linear-gradient(135deg,rgba(255,255,255,.15),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.26);box-shadow:0 8px 32px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.32),inset 0 -1px 0 rgba(255,255,255,.06);-webkit-backdrop-filter:blur(22px) saturate(170%);backdrop-filter:blur(22px) saturate(170%)}
 .chip:hover,.chip:focus-visible,.dc:hover,.dc:focus-visible{background:linear-gradient(135deg,rgba(255,255,255,.24),rgba(255,255,255,.09));border-color:var(--lc,var(--y));box-shadow:0 14px 40px rgba(0,0,0,.4),0 0 0 1px var(--lc,var(--y)),inset 0 1px 0 rgba(255,255,255,.45);transform:translateY(-4px);outline:0}
 @media(prefers-reduced-motion:reduce){body:before,body:after{animation:none}}
-</style></head><body><main id="app"></main>
+
+
+:root{--navy:#1b3a78;--ink:#1d4496;--blue:#1e5bd6;--led:#ff8a00;--y:#1b3a78;--m:#6b7390;--ok:#0a8a4a;--late:#d6281c;--p1:#f2f4f8;--p2:#d9dde5;--bf:brightness(0) invert(17%) sepia(95%) saturate(3500%) hue-rotate(215deg)}
+html{background:#050d24;scroll-behavior:smooth}
+body{background:#0f1729;color:#fff;min-height:100vh}
+body:before{display:none}
+body:after{display:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--led);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+
+#hdr{position:sticky;top:0;z-index:30;padding-top:env(safe-area-inset-top);background:#17274a;border-bottom:1px solid rgba(255,255,255,.08)}
+#hdr .hi{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;padding:10px clamp(16px,4vw,40px)}
+.gt{margin-right:auto;min-width:0}
+#hg{display:block;font-size:clamp(22px,5vw,32px);font-weight:700;line-height:1.05;letter-spacing:-.01em}
+#hd{display:block;font-size:13px;opacity:.72;margin-top:2px}#hd:first-letter{text-transform:uppercase}
+#hc{font-variant-numeric:tabular-nums;font-weight:700;font-size:clamp(18px,3.6vw,24px);color:var(--led);background:#000;padding:6px 12px;border-radius:9px}
+#hdr nav{display:flex;gap:4px;padding:4px;border-radius:14px;background:rgba(255,255,255,.1)}
+#hdr nav button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:9px 20px;background:transparent;color:#fff;cursor:pointer;opacity:.78;transition:.2s}
+#hdr nav button:hover{opacity:1}
+#hdr nav button.on{background:#dde4ef;color:var(--navy);opacity:1;box-shadow:0 4px 14px rgba(0,0,0,.3)}
+
+
+main{padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+h1{font-size:clamp(34px,7vw,66px);line-height:1;color:#fff;letter-spacing:-.02em;margin:.1em 0 .2em}
+h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margin:.1em 0 .25em;font-weight:700}
+.tag,.sec{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.62)}
+.sec{margin:28px 0 12px}
+.hint{color:rgba(255,255,255,.74)}
+.hero{margin:6px 0 20px}.hero .hint{margin:4px 0 0}
+.hint .ico{display:inline-block;vertical-align:-7px;background:rgba(255,255,255,.14);border-radius:8px;padding:3px 5px}
+.card,.dc,.f-card,.f-card.walk,.f-card.hlp,.f-card.run,.lcard,.chk,.bcard{background:#dde4ef;color:var(--ink);border:0;border-radius:16px;box-shadow:0 4px 14px rgba(0,0,0,.25);-webkit-backdrop-filter:none;backdrop-filter:none}
+.f-card.brk{background:linear-gradient(180deg,#fff0d6,#ffdca8);color:#7a3d00;border:0}
+.lab{color:var(--m)}
+.badge{background:#cfd8e7;border:0;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.15)}
+.dest,.next,.dc b,.f-title,.f-sub,.f-pt,.lcard .term-v,.bcard .bn{color:var(--ink);background:none}
+.bar{background:rgba(0,38,107,.16)}
+.f-node{background:var(--navy);border-color:#fff}
+.f-endpoints{border-top-color:rgba(0,38,107,.18)}.f-endpoints b{color:var(--m)}
+.f-pt span.o{border-color:var(--navy);box-shadow:0 0 0 1.5px rgba(0,38,107,.5)}
+.lcard.on,.bcard.on,.chk:has(input:checked){outline:3px solid var(--led);outline-offset:2px}
+.bcard{border:0}
+.arr,.arr-dbl{filter:var(--bf)}
+.btn:not(.g) .arr,.btn:not(.g) .arr-dbl,#hdr .arr{filter:none}
+.rer{height:1.05em;width:auto;max-width:3.4em;object-fit:contain;flex:none;vertical-align:-.14em;margin-left:.3em;filter:var(--bf)}
+
+
+.btn{background:#2458c4;color:#fff;border-radius:12px;box-shadow:none}
+.btn:hover{background:#2f66d8}
+.btn.g,.btn.sheet-go{background:#dde4ef;color:var(--ink);border:0;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+.btn.g.on{background:#2458c4;color:#fff}
+.btn[disabled]{opacity:.45;pointer-events:none;filter:grayscale(.5)}
+.dep input[type=time]{background-color:#eef1f7!important;color:var(--ink)!important;border:1px solid #b9c2d8;color-scheme:light}
+.dep input[type=time]::-webkit-calendar-picker-indicator{filter:none}
+
+
+.bd{display:flex;flex-direction:column;gap:12px}
+.rowx{display:flex;gap:10px;align-items:stretch}
+.pop .rowx{animation:in .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms)}
+.row{flex:1;min-width:0;display:flex;align-items:stretch;min-height:86px;padding:0;overflow:hidden;font:inherit;text-align:left;cursor:pointer;border:0;border-radius:14px;background:#dde4ef;box-shadow:0 4px 14px rgba(0,0,0,.25);transition:transform .15s}
+button.row:hover{transform:translateY(-1px);background:#e8edf5}
+button.row:active{transform:scale(.99)}
+.row.off{cursor:default}
+.lb{flex:0 0 128px;width:128px;display:flex;align-items:center;justify-content:center;padding:0;font-size:clamp(38px,8vw,56px);font-weight:700;letter-spacing:-.02em;background:var(--lc)}
+.dn{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:0 18px;color:var(--ink);font-weight:700;font-size:clamp(18px,3.8vw,30px);line-height:1.1}
+.tb{display:grid;grid-template-columns:repeat(2,92px);gap:8px;align-items:center;padding:0 14px 0 6px}
+.tb b{height:48px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#000;color:var(--led);font-size:26px;font-variant-numeric:tabular-nums}
+.mn:not(.clk):after{content:"min";font-size:.5em;margin-left:3px}
+.tb b.end{grid-column:1/-1;font-size:22px;padding:0 16px}
+.more{flex:none;width:58px;display:grid;place-items:center;border:0;border-radius:14px;background:rgba(255,255,255,.12);color:#fff;cursor:pointer;transition:background .2s,transform .2s}
+.more:hover{background:rgba(255,255,255,.22)}
+
+
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:6px;margin:16px 0 18px;border-radius:20px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.16)}
+.seg button{font:inherit;color:#fff;background:transparent;border:0;border-radius:15px;padding:12px 16px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:3px;min-width:0;transition:background .2s,color .2s,box-shadow .2s}
+.seg button small{font-size:11px;letter-spacing:.14em;text-transform:uppercase;opacity:.7}
+.seg button b{display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-size:clamp(15px,3.4vw,21px);line-height:1.15}
+.seg .arr{filter:none}.seg .rer{filter:brightness(0) invert(1)}
+.seg button.on{background:#dde4ef;color:var(--ink)}
+.seg button.on .arr,.seg button.on .rer{filter:var(--bf)}
+.pl{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(300px,1fr);gap:18px;align-items:start}
+.srch{display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:14px;background:#eef1f7;box-shadow:inset 0 0 0 1px #c5cde0;color:var(--m)}
+.srch:focus-within{box-shadow:inset 0 0 0 2px var(--blue)}
+.srch input{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;color:var(--ink);padding:13px 0}
+.rl{list-style:none;margin:12px 0 0;padding:0}
+.rl li{position:relative}
+.rl li:before,.rl li:after{content:"";position:absolute;left:21px;width:6px;margin-left:-3px;top:0;bottom:0;background:var(--lc)}
+.rl li:before{opacity:.25}
+.rl li:first-child:before{top:50%}.rl li:last-child:before{bottom:50%}
+.rl li:after{opacity:0;transition:opacity .25s;pointer-events:none}
+.rl li.lit:after,.rl li.a:after,.rl li.b:after{opacity:1}
+.rl li.a:after{top:50%}.rl li.b:after{bottom:50%}
+.rl button{position:relative;z-index:1;display:flex;align-items:center;gap:12px;width:100%;min-height:54px;padding:6px 10px 6px 0;border:0;background:none;color:var(--ink);font:inherit;text-align:left;cursor:pointer;border-radius:14px;transition:background .15s,opacity .2s}
+.rl button:hover{background:rgba(11,63,158,.08)}
+.pin{flex:none;width:42px;display:grid;place-items:center}
+.pin i{width:18px;height:18px;border-radius:50%;background:#fff;border:4px solid var(--lc);box-shadow:0 0 0 2px rgba(0,38,107,.18);display:grid;place-items:center;font:700 15px/1 Parisine,system-ui,sans-serif;font-style:normal;color:#fff;transition:all .2s}
+.rl li.lit .pin i{border-color:var(--navy)}
+.rl li.a .pin i,.rl li.b .pin i{width:34px;height:34px;border:0;background:var(--navy);box-shadow:0 0 0 3px var(--led)}
+.rl li.a .pin i:after{content:"A"}.rl li.b .pin i:after{content:"B"}
+.rl li.dflt .pin i{opacity:.6}
+.rl li.out button{opacity:.5}
+.rl .nm{flex:1;min-width:0;display:flex;align-items:center;flex-wrap:wrap;gap:4px 8px;font-weight:700;font-size:clamp(16px,3.2vw,19px);line-height:1.2}
+.rl li.a .nm:after,.rl li.b .nm:after{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:99px;color:#fff;background:var(--navy)}
+.rl li.a .nm:after{content:"Départ"}
+.rl li.b .nm:after{content:"Arrivée";background:var(--led);color:#000}
+.rl li.dflt .nm:after{content:"Terminus"}
+.sum{position:sticky;top:98px;display:flex;flex-direction:column;gap:14px}
+.route{display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:14px;background:#eef1f7;box-shadow:inset 0 0 0 1px #d0d6e6}
+.pt{display:flex;align-items:center;gap:12px;min-width:0;font-weight:700;font-size:clamp(17px,3.6vw,21px);line-height:1.15}
+.pt em{font-style:normal;font-weight:400;color:var(--m);font-size:.8em;margin-left:6px}
+.pn{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:var(--navy);color:#fff;font-size:14px;font-style:normal;font-weight:700}
+.pn.b{background:var(--led);color:#000}
+.mt,.chips{display:flex;gap:8px;flex-wrap:wrap}
+.ck{flex:none;font:inherit;font-weight:700;font-size:20px;line-height:1.1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:9px 13px;border:0;border-radius:10px;cursor:pointer;background:#000;color:var(--led);transition:transform .15s;font-variant-numeric:tabular-nums}
+.ck:hover{transform:translateY(-2px)}
+.ck small{white-space:nowrap;font-size:11px;font-weight:400;color:#aaa}
+.sum .act{margin:0}.sum .act .btn{flex:1 1 100%;font-size:18px;padding:16px}
+.two{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.two .btn{padding:10px 8px;font-size:14px}
+
+@media(max-width:860px){
+  .pl{grid-template-columns:minmax(0,1fr)}.pl>*{min-width:0}
+  .sum{top:auto;bottom:calc(10px + env(safe-area-inset-bottom));z-index:15;gap:10px;padding:14px;box-shadow:0 -6px 24px rgba(0,0,0,.4)}
+  .sum .h{display:none}
+  .chips{flex-wrap:nowrap;overflow-x:auto}
+  .route{flex-direction:row;flex-wrap:wrap;gap:8px 16px}
+}
+@media(max-width:560px){
+  #hdr nav{order:3;width:100%}#hdr nav button{flex:1}
+  .lb{flex-basis:86px;width:86px;font-size:36px}.dn{padding:0 8px;font-size:15px;overflow:hidden;flex-wrap:wrap}
+  .tb{grid-template-columns:repeat(2,54px);gap:4px;padding:0 6px 0 0}.tb b{height:40px;font-size:18px}.tb b.end{font-size:15px;padding:0 8px}
+  .more{width:42px}.rowx{gap:6px}
+}
+
+.bar i{box-shadow:none}.dot{box-shadow:none}.list li.t:before{box-shadow:0 0 0 3px var(--navy)}.f-ico{filter:none}
+.hint .ico{display:none}
+.lcard,.lcard.on,.chk,.chk:has(input:checked),.bcard,.bcard.on{background:#dde4ef;border:0;box-shadow:0 2px 8px rgba(0,0,0,.14)}
+.lcard:hover,.chk:hover{background:#e8edf5;border:0}
+.lcard.on,.bcard.on,.chk:has(input:checked){outline:3px solid var(--led);outline-offset:-3px}
+.bcard .tick{background:var(--led);color:#000}
+.steps i.on{background:var(--led)}
+.card:has(.lcard){background:#1a2744;color:#fff;box-shadow:none}
+.card:has(.lcard) .lab{color:#a9b4d0}
+.f-card.walk,.f-card.hlp{background:#d0d9e8}
+.f-card.run{background:#dde4ef}
+.f-card.brk{background:#efe6d2;color:#5f4a1c;box-shadow:none}
+.f-card.brk .f-title,.f-card.brk .f-sub{color:#5f4a1c}
+.lb{position:relative}
+.lb.tri:after{content:"";position:absolute;inset:0;background:#000;clip-path:polygon(100% 0,100% 100%,0 100%);animation:pt 2s linear infinite}
+@keyframes pt{0%,49.99%{opacity:1}50%,100%{opacity:0}}
+.card .btn.g{background:#cfd8e7}
+.card .btn.g.on{background:#2458c4}
+body,button,input,select,textarea{font-family:Parisine,"Trebuchet MS",system-ui,sans-serif}
+</style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
 <script>
+
 const GAME_OFFSET=36e5;
 (()=>{const D=Date,n=D.now.bind(D);class G extends D{constructor(...a){a.length?super(...a):super(n()+GAME_OFFSET)}static now(){return n()+GAME_OFFSET}}window.Date=G})();
 
 const PROD=true;
-if(PROD){document.addEventListener("selectstart",e=>e.preventDefault());document.addEventListener("dragstart",e=>e.preventDefault());const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
+if(PROD){document.addEventListener("selectstart",e=>{if(!/^(INPUT|TEXTAREA)$/.test(e.target.tagName||""))e.preventDefault()});document.addEventListener("dragstart",e=>e.preventDefault());const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
-
-// Pictogrammes & flèches RATP
 const ARR={
   bas:"https://image.noelshack.com/fichiers/2026/47/5/1795191436-fleche-ratp-bas-blanche.png",
   haut:"https://image.noelshack.com/fichiers/2026/47/5/1795191436-fleche-ratp-haute-blanche.png",
@@ -212,8 +368,6 @@ const ARR={
   bus:"https://image.noelshack.com/fichiers/2026/47/5/1795201194-prendre-mon-service-2.png"
 };
 const ic=(k,cls="arr")=>`<img class="${cls}" src="${ARR[k]}" alt="">`;
-
-// Codes couleurs des lignes
 const LINE_COLOR={
   "257":"#74dc65",
   "242":"#003da4",
@@ -227,44 +381,15 @@ const LINE_COLOR={
   "134":"#9a0e54",
   "135":"#ffbe00"
 };
-
-// ^ = arrêt du sens 1 seulement, ~ = arrêt du sens 2 seulement. Ordre = sens 1. Sens 2 = inverse.
-const LINES=[
-["134","lun–ven","Nicola Leuthe|Les Moulins|Giraudoux - Prett|Ampère|Parc de la Brèche|Aimé Césaire|Brévannes-lès-Roses - Lazare Carnot","Chaillot-Batignolles RER|Karakert|Alphand|Général de Gaulle|Chemin des Dames|Les Fleurs|Hôtel de Ville de Chaillot-Batignolles|~Barrès - République|Les Lotis - République|Boris Vian|Église Saint-Louis|Saussaye - Castillon|Jaurès - Poirée|Jaurès - Ferry|Groupe Scolaire Bergmann|Bourveuil|Amélie Nothomb|Rue des Défenseurs de Verdun|Henri Barbusse|Saint-Marc|République - Oradour-sur-Glâne|Valmy - Europe|Dampierre - Grenelle|Les Hauts d’Arlande|Les Barentins|Place du Général Leclerc|Sous-Préfecture – Champagne|Nicola Leuthe|Les Moulins|Giraudoux - Prett|Ampère|Parc de la Brèche|Aimé Césaire|Brévannes-lès-Roses - Lazare Carnot"],
-["135","lun–jeu","","Bonneuil-sur-Marne - Place Stensele|^Les Sillons|^Dumont d’Urville|^Saint-Maur - Courboules|~Commerce|~Rabelais|~Courboules - Jean Moulin|Bismarck - Courboules|Saint-Gilles|Blanche - Saint-Louis|Benjamin|Lion d’Or|Fort de Limeil|Berthéopôle|Marguerite - Alexandre Dumas|8 Mai 1945|Auriol|Saint-Sever|Cramain - Université RER|Ludwig Ahgren|Saint-Siméon|Boulevard National - Mac Mahon|La Vallée|Rue de l’Arche|Finlande|Narbérale RER|Cité des Erables|Pépinière|Stalingrad|Marx Dormoy|Pont de Chaillot|Jean-Baptiste Clément|Roses|Pénélope|Chaillot-Batignolles RER"],
-["142","lun–ven","Berthier|Pont de Perret|Le Grand Mail|Mayenne|Wilson - Diderot|Frédéric Clément|Archevêché|Joliot-Curie - Lénine|Mairie du Port-Perret|Noailles – Port-Perret - Métro|Cauchoise|Rue des Étudiants|Aspern-Essling|Noailles-le-Pont - Place Charras","Chaillot-Batignolles RER|Carnot|Estivallière|Villette|~Olympe de Gouges|Corentin - Laitières|Vercingetorix|Voltaire|Pradier – St-Sébastien|Rue de Cherbourg|Robert-André Vivien|Pont de Narbérale - Quai Bourbon|^Bourbon - Arsenal|Alma|Labille-Guiard|~Armorique|Les Clamarts|~Romanée-Conti|^Pont d’Austerlitz|Insurrection - Pont d’Arlande|Marceau|Bleuzen|Port-Perret - Village|Berthier|Pont de Perret|Le Grand Mail|Mayenne|Wilson - Diderot|Frédéric Clément|Archevêché|Joliot-Curie - Lénine|Mairie du Port-Perret|Noailles – Port-Perret - Métro|Cauchoise|Rue des Étudiants|Aspern-Essling|Noailles-le-Pont - Place Charras"],
-["149","lun–ven","","Chaillot-Batignolles RER|Karakert|Alphand|Général de Gaulle|Chemin des Dames|Les Fleurs|Clovis|Cimetière|Proudhon - Taine|Rue de Bréon|^Molière|^Allée Royale|^Pagnol - Gilberte Brossolette|^Ledru-Rollin|^Charcot|~Lycée Corneille|~Arthur Rimbaud|~Germaine Sablon|Pasteur|Mairie du Petit-Passy|Meuniers - Bobillot|Carnot|Place des Victoires|Gambetta|Église du Petit-Passy"],
-["233","lun–ven","","Narbérale RER|Parmentier|L’Orme|Marcel Dassault|Maurice Barrès|Pont de Batignolles|Ernestine|Gallieni - Raffet|~Barbès|Hôtel de Ville de Chaillot-Batignolles"],
-["257","lun–jeu","","Berthée - Rosenberg|^Anquetil|^Berthelot|~Cramain – Berthelot|Cramain - Université RER|Ludwig Ahgren|Saint-Siméon|Boulevard National - Mac Mahon|Fédération|Verdier|Maréchal de Lattre de Tassigny|Carrefour Joliot-Curie|Rue de l’Hôtel de Ville|Résistance - Joliot-Curie|Résistance - Sadi Carnot|Port d’Espagne|Notre-Dame de l’Insurrection|Les Clamarts|^Pont d’Austerlitz|~Fabre d’Églantine|Maréchal Lyautey|Barbusse - Pont d’Arlande|Jauneau|Pasteur|Cimetière - Floquet|Jules Bobillot|Hôtel de Ville d’Arlande|Auguste Marin|Pasqua|~Barbara|Les Hauts d’Arlande"],
-["315","lun–ven","André Breton|Sainte-Barbe|Félix Faure|Émile Cossonneau|Bougainville|Maurois – Général de Maud’Huy|Hôpital René Laënnec|Château Margaux|Galvani|Bréon – Ville RER|Division Leclerc|Saint-Antoine|Hôtel des Bêtes|Bréon – École Normale|Bréon – Saint-Servan RER","Chaillot-Batignolles RER|Pénélope|Pont de Chaillot|Marx Dormoy|La Prairie|Voltaire – Docteur Bauer|Stade Coubertin|Célinaire|Chemin de Fer - Pont Gabrielle|Estivallière|Lycée Christophe Colomb|Houssaye – Alphand|Houssaye – De Gaulle|André Breton|Sainte-Barbe|Félix Faure|Émile Cossonneau|Bougainville|Maurois – Général de Maud’Huy|Hôpital René Laënnec|Château Margaux|^Galvani|^Bréon – Ville RER|~Bréon – Saint-Servan RER|Division Leclerc|Saint-Antoine|Hôtel des Bêtes|Bréon – École Normale"],
-["316","lun–ven","Dampierre - Nothomb|Wilson - Navigation|La Miséricorde - Nina Simone|Sidi Bel Abbès|Brossard - Jean Jaurès|Rue Noire|Saint-Similien|Henri Barbusse|Convention - Courcerin|Les Pommiers|Paul Bert|Gambetta|Pont de Narbérale - Quai Bourbon|Robert-André Vivien","Créteil - Valenton - Métro|~Théâtre de Valenton|Ida Grinspan|XXIe Siècle|Charles Floquet - Halévy|Charlot|Reims - Séverine|Cimetière - Carnot|Hôtel de Ville de Denfert-la-Roche|Noémie|Marronniers|Garibaldi|Saint-Éloi - Dagobert|Les Cloux|Bir-Hakeim|Watteau|Place Nationale|^Boulevard National - République|Pyrénées|Gaspard|Cramain - Université RER|Ludwig Ahgren|Boieldieu|Cramain - Stadium|^Institut de Scandinavie|Hôtel de Ville de Cramain|Union|Cyrano de Bergerac|Mairie de Narbérale|Carrefour Joliot-Curie|~Puvis de Chavanne|Soufflot|~Les Bergères|~Rue de Cherbourg|Robert-André Vivien|^Pont de Narbérale - Quai Saint-Lazare|Pont de Narbérale - Quai Bourbon|Gambetta|Paul Bert|Les Pommiers|Convention - Courcerin|Henri Barbusse|Saint-Similien|Rue Noire|Brossard - Jean Jaurès|Sidi Bel Abbès|La Miséricorde - Nina Simone|Wilson - Navigation|Dampierre - Nothomb"],
-["433","lun–ven","Escadrille Normandie Niémen|Lamy|Général Duval|Mirabeau|Petit Cramain|8 Mai 1945|Hôpital Saint-Marceau|Édouard Manet|Berthée - Cramain RER|Buffon|Stalingrad|Henri Becquerel|Clément Ader|Berthée - Duvernet Métro|Rue de Sarazel|Le Parc|Alma Cité Jardins|Paul Bert","Sarazel Place d’Armes|Alma Cité Jardins|Le Parc|Rue de Sarazel|Berthée - Duvernet Métro|Clément Ader|Henri Becquerel|Stalingrad|Buffon|Berthée - Cramain RER|Édouard Manet|Hôpital Saint-Marceau|8 Mai 1945|Paul Bert|Petit Cramain|Mirabeau|Général Duval|Lamy|Escadrille Normandie Niémen|Clemenceau|Louison Bobet|Bastion|~Résistance|~Résistance (Joliot-Curie)|^Résistance (Lénine)|Rue de l’Hôtel de Ville|Carrefour Joliot-Curie|Les Mordacs|Klaver|Alma|Narbérale RER"],
-["242","lun–ven","","Gare de Cramain - Université|Gaspard|Pyrénées|Camélinat|Saint-Siméon|Ludwig Ahgren|Boieldieu|Cramain - Stadium|Institut de Scandinavie|Hôtel de Ville de Cramain|Les Évangiles|Poudre à Canon|Louison Bobet|Clemenceau|Escadrille Normandie-Niémen|Église de Cramain|Allée Marcel|Pierre Sémard|Place Galbrun|^Nel Ariès|Latour du Moulin|Fraternité|Maurice Barrès|Port-Perret – Village"],
-["N76","nuit lun–ven","","Gare de Boissy-Saint-Léger|Bretagne|Rue de l’Industrie|Camélias|Les Fontaines|Gare de Sarazel|Arago|Clément Ader - Charcot|Mail Salengro|Bel Air|Place d’Armes|Alma - Cité Jardins|Gallieni - Carnot|Pierre et Marie Curie|Métro - Coeur de Berthée|^Thérèse|~Lacépède|Gracieuse - Les Irlandais|Hôtel de Ville de Berthée|Broca - Juline|Rue de Provence|~Rosenberg|^Anquetil|^Berthelot|Cramain - Université RER - République|Sophie Barat|Maillol|Rubens - Banquier|Clemenceau|Louison Bobet|Bastion|Résistance|Rue de l’Hôtel de Ville|Carrefour Joliot-Curie|Les Mordacs|Klaver|Alma|Narbérale RER|Cité des Érables|Pépinière|Stalingrad|Marx Dormoy|Pont de Chaillot|Pénélope|Chaillot-Batignolles RER|Lagarde|Rue Rataud|Campagne Première|Bourdelle - Moisant|Gisèle Halimi|Malar|La Roseraie - Saint-Exupéry|Aquitaine|Le Canal|Florian - Duffour|~Moulin de la Tour|^Division Leclerc|^Gare de Bréon - Ville - Saint-Servan|~Bréon - Ville RER|~Galvani|Château Margaux|Hôpital René Laënnec|Aturéen - Général de Maud’Huy|Docteur Armand Brillard|Lamartine|^18 Juin 1940|~Les Platanes|Rue des Martyrs de Châteaubriand|République|Trait d’Union|Meyer|Général Leclerc|Gare du Plessin-Mendinel - Val de Seine"]
-];
-
-function build(m,x){
-  const ex=new Set(x.split("|")),a=m.split("|"),
-  f=l=>l.map(s=>s.replace(/^[\^~]/,"")).filter(s=>!ex.has(s));
-  return[f(a.filter(s=>s[0]!="~")),f(a.filter(s=>s[0]!="^")).reverse()];
-}
+const TT={"134":[{"s":["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Hôtel de Ville de Chaillot-Batignolles","Les Lotis - République","Boris Vian","Église Saint-Louis","Saussaye - Castillon","Jaurès - Poirée","Jaurès - Ferry","Groupe Scolaire Bergmann","Bourveuil","Amélie Nothomb","Rue des Défenseurs de Verdun","Henri Barbusse","Saint-Marc","République - Oradour-sur-Glâne","Valmy - Europe","Dampierre - Grenelle","Les Hauts d’Arlande","Les Barentins","Place du Général Leclerc","Sous-Préfecture – Champagne","Nicola Leuthe","Les Moulins","Giraudoux - Prett","Ampère","Parc de la Brèche","Aimé Césaire","Brévannes-lès-Roses - Lazare Carnot"],"c":[[0,384,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,414,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,423,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,435,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,459,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,471,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,483,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,495,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,507,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,519,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,531,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,543,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,555,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,567,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,579,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,591,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,603,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,621,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,639,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,657,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,675,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,693,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,711,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,729,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,747,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,765,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,783,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,801,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,819,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,837,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,855,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,873,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,891,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,909,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,927,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,945,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,963,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,975,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,987,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,999,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1011,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1023,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1035,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1047,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1059,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1071,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1083,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1095,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1107,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1119,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1131,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1167,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1191,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1215,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1239,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1263,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1303,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1343,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1383,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Brévannes-lès-Roses - Lazare Carnot","Aimé Césaire","Parc de la Brèche","Ampère","Giraudoux - Prett","Les Moulins","Nicola Leuthe","Sous-Préfecture – Champagne","Place du Général Leclerc","Les Barentins","Les Hauts d’Arlande","Dampierre - Grenelle","Valmy - Europe","République - Oradour-sur-Glâne","Saint-Marc","Henri Barbusse","Rue des Défenseurs de Verdun","Amélie Nothomb","Bourveuil","Groupe Scolaire Bergmann","Jaurès - Ferry","Jaurès - Poirée","Saussaye - Castillon","Église Saint-Louis","Boris Vian","Les Lotis - République","Barrès - République","Hôtel de Ville de Chaillot-Batignolles","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"],"c":[[7,357,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,387,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,417,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,444,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,449,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,468,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,473,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,492,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,497,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,516,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,521,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,540,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,545,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,564,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,569,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,593,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,612,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,630,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,648,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,666,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,684,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,702,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,720,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,738,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,756,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,774,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,792,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,810,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,828,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,846,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,864,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,882,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,900,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,918,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,936,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,954,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,965,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,984,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,989,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1008,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1013,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1032,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1037,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1056,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1061,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1085,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1104,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1109,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1128,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1133,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1152,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1176,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1200,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1224,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1248,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1272,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1312,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[7,1352,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"135":[{"s":["Bonneuil-sur-Marne - Place Stensele","Les Sillons","Dumont d’Urville","Saint-Maur - Courboules","Bismarck - Courboules","Saint-Gilles","Blanche - Saint-Louis","Benjamin","Lion d’Or","Fort de Limeil","Berthéopôle","Marguerite - Alexandre Dumas","8 Mai 1945","Auriol","Saint-Sever","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","La Vallée","Rue de l’Arche","Finlande","Narbérale RER","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Jean-Baptiste Clément","Roses","Pénélope","Chaillot-Batignolles RER"],"c":[[19,315,1,1,1,1,1,1,1,1,1,1,1,1],[19,345,1,1,1,1,1,1,1,1,1,1,1,1],[0,355,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,385,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,415,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,436,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,458,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,469,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,480,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,491,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,502,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,513,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,524,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,535,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,546,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,557,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,568,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,579,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,590,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,599,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,616,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,633,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,650,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,667,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,684,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,701,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,718,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,735,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,752,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,769,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,786,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,803,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,820,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,837,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,854,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,871,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,888,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,905,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,922,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,939,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,956,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,963,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,974,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,975,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,981,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,991,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,992,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1003,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1004,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1015,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1016,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1027,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1028,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1039,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1040,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1052,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1052,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1064,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1064,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1076,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1076,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1088,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1088,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1100,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1100,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1112,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1112,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1124,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1124,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1136,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1136,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[4,1144,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1150,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1160,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1170,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1180,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1190,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1200,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1210,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1220,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1230,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1240,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1250,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1260,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1280,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1300,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1320,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1340,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1360,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1380,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1400,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1420,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1460,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1480,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Chaillot-Batignolles RER","Pénélope","Roses","Jean-Baptiste Clément","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Finlande","Rue de l’Arche","La Vallée","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Saint-Sever","Auriol","8 Mai 1945","Marguerite - Alexandre Dumas","Berthéopôle","Fort de Limeil","Lion d’Or","Benjamin","Blanche - Saint-Louis","Saint-Gilles","Bismarck - Courboules","Courboules - Jean Moulin","Rabelais","Commerce","Bonneuil-sur-Marne - Place Stensele"],"c":[[13,330,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,340,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,370,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,400,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,430,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,441,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,452,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,463,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,474,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,485,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,496,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,507,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,518,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,529,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,540,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,551,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,562,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,573,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,584,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,595,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,606,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,624,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,641,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,658,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,675,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,692,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,709,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,726,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,743,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,759,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,776,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,794,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,811,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,828,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,845,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,862,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,879,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,896,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,913,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,930,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,947,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,964,1,1,1,1,1,1,1,1,1,1,1,1],[0,974,1,1,1,1,1,1,1,1,1,1,1,1],[9,978,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,984,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[9,989,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,994,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,997,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1005,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1009,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1023,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1029,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1035,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1041,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1047,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1053,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1059,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1065,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1070,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1077,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1083,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1089,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1095,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1107,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1113,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1119,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1131,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1135,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1145,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1155,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1165,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1175,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1185,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1195,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1205,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1215,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1225,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1235,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1245,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1255,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1270,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1290,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1310,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1330,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1370,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1390,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1410,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1430,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1450,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1470,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1490,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1510,1,1,1,1,1,1,1,1,1,1,1,1],[0,1530,1,1,1,1,1,1,1,1,1,1,1,1]]}],"142":[{"s":["Chaillot-Batignolles RER","Carnot","Estivallière","Villette","Corentin - Laitières","Vercingetorix","Voltaire","Pradier – St-Sébastien","Rue de Cherbourg","Robert-André Vivien","Pont de Narbérale - Quai Bourbon","Bourbon - Arsenal","Alma","Labille-Guiard","Les Clamarts","Pont d’Austerlitz","Insurrection - Pont d’Arlande","Marceau","Bleuzen","Port-Perret - Village","Berthier","Pont de Perret","Le Grand Mail","Mayenne","Wilson - Diderot","Frédéric Clément","Archevêché","Joliot-Curie - Lénine","Mairie du Port-Perret","Noailles – Port-Perret - Métro","Cauchoise","Rue des Étudiants","Aspern-Essling","Noailles-le-Pont - Place Charras"],"c":[[0,312,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,342,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,372,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,392,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,412,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,432,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,448,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,456,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,464,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,472,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,480,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,488,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,496,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,504,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,512,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,520,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,528,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,536,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,544,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,552,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,560,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,568,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,572,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,580,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,592,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,600,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,613,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,626,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,639,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,652,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,665,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,678,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,691,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,704,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,717,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,730,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,743,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,756,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,769,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,782,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,795,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,808,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,821,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,834,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,847,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,860,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,873,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,886,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,899,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,912,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,925,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,938,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,951,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,964,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,971,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,978,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,985,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,992,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,999,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1006,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1013,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1020,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1027,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1034,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1041,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1048,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1055,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1062,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1069,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1076,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1083,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1090,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1097,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1104,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1111,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1118,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1132,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1139,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1146,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1156,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1166,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1176,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1186,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1196,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1206,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1216,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1226,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1236,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1246,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1256,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1266,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1286,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1306,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1326,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1346,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1366,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1386,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1406,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1426,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1446,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1466,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1486,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1506,1,1,1,1,1,1,1,1,1,1]]},{"s":["Noailles(-le-Pont) - Place Charras","Aspern-Essling","Rue des Étudiants","Cauchoise","Noailles – Port-Perret - Métro","Mairie du Port-Perret","Joliot-Curie - Lénine","Archevêché","Frédéric Clément","Wilson - Diderot","Mayenne","Le Grand Mail","Pont de Perret","Berthier","Port-Perret - Village","Bleuzen","Marceau","Insurrection - Pont d’Arlande","Romanée-Conti","Les Clamarts","Armorique","Labille-Guiard","Alma","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Pradier – St-Sébastien","Vercingetorix","Corentin - Laitières","Olympe de Gouges","Villette","Estivallière","Carnot","Chaillot-Batignolles RER"],"c":[[14,335,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,351,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,361,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,381,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,408,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,428,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,436,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,444,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,452,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,460,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,468,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,476,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,484,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,492,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,500,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,508,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,516,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,524,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,532,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,540,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,548,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,556,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,564,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,572,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,580,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,596,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,604,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,617,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,643,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,644,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,669,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,670,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,695,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,696,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,721,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,722,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,747,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,748,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,773,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,774,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,799,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,800,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,825,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,826,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,851,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,852,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,877,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,878,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,903,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,904,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,929,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,930,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,955,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[14,956,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,968,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,975,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,982,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,989,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1003,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1010,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1024,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1031,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1045,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1052,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1059,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1066,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1073,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1087,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1094,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1108,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1115,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1129,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1136,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1153,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1163,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1173,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1183,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1193,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1203,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1213,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1223,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1233,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1243,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1253,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1263,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1283,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1303,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1323,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1343,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1363,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1383,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1403,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1423,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1443,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1463,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1483,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1503,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"149":[{"s":["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Clovis","Cimetière","Proudhon - Taine","Rue de Bréon","Molière","Allée Royale","Pagnol - Gilberte Brossolette","Ledru-Rollin","Charcot","Pasteur","Mairie du Petit-Passy","Meuniers - Bobillot","Carnot","Place des Victoires","Gambetta","Église du Petit-Passy"],"c":[[0,369,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,399,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,429,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,441,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,453,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,465,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,477,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,489,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,501,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,513,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,525,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,537,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,549,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,561,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,573,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,585,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,597,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,606,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,693,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,711,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,729,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,747,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,765,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,783,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,801,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,819,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,837,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,855,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,873,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,891,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,909,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,927,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,945,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,957,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,969,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,981,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,993,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1005,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1029,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1041,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1053,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1065,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1077,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1089,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1113,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1137,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1149,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1173,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1197,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1221,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Église du Petit-Passy","Gambetta","Place des Victoires","Carnot","Meuniers - Bobillot","Mairie du Petit-Passy","Pasteur","Germaine Sablon","Arthur Rimbaud","Lycée Corneille","Rue de Bréon","Proudhon - Taine","Cimetière","Clovis","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"],"c":[[0,361,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,391,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,421,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,433,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,445,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,457,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,469,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,481,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,493,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,505,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,517,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,529,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,541,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,553,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,565,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,577,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,589,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,601,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,619,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,637,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,655,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,673,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,691,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,709,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,727,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,745,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,763,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,781,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,799,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,817,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,835,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,853,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,871,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,889,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,907,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,925,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,943,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,961,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,973,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,985,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,997,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1009,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1021,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1033,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1045,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1057,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1069,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1081,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1093,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1105,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1117,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1129,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1141,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1165,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1189,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"233":[{"s":["Narbérale RER","Parmentier","L’Orme","Marcel Dassault","Maurice Barrès","Pont de Batignolles","Ernestine","Gallieni - Raffet","Hôtel de Ville de Chaillot-Batignolles"],"c":[[0,350,1,1,1,1,1,1,1,1],[0,366,1,1,1,1,1,1,1,1],[0,381,1,1,1,1,1,1,1,1],[0,396,1,1,1,1,1,1,1,1],[0,411,1,1,1,1,1,1,1,1],[0,426,1,1,1,1,1,1,1,1],[0,441,1,1,1,1,1,1,1,1],[0,456,1,1,1,1,1,1,1,1],[0,471,1,1,1,1,1,1,1,1],[0,486,1,1,1,1,1,1,1,1],[0,501,1,1,1,1,1,1,1,1],[0,516,1,1,1,1,1,1,1,1],[0,531,1,1,1,1,1,1,1,1],[0,546,1,1,1,1,1,1,1,1],[0,561,1,1,1,1,1,1,1,1],[0,576,1,1,1,1,1,1,1,1],[0,606,1,1,1,1,1,1,1,1],[0,636,1,1,1,1,1,1,1,1],[0,666,1,1,1,1,1,1,1,1],[0,696,1,1,1,1,1,1,1,1],[0,726,1,1,1,1,1,1,1,1],[0,756,1,1,1,1,1,1,1,1],[0,786,1,1,1,1,1,1,1,1],[0,816,1,1,1,1,1,1,1,1],[0,846,1,1,1,1,1,1,1,1],[0,876,1,1,1,1,1,1,1,1],[0,906,1,1,1,1,1,1,1,1],[0,936,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1],[0,981,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1],[0,1011,1,1,1,1,1,1,1,1],[0,1026,1,1,1,1,1,1,1,1],[0,1041,1,1,1,1,1,1,1,1],[0,1056,1,1,1,1,1,1,1,1],[0,1071,1,1,1,1,1,1,1,1],[0,1086,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1],[0,1116,1,1,1,1,1,1,1,1],[0,1131,1,1,1,1,1,1,1,1],[0,1146,1,1,1,1,1,1,1,1],[0,1161,1,1,1,1,1,1,1,1],[0,1176,1,1,1,1,1,1,1,1],[0,1191,1,1,1,1,1,1,1,1],[0,1206,1,1,1,1,1,1,1,1],[0,1236,1,1,1,1,1,1,1,1],[0,1266,1,1,1,1,1,1,1,1],[0,1296,1,1,1,1,1,1,1,1],[0,1326,1,1,1,1,1,1,1,1],[0,1356,1,1,1,1]]},{"s":["Hôtel de Ville de Chaillot-Batignolles","Barbès","Gallieni - Raffet","Ernestine","Pont de Batignolles","Maurice Barrès","Marcel Dassault","L’Orme","Parmentier","Narbérale RER"],"c":[[0,370,1,1,1,1,1,1,1,1,1],[0,385,1,1,1,1,1,1,1,1,1],[0,400,1,1,1,1,1,1,1,1,1],[0,415,1,1,1,1,1,1,1,1,1],[0,430,1,1,1,1,1,1,1,1,1],[0,445,1,1,1,1,1,1,1,1,1],[0,460,1,1,1,1,1,1,1,1,1],[0,475,1,1,1,1,1,1,1,1,1],[0,490,1,1,1,1,1,1,1,1,1],[0,505,1,1,1,1,1,1,1,1,1],[0,520,1,1,1,1,1,1,1,1,1],[0,535,1,1,1,1,1,1,1,1,1],[0,550,1,1,1,1,1,1,1,1,1],[0,565,1,1,1,1,1,1,1,1,1],[0,580,1,1,1,1,1,1,1,1,1],[0,610,1,1,1,1,1,1,1,1,1],[0,640,1,1,1,1,1,1,1,1,1],[0,670,1,1,1,1,1,1,1,1,1],[0,700,1,1,1,1,1,1,1,1,1],[0,730,1,1,1,1,1,1,1,1,1],[0,760,1,1,1,1,1,1,1,1,1],[0,790,1,1,1,1,1,1,1,1,1],[0,820,1,1,1,1,1,1,1,1,1],[0,850,1,1,1,1,1,1,1,1,1],[0,880,1,1,1,1,1,1,1,1,1],[0,910,1,1,1,1,1,1,1,1,1],[0,940,1,1,1,1,1,1,1,1,1],[0,970,1,1,1,1,1,1,1,1,1],[0,985,1,1,1,1,1,1,1,1,1],[0,1000,1,1,1,1,1,1,1,1,1],[0,1015,1,1,1,1,1,1,1,1,1],[0,1030,1,1,1,1,1,1,1,1,1],[0,1045,1,1,1,1,1,1,1,1,1],[0,1060,1,1,1,1,1,1,1,1,1],[0,1075,1,1,1,1,1,1,1,1,1],[0,1090,1,1,1,1,1,1,1,1,1],[0,1105,1,1,1,1,1,1,1,1,1],[0,1120,1,1,1,1,1,1,1,1,1],[0,1135,1,1,1,1,1,1,1,1,1],[0,1150,1,1,1,1,1,1,1,1,1],[0,1165,1,1,1,1,1,1,1,1,1],[0,1180,1,1,1,1,1,1,1,1,1],[0,1195,1,1,1,1,1,1,1,1,1],[0,1210,1,1,1,1,1,1,1,1,1],[0,1240,1,1,1,1,1,1,1,1,1],[0,1270,1,1,1,1,1,1,1,1,1],[0,1300,1,1,1,1,1,1,1,1,1],[0,1330,1,1,1,1,1,1,1,1,1],[0,1360,1,1,1,1,1,1,1,1,1]]}],"257":[{"s":["Berthée - Rosenberg","Anquetil","Berthelot","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","Fédération","Verdier","Maréchal de Lattre de Tassigny","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance - Sadi Carnot","Port d’Espagne","Notre-Dame de l’Insurrection","Les Clamarts","Pont d’Austerlitz","Maréchal Lyautey","Barbusse - Pont d’Arlande","Jauneau","Pasteur","Cimetière - Floquet","Jules Bobillot","Hôtel de Ville d’Arlande","Auguste Marin","Pasqua","Les Hauts d’Arlande"],"c":[[3,320,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,365,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,375,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,385,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,395,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,405,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,415,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,420,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,427,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,434,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,441,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,448,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,455,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,462,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,469,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,476,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,483,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,490,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,497,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,504,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,511,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,518,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,525,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,532,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,539,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,546,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,553,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,560,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,567,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,574,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,581,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,595,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,604,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,613,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,622,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,631,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,640,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,649,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,658,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,667,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,676,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,685,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,694,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,703,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,712,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,721,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,730,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,739,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,748,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,757,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,766,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,775,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,784,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,793,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,802,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,811,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,820,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,829,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,838,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,847,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,856,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,865,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,874,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,883,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,892,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,901,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,910,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,919,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,928,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,937,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,946,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,955,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[3,964,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[3,976,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,978,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,984,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,990,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1002,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1008,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1014,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1020,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1026,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1032,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1044,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1050,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1056,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1062,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1068,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1074,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1086,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1092,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1098,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1104,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1110,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1116,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1128,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],[0,1134,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1152,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1161,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1170,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1179,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1188,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1197,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1206,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1215,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1224,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1233,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1242,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1251,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],[0,1260,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1275,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1290,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1305,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1320,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1335,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1365,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1380,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1395,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1410,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1455,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1470,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1485,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1],[0,1500,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],[0,1515,1,1,1,1,1,1]]},{"s":["Les Hauts d’Arlande","Barbara","Pasqua","Auguste Marin","Hôtel de Ville d’Arlande","Cimetière - Floquet","Pasteur","Jauneau","Barbusse - Pont d’Arlande","Maréchal Lyautey","Fabre d’Églantine","Les Clamarts","Notre-Dame de l’Insurrection","Port d’Espagne","Résistance - Sadi Carnot","Résistance - Joliot-Curie","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Maréchal de Lattre de Tassigny","Verdier","Fédération","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Cramain – Université RER – Berthelot","Berthée - Rosenberg"],"c":[[21,335,1,1,1,1,1],[21,350,1,1,1,1,1],[0,350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,369,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,378,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[21,381,1,1,1,1,1],[0,387,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,396,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,407,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,417,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,433,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,455,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,467,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,475,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,483,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,489,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,495,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,502,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,508,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,515,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,522,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,529,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,537,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,545,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,553,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,560,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,567,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,575,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,587,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,595,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,609,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,618,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,627,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,636,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,645,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,654,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,663,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,672,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,681,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,690,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,709,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,718,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,727,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,736,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,745,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,754,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,763,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,772,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,781,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,790,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,799,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,808,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,817,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,826,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,835,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,844,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,853,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,862,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,871,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,880,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,889,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,898,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,907,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,916,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,925,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,934,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,943,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,952,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,961,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,972,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,978,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,984,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,990,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1002,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1008,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1014,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1020,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1026,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1032,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1044,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1050,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1056,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1062,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1068,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1074,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1086,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1092,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1098,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1104,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1110,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1116,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1128,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1133,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1138,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1147,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1156,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1165,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1174,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1183,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1192,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1201,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1210,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1219,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1228,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1237,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1246,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1255,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1260,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1275,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1290,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1305,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1320,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1335,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1365,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1380,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1395,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1410,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1455,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1470,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1485,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1500,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1515,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"315":[{"s":["Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","La Prairie","Voltaire – Docteur Bauer","Stade Coubertin","Célinaire","Chemin de Fer - Pont Gabrielle","Estivallière","Lycée Christophe Colomb","Houssaye – Alphand","Houssaye – De Gaulle","André Breton","Sainte-Barbe","Félix Faure","Émile Cossonneau","Bougainville","Maurois – Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon – Ville RER","Division Leclerc","Saint-Antoine","Hôtel des Bêtes","Bréon – École Normale"],"c":[[0,378,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,405,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,432,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,462,1,1,1,1,1,1,1,1,1,1],[0,467,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,469,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,477,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,492,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,507,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,522,1,1,1,1,1,1,1,1,1,1],[0,527,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,537,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,552,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,567,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,582,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,597,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,612,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,632,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,652,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,672,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,692,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,712,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,732,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,752,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,772,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,792,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,812,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,832,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,852,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,872,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,892,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,912,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,932,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,952,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,972,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,987,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1002,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1032,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1047,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1062,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1077,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1092,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1107,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1137,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1152,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1172,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1192,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1212,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1232,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1252,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1272,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1305,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1338,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1371,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Bréon – École Normale","Hôtel des Bêtes","Saint-Antoine","Division Leclerc","Bréon – Saint-Servan RER","Château Margaux","Hôpital René Laënnec","Maurois – Général de Maud’Huy","Bougainville","Émile Cossonneau","Félix Faure","Sainte-Barbe","André Breton","Houssaye – De Gaulle","Houssaye – Alphand","Lycée Christophe Colomb","Estivallière","Chemin de Fer - Pont Gabrielle","Célinaire","Stade Coubertin","Voltaire – Docteur Bauer","La Prairie","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER"],"c":[[4,382,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,411,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,438,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,465,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,480,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,500,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,502,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,510,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,525,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,540,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,560,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,570,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,585,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,600,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,615,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,630,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,645,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,665,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,685,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,705,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,725,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[15,730,1,1,1,1,1,1,1,1,1,1],[0,745,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,765,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,785,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,805,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,825,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,845,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,865,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,885,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,905,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,925,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,945,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,965,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,985,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[15,1005,1,1,1,1,1,1,1,1,1,1],[0,1005,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1020,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1035,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1050,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[15,1060,1,1,1,1,1,1,1,1,1,1],[0,1065,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1095,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1110,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1140,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1155,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1170,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1185,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1205,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1225,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1245,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1265,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1285,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1305,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1338,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1371,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1404,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"316":[{"s":["Créteil - Valenton - Métro","Ida Grinspan","XXIe Siècle","Charles Floquet - Halévy","Charlot","Reims - Séverine","Cimetière - Carnot","Hôtel de Ville de Denfert-la-Roche","Noémie","Marronniers","Garibaldi","Saint-Éloi - Dagobert","Les Cloux","Bir-Hakeim","Watteau","Place Nationale","Boulevard National - République","Pyrénées","Gaspard","Cramain - Université RER","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Union","Cyrano de Bergerac","Mairie de Narbérale","Carrefour Joliot-Curie","Soufflot","Robert-André Vivien","Pont de Narbérale - Quai Saint-Lazare","Pont de Narbérale - Quai Bourbon","Gambetta","Paul Bert","Les Pommiers","Convention - Courcerin","Henri Barbusse","Saint-Similien","Rue Noire","Brossard - Jean Jaurès","Sidi Bel Abbès","La Miséricorde - Nina Simone","Wilson - Navigation","Dampierre - Nothomb"],"c":[[19,345,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,356,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,386,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,416,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,436,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,458,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,469,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,480,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,491,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,502,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,513,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,524,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,535,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,546,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,557,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,568,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,579,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,590,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,607,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,624,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,641,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,658,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,675,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,692,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,709,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,736,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,753,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,770,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,787,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,804,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,821,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,838,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,855,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,872,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,889,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,906,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,923,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,940,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,957,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,975,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,984,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,993,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1002,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1011,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1020,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1029,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1047,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1056,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1065,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1074,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1083,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1092,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1110,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1119,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1128,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1137,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1147,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1157,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1167,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1177,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1187,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1197,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1207,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1217,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1227,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1237,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1247,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1257,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1277,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1297,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1317,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1337,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1357,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1377,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1397,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1417,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1437,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1457,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1477,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1497,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1517,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1537,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Dampierre - Nothomb","Wilson - Navigation","La Miséricorde - Nina Simone","Sidi Bel Abbès","Brossard - Jean Jaurès","Rue Noire","Saint-Similien","Henri Barbusse","Convention - Courcerin","Les Pommiers","Paul Bert","Gambetta","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Les Bergères","Soufflot","Puvis de Chavanne","Carrefour Joliot-Curie","Mairie de Narbérale","Cyrano de Bergerac","Union","Hôtel de Ville de Cramain","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Cramain - Université RER","Gaspard","Pyrénées","Place Nationale","Watteau","Bir-Hakeim","Les Cloux","Saint-Éloi - Dagobert","Garibaldi","Marronniers","Noémie","Hôtel de Ville de Denfert-la-Roche","Cimetière - Carnot","Reims - Séverine","Charlot","Charles Floquet - Halévy","XXIe Siècle","Ida Grinspan","Théâtre de Valenton","Créteil - Valenton - Métro"],"c":[[26,330,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,333,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,363,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,393,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,423,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,434,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,445,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,456,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,467,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,478,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,489,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,500,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,511,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,522,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,533,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,544,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,555,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,566,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,577,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,600,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,617,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,634,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,646,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,657,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,674,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,691,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,708,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,725,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,742,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,759,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,776,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,793,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,810,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,827,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,844,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,861,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,878,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,895,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,912,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,929,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,946,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,963,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,972,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,981,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,990,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,999,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1008,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1026,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1035,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1044,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1053,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1062,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1071,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1089,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1098,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1107,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1116,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1125,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1134,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1166,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1176,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1186,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1196,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1206,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1216,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1226,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1236,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1246,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1256,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1266,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1276,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1296,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1316,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1336,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1356,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1376,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1396,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1416,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1436,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1456,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1476,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1496,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1516,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[22,1536,1,1,1,1]]}],"433":[{"s":["Sarazel Place d’Armes","Alma Cité Jardins","Le Parc","Rue de Sarazel","Berthée - Duvernet Métro","Clément Ader","Henri Becquerel","Stalingrad","Buffon","Berthée - Cramain RER","Édouard Manet","Hôpital Saint-Marceau","8 Mai 1945","Paul Bert","Petit Cramain","Mirabeau","Général Duval","Lamy","Escadrille Normandie Niémen","Clemenceau","Louison Bobet","Bastion","Résistance (Lénine)","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Narbérale RER"],"c":[[9,324,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,339,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,363,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,385,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,408,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,432,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,454,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,461,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,468,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,475,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,482,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,489,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,496,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,503,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,510,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,517,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,524,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,531,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,538,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,545,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,552,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,559,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,566,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,573,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,580,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,587,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,594,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,601,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,608,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,615,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,622,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,629,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,636,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,651,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,666,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,681,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,696,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,711,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,726,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,741,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,756,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,771,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,786,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,801,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,816,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,831,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,846,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,861,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,876,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,891,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,906,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,921,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,936,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,951,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,966,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,981,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1003,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1010,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1024,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1031,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1045,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1052,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1059,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1066,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1073,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1087,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1094,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1108,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1115,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1129,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1136,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1150,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1157,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1164,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1171,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1178,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1193,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1217,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1238,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1253,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1268,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1283,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1318,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1358,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1378,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1398,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1418,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1438,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1458,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1478,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1498,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[9,1507,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance (Joliot-Curie)","Résistance","Bastion","Louison Bobet","Clemenceau","Escadrille Normandie Niémen","Lamy","Général Duval","Mirabeau","Petit Cramain","Paul Bert","8 Mai 1945","Hôpital Saint-Marceau","Édouard Manet","Berthée - Cramain RER","Buffon","Stalingrad","Henri Becquerel","Clément Ader","Berthée - Duvernet Métro","Rue de Sarazel","Le Parc","Alma Cité Jardins","Sarazel Place d’Armes"],"c":[[0,328,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,350,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,373,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,397,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,419,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,426,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,433,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,447,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,454,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,461,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,468,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,475,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,482,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,489,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,496,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,503,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,510,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,517,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,524,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,531,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,538,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,545,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,552,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,559,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,566,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,573,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,580,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,587,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,594,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,601,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,616,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,631,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,646,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,661,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,676,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,691,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,706,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,721,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,736,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,751,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,766,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,781,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,796,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,811,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,826,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,841,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,856,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,871,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,886,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,901,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,916,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,931,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,946,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,961,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,968,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,975,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,982,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,989,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,996,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1003,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1010,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1017,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1024,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1031,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1045,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1052,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1059,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1066,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1073,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1080,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1087,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1094,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1101,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1108,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1115,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1122,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1129,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1136,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1143,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1158,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1173,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1188,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1203,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1218,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1233,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1248,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1263,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1283,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1303,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1323,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1343,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1363,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1383,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1403,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1423,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1443,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1463,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1486,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1509,1,1,1,1,1,1]]}],"242":[{"s":["Gare de Cramain - Université","Gaspard","Pyrénées","Camélinat","Saint-Siméon","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Les Évangiles","Poudre à Canon","Louison Bobet","Clemenceau","Escadrille Normandie-Niémen","Église de Cramain","Allée Marcel","Pierre Sémard","Place Galbrun","Nel Ariès","Latour du Moulin","Fraternité","Maurice Barrès","Port-Perret – Village"],"c":[[0,373,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,395,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,418,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,438,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,458,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,478,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,498,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,518,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,538,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,558,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,578,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,598,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,618,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,653,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,688,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,723,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,758,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,793,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,828,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,863,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,898,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,933,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,968,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,988,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1008,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1028,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1048,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1068,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1088,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1108,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1128,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1148,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1183,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1218,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1253,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1288,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1341,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1394,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Port-Perret – Village","Maurice Barrès","Fraternité","Latour du Moulin","Place Galbrun","Pierre Sémard","Allée Marcel","Église de Cramain","Escadrille Normandie-Niémen","Clemenceau","Louison Bobet","Poudre à Canon","Les Évangiles","Hôtel de Ville de Cramain","Institut de Scandinavie","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Saint-Siméon","Camélinat","Pyrénées","Gaspard","Gare de Cramain - Université"],"c":[[0,403,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,425,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,448,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,468,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,488,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,508,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,528,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,548,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,568,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,588,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,608,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,628,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,648,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,683,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,718,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,753,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,788,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,823,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,858,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,893,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,928,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,963,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,998,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1018,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1038,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1058,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1078,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1098,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1118,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1138,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1158,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1178,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1213,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1248,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1283,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1318,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1371,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1424,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}],"N76":[{"s":["Gare de Boissy-Saint-Léger","Bretagne","Rue de l’Industrie","Camélias","Les Fontaines","Gare de Sarazel","Arago","Clément Ader - Charcot","Mail Salengro","Bel Air","Place d’Armes","Alma - Cité Jardins","Gallieni - Carnot","Pierre et Marie Curie","Métro - Coeur de Berthée","Thérèse","Gracieuse - Les Irlandais","Hôtel de Ville de Berthée","Broca - Juline","Rue de Provence","Anquetil","Berthelot","Cramain - Université RER - République","Sophie Barat","Maillol","Rubens - Banquier","Clemenceau","Louison Bobet","Bastion","Résistance","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Gare de Narbérale","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER","Lagarde","Rue Rataud","Campagne Première","Bourdelle - Moisant","Gisèle Halimi","Malar","La Roseraie - Saint-Exupéry","Aquitaine","Le Canal","Florian - Duffour","Division Leclerc","Gare de Bréon - Ville - Saint-Servan","Château Margaux","Hôpital René Laënnec","Aturéen - Général de Maud’Huy","Docteur Armand Brillard","Lamartine","18 Juin 1940","Rue des Martyrs de Châteaubriand","République","Trait d’Union","Meyer","Général Leclerc","Gare du Plessin-Mendinel - Val de Seine"],"c":[[35,1405,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[35,1435,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1460,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[35,1465,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1490,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1520,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1550,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1580,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1610,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1640,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1670,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1700,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1730,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1760,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1790,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]},{"s":["Gare du Plessin-Mendinel - Val de Seine","Général Leclerc","Meyer","Trait d’Union","République","Rue des Martyrs de Châteaubriand","Les Platanes","Lamartine","Docteur Armand Brillard","Aturéen - Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon - Ville RER","Moulin de la Tour","Florian - Duffour","Le Canal","Aquitaine","La Roseraie - Saint-Exupéry","Malar","Gisèle Halimi","Bourdelle - Moisant","Campagne Première","Rue Rataud","Lagarde","Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance","Bastion","Louison Bobet","Clemenceau","Rubens - Banquier","Maillol","Sophie Barat","Cramain - Université RER - République","Rosenberg","Rue de Provence","Broca - Juline","Hôtel de Ville de Berthée","Gracieuse - Les Irlandais","Lacépède","Métro - Coeur de Berthée","Pierre et Marie Curie","Gallieni - Carnot","Alma - Cité Jardins","Place d’Armes","Bel Air","Mail Salengro","Clément Ader - Charcot","Arago","Sarazel RER","Les Fontaines","Camélias","Rue de l’Industrie","Bretagne","Gare de Boissy-Saint-Léger"],"c":[[25,1410,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[25,1440,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1445,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1475,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1505,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1535,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1565,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1595,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1625,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1655,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1685,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1715,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1745,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1775,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[0,1805,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]]}]};
 
 const N="https://image.noelshack.com/fichiers/2026/47/5/";
 const IMG={"257":"1795185323-257.png","134":"1795185378-257-1.png","135":"1795185417-257-2.png","142":"1795185461-257-3.png","149":"1795185536-257-4.png","233":"1795185595-257-5.png","315":"1795185634-257-6.png","316":"1795185670-257-7.png","433":"1795185714-257-8.png","N76":"1795185809-257-9.png","242":"1795185846-257-10.png"};
 const img=(n,c)=>`<img class="${c}" src="${N+IMG[n]}" alt="${n}">`;
 const DATA={};
-LINES.forEach(([n,j,x,m])=>DATA[n]={j,s:build(m,x),c:LINE_COLOR[n]||"#0b6f86"});
-const TERM={"135":["Bismarck - Courboules","Chaillot-Batignolles RER"],"134":["Chaillot-Batignolles RER","Sous-Préfecture – Champagne"],"257":["Berthée - Rosenberg","Les Hauts d’Arlande"],"142":["Port-Perret - Village","Chaillot-Batignolles RER"],"315":["Chaillot-Batignolles RER","Houssaye – De Gaulle"],"433":["Narbérale RER","Clemenceau"],"N76":["Chaillot-Batignolles RER","Rosenberg"],"233":["Hôtel de Ville de Chaillot-Batignolles","Narbérale RER"],"316":["Hôtel de Ville de Denfert-la-Roche","Rue de Cherbourg"],"149":["Pasteur","Chaillot-Batignolles RER"],"242":["Port-Perret - Village","Gare de Cramain - Université"]};
+const dec=(r,len)=>{const t=new Array(len).fill(null);let a=r[0],x=r[1];t[a]=x;for(let k=2;k<r.length;k++){x+=r[k];t[a+k-1]=x}return{o:a,e:a+r.length-2,t}};
+Object.entries(TT).forEach(([n,dirs])=>{DATA[n]={j:"",s:dirs.map(x=>x.s),C:dirs.map(x=>x.c.map(r=>dec(r,x.s.length))),c:LINE_COLOR[n]||"#0b6f86",night:n==="N76"}});
 const normS=t=>t.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
-const findS=(a,k)=>{k=normS(k);let i=a.findIndex(t=>normS(t)===k);return i<0?a.findIndex(t=>normS(t).includes(k)):i};
-Object.entries(TERM).forEach(([n,[A,B]])=>{const d=DATA[n];if(!d)return;
-  for(const k of [0,1]){const a=d.s[k],i=findS(a,A),j=findS(a,B);
-    if(i>=0&&j>i){const sl=a.slice(i,j+1);d.s[k]=sl;d.s[1-k]=[...sl].reverse();return}}
-  for(const k of [0,1]){const a=d.s[k],i=findS(a,A),j=findS(a,B);
-    if(i>=0&&j>=0&&j<i){const sl=a.slice(j,i+1);d.s[k]=sl;d.s[1-k]=[...sl].reverse();return}}
-  console.warn("Terminus introuvable",n,A,B)});
-
-// Catalogue bus (payants cochables + gratuits inclus)
 const B="https://image.noelshack.com/fichiers/2026/47/6/";
 const BUS_IMG={
   "Solaris Urbino 18 GNV":B+"1795266525-prendre-mon-service-3.png",
@@ -301,8 +426,6 @@ const FREE_BUSES=[
   "Citelis 12 Diesel",
   "Volvo 7900E"
 ];
-
-// Dépôts et arrêts desservis
 const DEPOTS={
   berthee:{
     name:"Centre Bus de Berthée",
@@ -317,8 +440,6 @@ const DEPOTS={
 const A=document.getElementById("app"),sid=Math.random().toString(36).slice(2,10);
 const $=q=>document.querySelector(q);
 let line=null,dir=null,i=0,dl=0,startIdx=0,end=0;
-
-// État Fiches de service
 const F_PREF_KEY="regulation_fiches_pref_v6";
 let fStep=1;
 let fState=JSON.parse(localStorage.getItem(F_PREF_KEY)||"null")||{
@@ -327,7 +448,7 @@ let fState=JSON.parse(localStorage.getItem(F_PREF_KEY)||"null")||{
   prefLines:[],
   generated:null
 };
-if(fState.generated&&fState.generated.v!==2)fState.generated=null;
+if(fState.generated&&fState.generated.v!==3)fState.generated=null;
 fState.selectedPaid=(fState.selectedPaid||[]).filter(b=>PAID_BUSES.includes(b));
 function saveFState(){
   try{localStorage.setItem(F_PREF_KEY,JSON.stringify({
@@ -337,194 +458,227 @@ function saveFState(){
     generated:fState.generated
   }))}catch(_){}
 }
-
-// ===== Grilles horaires recalées depuis Horaires.pdf =====
-const SCHED={
-  "134":{
-    0:{first:384,last:1383,bands:[[384,420,30],[420,600,12],[600,960,18],[960,1140,12],[1140,1260,24],[1260,1383,40]]},
-    1:{first:357,last:1352,bands:[[357,420,30],[420,600,12],[600,960,18],[960,1140,12],[1140,1260,24],[1260,1352,40]]}
-  },
-  "135":{
-    0:{first:355,last:1480,bands:[[355,420,30],[420,600,11],[600,960,17],[960,1140,12],[1140,1260,10],[1260,1480,20]]},
-    1:{first:340,last:1530,bands:[[340,420,30],[420,600,11],[600,960,17],[960,1140,12],[1140,1260,10],[1260,1530,20]]}
-  },
-  "142":{
-    0:{first:312,last:1506,bands:[[312,420,20],[420,600,8],[600,960,13],[960,1140,7],[1140,1260,10],[1260,1506,20]]},
-    1:{first:335,last:1517,bands:[[335,420,25],[420,600,8],[600,960,13],[960,1140,7],[1140,1260,10],[1260,1517,20]]}
-  },
-  "149":{
-    0:{first:369,last:1221,bands:[[369,420,30],[420,600,12],[600,960,18],[960,1140,12],[1140,1221,24]]},
-    1:{first:360,last:1230,bands:[[360,420,30],[420,600,12],[600,960,18],[960,1140,12],[1140,1230,24]]}
-  },
-  "233":{
-    0:{first:360,last:1320,bands:[[360,420,20],[420,600,10],[600,960,15],[960,1140,10],[1140,1320,20]]},
-    1:{first:365,last:1325,bands:[[365,420,20],[420,600,10],[600,960,15],[960,1140,10],[1140,1325,20]]}
-  },
-  "242":{
-    0:{first:360,last:1320,bands:[[360,420,20],[420,600,10],[600,960,15],[960,1140,10],[1140,1320,20]]},
-    1:{first:365,last:1325,bands:[[365,420,20],[420,600,10],[600,960,15],[960,1140,10],[1140,1325,20]]}
-  },
-  "257":{
-    0:{first:350,last:1350,bands:[[350,420,25],[420,600,10],[600,960,15],[960,1140,10],[1140,1350,20]]},
-    1:{first:355,last:1355,bands:[[355,420,25],[420,600,10],[600,960,15],[960,1140,10],[1140,1355,20]]}
-  },
-  "315":{
-    0:{first:360,last:1340,bands:[[360,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1340,20]]},
-    1:{first:365,last:1345,bands:[[365,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1345,20]]}
-  },
-  "316":{
-    0:{first:355,last:1345,bands:[[355,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1345,20]]},
-    1:{first:360,last:1350,bands:[[360,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1350,20]]}
-  },
-  "433":{
-    0:{first:360,last:1320,bands:[[360,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1320,20]]},
-    1:{first:365,last:1325,bands:[[365,420,25],[420,600,12],[600,960,18],[960,1140,12],[1140,1325,20]]}
-  },
-  "N76":{
-    0:{first:1436,last:1856,bands:[[1436,1856,30]]},
-    1:{first:1410,last:1830,bands:[[1410,1830,30]]}
-  }
-};
-
-const STOP_MIN=1,LAYOVER=4;
+const STOP_MIN=1,LAYOVER=4,MIN=60000;
+Object.values(DATA).forEach(d=>{d.j=d.night?"nuit · tous les jours":"tous les jours"});
 const fmt=ts=>new Date(ts).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
-Object.values(DATA).forEach(d=>{d.j=/nuit/.test(d.j)?"nuit · tous les jours":"tous les jours";d.d=[0,1,2,3,4,5,6]});
+const dayMid=o=>{const b=new Date();b.setHours(0,0,0,0);b.setDate(b.getDate()+o);return b.getTime()};
+let _bk=null,_bs=null;
+function bases(){const k=new Date().toDateString();if(k!==_bk){_bk=k;_bs=[-1,0,1,2].map(dayMid)}return _bs}
+function tOf(c,idx){
+  const t=c.t;if(t[idx]!=null)return t[idx];
+  let p=idx-1;while(p>=0&&t[p]==null)p--;
+  let q=idx+1;while(q<t.length&&t[q]==null)q++;
+  if(p>=0&&q<t.length)return Math.round(t[p]+(t[q]-t[p])*(idx-p)/(q-p));
+  if(p>=0)return t[p]+(idx-p)*STOP_MIN;
+  if(q<t.length)return t[q]-(q-idx)*STOP_MIN;
+  return 0}
+function nextCourse(n,k,a,e,from){
+  let best=null;
+  for(const base of bases())for(const c of DATA[n].C[k]){
+    const m=c.t[a];if(m==null)continue;
+    if(e!=null&&c.t[e]==null)continue;
+    const ts=base+m*MIN;
+    if(ts>=from-1e-6&&(!best||ts<best.ts))best={c,base,ts}}
+  return best}
+function nextExact(n,k,a,b,from){
+  let best=null;
+  for(const base of bases())for(const c of DATA[n].C[k]){
+    if(c.o!==a||c.e!==b)continue;
+    const ts=base+c.t[a]*MIN;
+    if(ts>=from-1e-6&&(!best||ts<best.ts))best={c,base,ts}}
+  return best}
+function nearestCourse(n,k,a,e,ts){
+  const pass=(ee)=>{let best=null;
+    for(const base of bases())for(const c of DATA[n].C[k]){
+      if(c.t[a]==null||(ee!=null&&c.t[ee]==null))continue;
+      const x=base+c.t[a]*MIN,dd=Math.abs(x-ts);
+      if(!best||dd<best.dd)best={c,base,ts:x,dd}}
+    return best};
+  return pass(e)||pass(null)||pass(undefined)}
+function pickCourse(n,k,a,e,from){
+  return nextCourse(n,k,a,e,from)||nextCourse(n,k,a,null,from)||nextCourse(n,k,0,null,from)}
 
-function buildDayDeps(n,dIdx=0){
-  const sc=(SCHED[n]&&SCHED[n][dIdx])||{first:360,last:1320,bands:[[360,1320,15]]};
-  const out=[sc.first];
-  let cur=sc.first;
-  while(cur<sc.last){
-    const b=sc.bands.find(([a,z])=>cur>=a&&cur<z)||sc.bands.at(-1);
-    cur+=b[2];
-    if(cur<=sc.last)out.push(cur);
-  }
-  return out;
-}
-
-function slot(n,dIdx=0,now=new Date()){
-  const sc=(SCHED[n]&&SCHED[n][dIdx])||{first:360,last:1320,bands:[[360,1320,15]]};
-  const m=now.getHours()*60+now.getMinutes()+now.getSeconds()/60;
-  const b=new Date(now);b.setHours(0,0,0,0);
-  let t=m;
-  if(sc.last>1440&&m<sc.last-1440){t=m+1440;b.setDate(b.getDate()-1)}
-  if(t<sc.first-15||t>sc.last)return null;
-  const deps=buildDayDeps(n,dIdx);
-  const nxt=deps.find(dm=>dm>=t-1e-6);
-  return nxt!=null?b.getTime()+nxt*60000:null;
-}
-
+function isActive(n,now=Date.now()){
+  for(const base of bases())for(const k of [0,1])for(const c of DATA[n].C[k])
+    if(now>=base+c.t[c.o]*MIN-25*MIN&&now<=base+c.t[c.e]*MIN)return true;
+  return false}
+function nextDep(n,now=Date.now()){
+  let best=null;
+  for(const base of bases())for(const k of [0,1])for(const c of DATA[n].C[k]){
+    const ts=base+c.t[c.o]*MIN;if(ts>=now&&(best==null||ts<best))best=ts}
+  return best}
 function nextStart(){
-  let best=null;const b=new Date();b.setHours(0,0,0,0);
-  for(const n in DATA){
-    const sc=(SCHED[n]&&SCHED[n][0])||{first:360};
-    for(let k=0;k<2;k++){
-      const ts=b.getTime()+k*864e5+sc.first*60000;
-      if(ts>Date.now()&&(!best||ts<best.ts))best={ts,n};
-    }
-  }
-  return best;
-}
+  let best=null;
+  for(const n in DATA){const ts=nextDep(n);if(ts!=null&&(!best||ts<best.ts))best={ts,n}}
+  return best}
 
 const dur=ms=>{const a=Math.abs(Math.round(ms/1000)),m=Math.floor(a/60),r=a%60;return m?`${m} min ${String(r).padStart(2,"0")} s`:`${r} s`};
 const nowRound=()=>Math.ceil(Date.now()/60000)*60000;
-let dep=0,lastSig="";
-const schedTs=k=>dep+k*STOP_MIN*60000;
+let cur=null,lastSig="";
+const sTs=idx=>cur.base+tOf(cur.c,idx)*MIN+cur.off;
 
 function setLineTheme(n){
   const col=n&&DATA[n]?DATA[n].c:"#0b6f86";
   document.documentElement.style.setProperty("--lc",col);
 }
 
+const PH=h=>h>=5&&h<12?["Bonjour","m"]:h>=12&&h<18?["Bon après-midi","a"]:h>=18&&h<22?["Bonsoir","s"]:["Bonne nuit","n"];
+function clock(){
+  const hg=$("#hg");if(!hg)return;
+  const d=new Date(),[g]=PH(d.getHours());
+  if(hg.textContent!==g)hg.textContent=g;
+  $("#hc").textContent=d.toLocaleTimeString("fr-FR");
+  $("#hd").textContent=d.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+}
+let pm=0;
 function tick(){
-  document.querySelectorAll(".nd[data-ts]").forEach(e=>{
-    const d=+e.dataset.ts-Date.now();
-    e.querySelector("em").textContent=d>0?"dans "+dur(d).replace(/ \d+ s$/,""):"départ imminent";
-  });
+  const now=Date.now();
+  document.querySelectorAll(".mn[data-ts]").forEach(e=>{const ts=+e.dataset.ts,d=ts-now,c=d>=36e5;e.classList.toggle("clk",c);e.textContent=c?fmt(ts):Math.max(0,Math.floor(d/6e4))});
+  clock();
+  const m=Math.floor(now/6e4);
+  if(m!==pm){pm=m;if($("#ch"))paint()}
   const r=$("#rm");if(!r||line==null||dir===null)return;
-  const ts=schedTs(i-startIdx)+dl*60000,d=ts-Date.now();
+  const ts=sTs(i)+dl*60000,d=ts-now;
   r.textContent=`${i>startIdx?"Arrivée":"Départ"} prévu ${fmt(ts)} · ${d>=0?"dans "+dur(d):"dépassé de "+dur(d)}`;
 }
 setInterval(tick,1000);
-setInterval(()=>{if(line==null&&!$("#f-view"))home(true)},15000);
+setInterval(()=>{if(tab==="d"&&line==null)home(true)},15000);
+
 
 const R=()=>DATA[line].s[dir].slice(startIdx,end+1);
-function push(){if(!line||dir===null)return;fetch(`${DB}/live/${line}/${sid}.json`,{method:"PUT",body:JSON.stringify({dir,dest:R().at(-1),stop:R()[i-startIdx],delta:dl,dep,t:Date.now()})}).catch(()=>{})}
+function push(){if(!line||dir===null)return;fetch(`${DB}/live/${line}/${sid}.json`,{method:"PUT",body:JSON.stringify({dir,dest:R().at(-1),stop:R()[i-startIdx],delta:dl,dep:sTs(startIdx),t:Date.now()})}).catch(()=>{})}
 function leave(){fetch(`${DB}/live/${line}/${sid}.json`,{method:"DELETE"}).catch(()=>{})}
 if(location.hash==="#seed")fetch(DB+"/lines.json",{method:"PUT",body:JSON.stringify(Object.fromEntries(Object.entries(DATA).map(([k,v])=>[k,{jours:v.j,couleur:v.c,sens1:v.s[0],sens2:v.s[1]}])))});
 addEventListener("pagehide",()=>{if(line)leave()});
 
+const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
+const SVC={"134":[[0,25],[7,33]],"135":[[4,31],[0,27]],"142":[[0,19],[14,33]],"149":[[0,15],[6,19]],"315":[[0,12],[13,25]],"316":[[7,30,"Narbérale - Rue de Cherbourg"],[14,37]],"433":[[19,28],[0,10]],"N76":[[21,42],[25,47,"Berthée - Rosenberg"]]};
+const PTK={"134":[0],"135":[1],"142":[0],"149":[0],"315":[0],"316":[0,1],"433":[1],"N76":[0,1]};
+const svc=(n,k)=>SVC[n]?SVC[n][k]:[0,DATA[n].s[k].length-1];
+function deps(n,k,c=2){const[a,e]=svc(n,k),p=!!SVC[n],now=Date.now(),o=[];for(const b of bases())for(const x of DATA[n].C[k]){if(x.t[a]==null||(p&&x.t[e]==null))continue;const ts=b+x.t[a]*MIN;if(ts>=now-3e4)o.push(ts)}return o.sort((q,w)=>q-w).slice(0,c)}
+const RER="https://image.noelshack.com/fichiers/2026/47/7/1795386043-design-sans-titre-10.png";
+const rer=s=>/ RER$/.test(s)?`<img class="rer" src="${RER}" alt="RER">`:"";
+const short=s=>s.replace(/ RER$/,"");
+const sn=s=>short(s)+rer(s);
+const PLI=`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="6" r="2.6"/><path d="M6 15.4V11a3 3 0 0 1 3-3h6.4"/></svg>`;
+const HORIZON=120*MIN;
+
+function rowH(r){
+  const d=DATA[r.n],[ia,ie,lab]=svc(r.n,r.k),s=lab||d.s[r.k][ie],off=!r.t.length,tg=off?"div":"button";
+  const attrs=off?"":` data-l="${r.n}" data-k="${r.k}"`;
+  const box=off?`<b class="end">service terminé</b>`:r.t.map(ts=>`<b class="mn" data-ts="${ts}"></b>`).join("");
+  const more=off?"":`<button class="more" data-m="${r.n}" data-k="${r.k}" title="Partiel libre" aria-label="Partiel libre">${PLI}</button>`;
+  return `<div class="rowx" style="--i:${r.i}"><${tg} class="row${off?" off":""}"${attrs} style="--lc:${d.c}"><span class="lb${(PTK[r.n]||[]).includes(r.k)?" tri":""}" style="color:${ink(d.c)}">${r.n}</span><span class="dn">${sn(s)}</span><span class="tb">${box}</span></${tg}>${more}</div>`;
+}
 function home(refresh){
-  const act=Object.entries(DATA).map(([n,d])=>[n,d,slot(n,0)||slot(n,1)]).filter(x=>x[2]);
-  const sig=act.map(x=>x[0]+x[2]).join();
+  tab="d";mark();
+  const on=[],off=[];let c=0;
+  for(const n in DATA)for(const k of[0,1]){
+    const t=deps(n,k).filter(ts=>ts-Date.now()<=HORIZON);
+    (t.length?on:off).push({n,k,t,i:c++});
+  }
+  const sig=[...on,...off].map(r=>r.n+r.k+r.t.join()).join();
   if(refresh&&sig===lastSig)return;
   lastSig=sig;line=null;dir=null;setLineTheme(null);
-  let body;
-  if(act.length){
-    body=`<div class="grid">${act.map(([n,d,ts],k)=>`<button class="chip" style="animation-delay:${k*45}ms;--lc:${d.c}" data-l="${n}">${img(n,"")}<small>${d.s[0].at(-1)} ${ic("dbl","arr-dbl")} ${d.s[1].at(-1)}</small><span class="nd" data-ts="${ts}">Départ ${fmt(ts)}<em></em></span><span class="badge">${d.j}</span></button>`).join("")}</div>`;
-  }else{
-    const nx=nextStart();
-    body=`<div class="card empty">Aucune ligne en service pour le moment.${nx?`<br>Prochain service : <b>${nx.n}</b> à <b>${new Date(nx.ts).toLocaleString("fr-FR",{weekday:"long",hour:"2-digit",minute:"2-digit"})}</b>.`:""}</div>`;
-  }
-  A.innerHTML=`<div class="top"><button class="btn" id="open-fiches">Fiches de service</button></div><div class="v"><div class="tag">#régulation</div><h1>lignes</h1></div>${body}`;
-  $("#open-fiches").onclick=()=>fichesMenu();
-  A.querySelectorAll(".chip").forEach(b=>b.onclick=()=>{line=b.dataset.l;dest()});
+  const nx=on.length?null:nextStart();
+  A.classList.toggle("pop",!refresh);
+  const hint=nx?`Reprise du service à <b>${fmt(nx.ts)}</b> · ligne <b>${nx.n}</b>.`:"";
+  A.innerHTML=`<div class="hero v"><h2>${on.length?"Prochains départs":"Plus de départ pour le moment"}</h2>${nx?`<p class="hint">${hint}</p>`:""}</div>`
+    +(on.length?`<div class="bd">${on.map(rowH).join("")}</div>`:"")
+    +(off.length?(on.length?`<div class="sec">Service terminé</div>`:"")+`<div class="bd">${off.map(rowH).join("")}</div>`:"");
+  A.querySelectorAll(".row[data-l]").forEach(b=>b.onclick=()=>{line=b.dataset.l;const k=+b.dataset.k,[a,e]=svc(line,k);go(k,a,e)});
+  A.querySelectorAll(".lb.tri").forEach(e=>e.style.animationDelay=-(Date.now()%2000)/1000+"s");
+  A.querySelectorAll(".more").forEach(b=>b.onclick=()=>{line=b.dataset.m;dest(+b.dataset.k)});
   tick();
 }
 
-function dest(){
-  if(dir!==null)leave();
-  dir=null;startIdx=0;dl=0;setLineTheme(line);
-  const d=DATA[line];
-  const s0=d.s[0],s1=d.s[1];
-  A.innerHTML=`<div class="top"><button class="btn g" id="bk">${ic("g")} Lignes</button>${img(line,"lg")}</div>
-  <div class="v"><div class="tag">#destination</div><h1 style="font-size:clamp(40px,9vw,96px)">où vas-tu ?</h1></div>
-  <div class="dcs">${d.s.map((x,k)=>`<button class="dc" style="animation-delay:${k*90}ms" data-d="${k}"><span class="lab">Direction</span><b>${ic("d")} ${x.at(-1)}</b><span class="badge">${x.length} arrêts</span> <span class="lab">depuis ${x[0]}</span></button>`).join("")}</div>
-  <div class="card"><div class="lab" style="margin-bottom:10px">Service partiel : autre destination</div>
-    <div class="sel-wrap"><select id="sel"><option value="">Choisir un autre terminus…</option>${d.s.map((x,k)=>`<optgroup label="Direction ${x.at(-1)}">${x.slice(1,-1).map((y,j)=>`<option value="${k}|${j+1}">${y}</option>`).join("")}</optgroup>`).join("")}</select></div>
-  </div>
-  <div class="card" style="margin-top:14px"><div class="lab" style="margin-bottom:6px">Partiel libre : entre deux arrêts d’une même ligne</div>
-    <div class="lab" style="font-size:13px">Pas besoin de partir ou d’arriver à un terminus</div>
-    <div class="part-box">
-      <div><label class="lab" style="display:block;margin-bottom:6px">Sens</label><div class="sel-wrap"><select id="p-dir"><option value="0">Sens 1 → ${s0.at(-1)}</option><option value="1">Sens 2 → ${s1.at(-1)}</option></select></div></div>
-      <div><label class="lab" style="display:block;margin-bottom:6px">Arrêt de départ</label><div class="sel-wrap"><select id="p-a"></select></div></div>
-      <div><label class="lab" style="display:block;margin-bottom:6px">Arrêt d’arrivée</label><div class="sel-wrap"><select id="p-b"></select></div></div>
-    </div>
-    <div style="margin-top:12px"><button class="btn" id="p-go">Démarrer ce partiel ${ic("d")}</button></div>
-  </div>`;
-  $("#bk").onclick=()=>home();
-  A.querySelectorAll(".dc").forEach(b=>b.onclick=()=>go(+b.dataset.d,0,DATA[line].s[+b.dataset.d].length-1));
-  $("#sel").onchange=e=>{if(e.target.value){const[k,j]=e.target.value.split("|").map(Number);go(k,0,j)}};
-
-  const pDir=$("#p-dir"),pA=$("#p-a"),pB=$("#p-b");
-  function fillPartStops(){
-    const arr=d.s[+pDir.value];
-    pA.innerHTML=arr.slice(0,-1).map((st,idx)=>`<option value="${idx}">${idx+1}. ${st}</option>`).join("");
-    fillPartEnd();
+let pl={k:0,a:null,b:null};
+const plS=()=>DATA[line].s[pl.k],plL=()=>plS().length-1;
+function upc(n,k,a,b,cnt){
+  const now=Date.now(),o=[];
+  for(const base of bases())for(const c of DATA[n].C[k]){
+    if(c.t[a]==null||c.t[b]==null)continue;
+    const ts=base+c.t[a]*MIN;if(ts>=now-3e4)o.push({ts,c});
   }
-  function fillPartEnd(){
-    const arr=d.s[+pDir.value],aIdx=+pA.value||0;
-    pB.innerHTML=arr.slice(aIdx+1).map((st,offset)=>`<option value="${aIdx+1+offset}">${aIdx+2+offset}. ${st}</option>`).join("");
-  }
-  pDir.onchange=fillPartStops;
-  pA.onchange=fillPartEnd;
-  fillPartStops();
-  $("#p-go").onclick=()=>go(+pDir.value,+pA.value,+pB.value);
+  return o.sort((x,y)=>x.ts-y.ts).slice(0,cnt);
 }
-
+function paint(){
+  const s=plS(),a=pl.a,e=pl.b??plL(),q=normS($("#q").value);
+  A.querySelectorAll("#rl li").forEach((li,j)=>{
+    li.className=a==null?"":j===a?"a":j===e?"b"+(pl.b==null?" dflt":""):j>a&&j<e?"lit":"out";
+    li.hidden=!!q&&!normS(s[j]).includes(q)&&j!==a&&j!==e;
+  });
+  const ok=a!=null,n=e-a,up=ok?upc(line,pl.k,a,e,5):[];
+  $("#sa").innerHTML=ok?sn(s[a]):"<em>Choisis ton départ</em>";
+  $("#sb").innerHTML=ok?sn(s[e])+(pl.b==null?"<em>terminus</em>":""):"<em>Terminus par défaut</em>";
+  $("#m1").textContent=ok?`${n} arrêt${n>1?"s":""}`:"— arrêts";
+  $("#m2").textContent=ok&&up.length?`≈ ${up[0].c.t[e]-up[0].c.t[a]} min`:"≈ — min";
+  $("#ch").innerHTML=up.length?up.map(u=>{
+    const m=Math.max(0,Math.round((u.ts-Date.now())/6e4));
+    const lb=m<1?"imminent":m>=60?`dans ${Math.floor(m/60)} h ${String(m%60).padStart(2,"0")}`:`dans ${m} min`;
+    return `<button type="button" class="ck" data-ts="${u.ts}">${fmt(u.ts)}<small>${lb}</small></button>`;
+  }).join(""):`<span class="lab">${ok?"Aucun départ à venir":"Les horaires apparaissent ici"}</span>`;
+  $("#go").disabled=!ok;
+}
+function dest(k0){
+  if(dir!==null)leave();
+  const d=DATA[line];
+  pl={k:typeof k0==="number"?k0:(dir??0),a:null,b:null};
+  dir=null;startIdx=0;dl=0;setLineTheme(line);
+  A.classList.remove("pop");
+  A.innerHTML=`<div class="top"><button class="btn g" id="bk">${ic("g")} Lignes</button>${img(line,"lg")}</div>
+  <div class="hero v"><h1>Où vas-tu&nbsp;?</h1></div>
+  <div class="seg v" id="sg">${d.s.map((x,k)=>`<button type="button" data-k="${k}"><small>Sens ${k+1}</small><b>${ic("d")} ${sn(x.at(-1))}</b></button>`).join("")}</div>
+  <div class="pl v"><section class="card"><label class="srch"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="q" type="search" placeholder="Rechercher un arrêt…" autocomplete="off"></label><ol class="rl" id="rl"></ol></section>
+  <aside class="card sum"><div class="route"><div class="pt"><i class="pn">A</i><span id="sa"></span></div><div class="pt"><i class="pn b">B</i><span id="sb"></span></div></div>
+  <div class="mt"><span class="badge" id="m1"></span><span class="badge" id="m2"></span></div>
+  <div class="lab h">Prochains départs · touche pour choisir</div><div class="chips" id="ch"></div>
+  <div class="act"><button type="button" class="btn" id="go">Démarrer le partiel ${ic("d")}</button></div>
+  <div class="two"><button type="button" class="btn g" id="full">Ligne entière</button><button type="button" class="btn g" id="swp">Inverser</button><button type="button" class="btn g" id="rst">Effacer</button></div></aside></div>`;
+  const build=()=>{
+    $("#rl").innerHTML=plS().map((s,j)=>`<li data-i="${j}"><button type="button"><span class="pin"><i></i></span><span class="nm">${sn(s)}</span></button></li>`).join("");
+    $("#sg").querySelectorAll("button").forEach(b=>b.classList.toggle("on",+b.dataset.k===pl.k));
+    paint();
+  };
+  $("#bk").onclick=()=>home();
+  $("#q").oninput=paint;
+  $("#rl").onclick=ev=>{
+    const li=ev.target.closest("li");if(!li)return;
+    const j=+li.dataset.i;
+    if(pl.a==null){
+      if(j===plL()){li.animate([{transform:"translateX(-5px)"},{transform:"translateX(5px)"},{transform:"none"}],{duration:220});return}
+      pl.a=j;
+    }else if(j<pl.a)pl.a=j;
+    else if(j===pl.a){pl.a=null;pl.b=null}
+    else pl.b=j===pl.b?null:j;
+    paint();
+  };
+  $("#sg").onclick=ev=>{const b=ev.target.closest("button");if(!b)return;pl.k=+b.dataset.k;pl.a=pl.b=null;build()};
+  $("#ch").onclick=ev=>{const b=ev.target.closest(".ck");if(b&&pl.a!=null)go(pl.k,pl.a,pl.b??plL(),+b.dataset.ts)};
+  $("#go").onclick=()=>{if(pl.a!=null)go(pl.k,pl.a,pl.b??plL())};
+  $("#full").onclick=()=>go(pl.k,0,plL());
+  $("#rst").onclick=()=>{pl.a=pl.b=null;$("#q").value="";paint()};
+  $("#swp").onclick=()=>{
+    const o=plS(),nk=1-pl.k,n=DATA[line].s[nk];
+    let a=null,b=null;
+    if(pl.a!=null){a=n.indexOf(o[pl.b??plL()]);b=n.indexOf(o[pl.a]);if(a<0||b<0||a>=b)a=b=null}
+    pl.k=nk;pl.a=a;pl.b=b;build();
+  };
+  build();
+}
 function go(k,aIdx,eIdx,customDep=null){
   dir=k;startIdx=aIdx;end=eIdx;i=aIdx;
-  if(customDep){dep=customDep}
-  else{const baseSlot=slot(line,k)||nowRound();dep=baseSlot+aIdx*STOP_MIN*60000}
+  const p=customDep?nearestCourse(line,k,aIdx,eIdx,customDep):pickCourse(line,k,aIdx,eIdx,Date.now());
+  cur={c:p.c,base:p.base,off:0};
   view();push();
 }
 
 function flip(){
-  const k=1-dir;
-  const calcNext=schedTs(R().length-1)+LAYOVER*60000;
-  const nextSlot=slot(line,k,new Date(calcNext-60000));
-  dep=nextSlot&&nextSlot>=calcNext?nextSlot:calcNext;
-  dir=k;startIdx=0;end=DATA[line].s[k].length-1;i=0;
+  const k=1-dir,last=DATA[line].s[k].length-1;
+  const calc=sTs(end)+LAYOVER*MIN;
+  const p=nextCourse(line,k,0,last,calc)||pickCourse(line,k,0,last,calc);
+  cur={c:p.c,base:p.base,off:0};
+  dir=k;startIdx=0;end=last;i=0;
   view();push();
 }
 
@@ -535,7 +689,7 @@ function view(){
   <div class="cols">
     <section class="card v">
       <div class="lab">Destination</div>
-      <div class="dest">${ic("d")} <span>${s.at(-1)}</span> <span class="badge">${d.j}</span></div>
+      <div class="dest">${ic("d")} <span>${sn(s.at(-1))}</span> <span class="badge">${d.j}</span></div>
       <div class="lab" id="lb"></div>
       <div class="next nx"><span class="dot"></span><span id="nx"></span></div>
       <div class="rm" id="rm"></div>
@@ -565,14 +719,15 @@ function view(){
   </div>`;
   $("#bk").onclick=dest;$("#adv").onclick=next;$("#prv").onclick=prev;
   [["m5",-5],["m1",-1],["p1",1],["p5",5]].forEach(([id,v])=>$("#"+id).onclick=()=>ecart(v));
-  const dp=$("#dp");dp.value=fmt(dep);
+  const dp=$("#dp");dp.value=fmt(sTs(startIdx));
   dp.onchange=()=>{
     const[h,m]=dp.value.split(":").map(Number);if(isNaN(h))return;
     const x=new Date();x.setHours(h,m,0,0);
     let t=x.getTime();if(t<Date.now()-12*36e5)t+=864e5;
-    dep=t;upd();push();
+    const p=nearestCourse(line,dir,startIdx,end,t);
+    cur={c:p.c,base:p.base,off:t-p.ts};upd();push();
   };
-  $("#dn").onclick=()=>{dep=(slot(line,dir)||nowRound())+startIdx*STOP_MIN*60000;dp.value=fmt(dep);upd();push()};
+  $("#dn").onclick=()=>{const p=pickCourse(line,dir,startIdx,end,Date.now());cur={c:p.c,base:p.base,off:0};dp.value=fmt(sTs(startIdx));upd();push()};
   upd();
 }
 
@@ -583,20 +738,18 @@ addEventListener("keydown",e=>{if(line==null||dir===null||!$("#nx"))return;const
 
 function upd(){
   const s=R(),rel=i-startIdx,span=Math.max(1,s.length-1),n=$("#nx");
-  n.style.animation="none";n.offsetWidth;n.style.animation="";n.textContent=s[rel];
+  n.style.animation="none";n.offsetWidth;n.style.animation="";n.innerHTML=sn(s[rel]);
   $("#lb").textContent=i==end?"Terminus":i==startIdx?"Départ":"Prochain arrêt";
   $("#pg").style.width=(rel/span*100)+"%";
   $("#prv").style.opacity=i>startIdx?1:.35;
   $("#adv").innerHTML=i<end?`Arrêt suivant ${ic("d")}`:(startIdx===0&&end===DATA[line].s[dir].length-1?`Terminus · changer de sens ${ic("dbl","arr-dbl")}`:`Fin de partiel · retour ${ic("g")}`);
-  $("#ls").innerHTML=s.slice(rel+1,rel+8).map((x,k)=>`<li class="${k?"":"t"}" style="animation-delay:${k*60}ms">${x}<small class="tm">${fmt(schedTs(rel+1+k)+dl*60000)}</small></li>`).join("")||`<li class="t">Fin de service du sens</li>`;
+  $("#ls").innerHTML=s.slice(rel+1,rel+8).map((x,k)=>`<li class="${k?"":"t"}" style="animation-delay:${k*60}ms">${sn(x)}<small class="tm">${fmt(sTs(startIdx+rel+1+k)+dl*60000)}</small></li>`).join("")||`<li class="t">Fin de service du sens</li>`;
   const nm=$("#nm"),st=$("#st"),c=dl>0?"var(--late)":dl<0?"var(--ok)":"var(--y)";
   nm.textContent=(dl>0?"+":"")+dl;nm.style.color=st.style.color=c;
   st.textContent=dl>0?"EN RETARD":dl<0?"EN AVANCE":"À L’HEURE";
   nm.animate([{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:300,easing:"ease-out"});
   tick();
 }
-
-// ===== FICHES DE SERVICE =====
 function pickDepotForLine(lineCode){
   const stops=DATA[lineCode].s.flat().map(x=>x.toLowerCase());
   const matchB=DEPOTS.berthee.keywords.some(kw=>stops.some(st=>st.includes(kw)));
@@ -630,49 +783,35 @@ function pickLinesForSheet(count,prefs){
   }
   return chosen;
 }
-
-function findNextScheduleTs(lCode,dIdx,fromTs){
-  const refDate=new Date(fromTs);
-  const b=new Date(refDate);b.setHours(0,0,0,0);
-  for(let dayOffset=-1;dayOffset<=2;dayOffset++){
-    const dayStart=b.getTime()+dayOffset*864e5;
-    const deps=buildDayDeps(lCode,dIdx);
-    for(const dm of deps){
-      const ts=dayStart+dm*60000;
-      if(ts>=fromTs)return ts;
-    }
-  }
-  return fromTs+5*60000;
-}
-
-// Détermine les bornes (startIdx, endIdx) d'une course (règle spécifique 316 : Mairie de Denfert-la-Roche <-> Soufflot)
-function resolveLineBounds(lCode,dirIdx){
-  const stops=DATA[lCode].s[dirIdx];
-  return{startIdx:0,endIdx:stops.length-1};
-}
-
-// ===== Règles de service : on ne prend une ligne qu'à un terminus (partiel ou complet) =====
 function canonStop(t){const n=normS(t);
   if(n.includes("chaillot batignolles rer"))return"chaillot";
   if(n.includes("rosenberg"))return"rosenberg";
+  if(n==="gare de narberale")return"narberale";
   if(n.includes("narberale rer")&&!n.includes("pont"))return"narberale";
   if(n.includes("cramain universite")&&!n.includes("republique")&&!n.includes("berthelot"))return"cramain";
   if(n.includes("boulevard national")&&n.includes("mac mahon"))return"macmahon";
   if(n.includes("federation"))return"federation";
   if(n.includes("la vallee"))return"vallee";
   return n}
-// Points de haut-le-pied depuis chaque dépôt (minutes estimées, à ajuster)
 const DEPOT_HLP={
   berthee:{vallee:3,macmahon:5,federation:6,narberale:5,cramain:8,chaillot:15},
   courcelles:{chaillot:4}
 };
 const DEPOT_START=new Set([...Object.keys(DEPOT_HLP.berthee),...Object.keys(DEPOT_HLP.courcelles)]);
-function lineNodes(){const out=[];for(const L in DATA)for(const d of [0,1]){const st=DATA[L].s[d];out.push({L,d,from:canonStop(st[0]),to:canonStop(st.at(-1))})}return out}
+let NODES=null;
+function lineNodes(){
+  if(NODES)return NODES;NODES=[];
+  for(const L in DATA)for(const d of [0,1]){
+    const st=DATA[L].s[d],seen=new Set();
+    for(const c of DATA[L].C[d]){const key=c.o+"-"+c.e;if(seen.has(key))continue;seen.add(key);
+      NODES.push({L,d,a:c.o,b:c.e,from:canonStop(st[c.o]),to:canonStop(st[c.e])})}}
+  return NODES}
 const MAX_WAIT=20;
 function legEnd(n,cur,first){
   const hl=first?(DEPOT_HLP[n.from==="chaillot"?"courcelles":"berthee"][n.from]||5):4;
-  const dep=findNextScheduleTs(n.L,n.d,cur+hl*60000);
-  return{wait:(dep-cur)/60000-hl,end:dep+Math.max(5,DATA[n.L].s[n.d].length*STOP_MIN)*60000}}
+  const p=nextExact(n.L,n.d,n.a,n.b,cur+hl*MIN);
+  if(!p)return{wait:Infinity,end:cur,dep:cur,hl};
+  return{wait:(p.ts-cur)/MIN-hl,dep:p.ts,end:p.base+p.c.t[n.b]*MIN,hl}}
 function buildChain(count,prefs,mw=MAX_WAIT){
   const nodes=lineNodes();
   const run=rep=>{let best=[],bs=-1;
@@ -692,8 +831,8 @@ function buildChain(count,prefs,mw=MAX_WAIT){
 
 function generateDaySheet(){
   const count=Math.min(5,Math.max(1,+fState.lineCount||1));
-  let chain=buildChain(count,fState.prefLines||[]);
-  if(!chain.length)chain=buildChain(count,fState.prefLines||[],Infinity);
+  let chain=[];
+  for(const mw of [MAX_WAIT,60,180,600,Infinity]){chain=buildChain(count,fState.prefLines||[],mw);if(chain.length)break}
   const assignedLines=chain.map(n=>n.L);
   const bus=pickBus(assignedLines);
   const startKey=chain[0].from;
@@ -703,36 +842,32 @@ function generateDaySheet(){
   let curTs=nowRound();
   const segments=[{type:"walk",bus,depot:firstDepot.name,startTime:fmt(curTs)}];
   chain.forEach((n,idx)=>{
-    const lCode=n.L,dirIdx=n.d,d=DATA[lCode];
-    const bounds=resolveLineBounds(lCode,dirIdx);
-    const routeStops=d.s[dirIdx].slice(bounds.startIdx,bounds.endIdx+1);
-    const originStop=routeStops[0],destStop=routeStops.at(-1);
-    let matchedDep;
+    const lCode=n.L,dirIdx=n.d,d=DATA[lCode],st=d.s[dirIdx];
+    const originStop=st[n.a],destStop=st[n.b];
+    const leg=legEnd(n,curTs,idx===0);
+    const matchedDep=leg.dep;
     if(idx===0){
-      matchedDep=findNextScheduleTs(lCode,dirIdx,curTs+hlpMin*60000);
-      segments.push({type:"hlp",line:lCode,color:d.c,depot:firstDepot.name,to:originStop,vers:destStop,mins:hlpMin,depTime:fmt(matchedDep-hlpMin*60000),arrTime:fmt(matchedDep)});
+      segments.push({type:"hlp",line:lCode,color:d.c,depot:firstDepot.name,to:originStop,vers:destStop,mins:hlpMin,depTime:fmt(matchedDep-hlpMin*MIN),arrTime:fmt(matchedDep)});
     }else{
-      matchedDep=findNextScheduleTs(lCode,dirIdx,curTs+4*60000);
-      segments.push({type:"break",line:lCode,color:d.c,at:originStop,startTime:fmt(curTs),endTime:fmt(matchedDep),mins:Math.max(1,Math.round((matchedDep-curTs)/60000))});
+      segments.push({type:"break",line:lCode,color:d.c,at:originStop,startTime:fmt(curTs),endTime:fmt(matchedDep),mins:Math.max(1,Math.round((matchedDep-curTs)/MIN))});
     }
-    const legMins=Math.max(5,routeStops.length*STOP_MIN);
-    const arrTs=matchedDep+legMins*60000;
-    segments.push({type:"run",line:lCode,color:d.c,dirIdx,startIdx:bounds.startIdx,endIdx:bounds.endIdx,depTs:matchedDep,from:originStop,to:destStop,startTime:fmt(matchedDep),endTime:fmt(arrTs),mins:legMins});
+    const arrTs=leg.end;
+    segments.push({type:"run",line:lCode,color:d.c,dirIdx,startIdx:n.a,endIdx:n.b,depTs:matchedDep,from:originStop,to:destStop,startTime:fmt(matchedDep),endTime:fmt(arrTs),mins:Math.max(1,Math.round((arrTs-matchedDep)/MIN))});
     curTs=arrTs;
   });
-  fState.generated={v:2,createdAt:Date.now(),bus,depot:firstDepot,lineCount:chain.length,lines:assignedLines,segments};
+  fState.generated={v:3,createdAt:Date.now(),bus,depot:firstDepot,lineCount:chain.length,lines:assignedLines,segments};
   saveFState();
 }
 
 function fichesMenu(){
-  setLineTheme(null);
+  tab="f";mark();setLineTheme(null);
   if(fState.generated){renderSheetView();return}
   const dots=`<div class="steps"><i class="${fStep===1?"on":""}"></i><i class="${fStep===2?"on":""}"></i></div>`;
   if(fStep===1){
     const card=(b,free)=>{const on=free||fState.selectedPaid.includes(b);
       return `<button type="button" class="bcard ${on?"on":""} ${free?"free":""}" title="${b}" data-b="${b.replace(/"/g,"&quot;")}" ${free?"disabled":""}>${busImg(b,"bimg")}<span class="tick">✓</span></button>`};
     A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-home">${ic("g")} Lignes</button></div>
-    <div class="v"><div class="tag">#ma-fiche · étape 1 sur 2</div><h1 style="font-size:clamp(34px,7vw,70px)">mes bus</h1>
+    <div class="v"><h1 style="font-size:clamp(34px,7vw,70px)">mes bus</h1>
     <p class="hint">Coche les véhicules que tu possèdes. Ton choix est gardé sur cet appareil.</p>${dots}</div>
     <div class="ctl" style="justify-content:flex-start;margin:0 0 14px;gap:10px"><button type="button" class="btn g" id="all-on" style="font-size:15px;min-width:0">Tout cocher</button><button type="button" class="btn g" id="all-off" style="font-size:15px;min-width:0">Tout décocher</button></div>
     <div class="bgrid" id="paid-list">${PAID_BUSES.map(b=>card(b,false)).join("")}${FREE_BUSES.map(b=>card(b,true)).join("")}</div>
@@ -748,7 +883,7 @@ function fichesMenu(){
   }
   const allCodes=Object.keys(DATA);
   A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-back">${ic("g")} Mes bus</button></div>
-  <div class="v"><div class="tag">#ma-fiche · étape 2 sur 2</div><h1 style="font-size:clamp(34px,7vw,70px)">mes lignes</h1>
+  <div class="v"><h1 style="font-size:clamp(34px,7vw,70px)">mes lignes</h1>
   <p class="hint">Combien de lignes veux-tu faire aujourd’hui, et lesquelles te tentent ? Le reste est tiré au sort.</p>${dots}</div>
   <div class="card v" style="margin-bottom:16px">
     <div class="lab" style="margin-bottom:10px">Nombre de lignes (1 à 5)</div>
@@ -773,10 +908,6 @@ function launchLineRegulation(seg){
   const maxIdx=DATA[line].s[dIdx].length-1;
   let aIdx=Math.min(maxIdx,Math.max(0,+(seg.startIdx||0)));
   let eIdx=Math.min(maxIdx,Math.max(aIdx,+(seg.endIdx??maxIdx)));
-  if(line==="316"&&aIdx===0&&eIdx===maxIdx){
-    const b=resolveLineBounds("316",dIdx);
-    aIdx=b.startIdx;eIdx=b.endIdx;
-  }
   go(dIdx,aIdx,eIdx,seg.depTs||null);
 }
 
@@ -855,7 +986,7 @@ function renderSheetView(){
       <div class="f-row" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
         <div class="f-row" style="gap:12px">
           ${img(seg.line,"f-ico")}
-          <div class="f-title">${seg.from} ${ic("d")} ${seg.to}</div>
+          <div class="f-title">${sn(seg.from)} ${ic("d")} ${sn(seg.to)}</div>
         </div>
         <div class="f-row" style="gap:8px;flex-wrap:wrap">
           <span class="badge">${seg.startTime} → ${seg.endTime}</span>
@@ -874,7 +1005,7 @@ function renderSheetView(){
       <button type="button" class="btn g" id="f-retour">${ic("g")} Retour</button>
       <button type="button" class="btn" id="f-reset-zero">Refaire de zéro ${ic("dbl","arr-dbl")}</button>
     </div>
-    <div class="v"><div class="tag">#fiche-de-service</div><h1 style="font-size:clamp(36px,7.5vw,78px)">ma journée</h1></div>
+    <div class="v"><h1 style="font-size:clamp(36px,7.5vw,78px)">ma journée</h1></div>
 
     <div class="card" style="margin-bottom:18px">
       <div class="f-head">
@@ -920,5 +1051,8 @@ function renderSheetView(){
   });
 }
 
+let tab="d";
+function mark(){document.querySelectorAll("#hdr nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));clock()}
+document.querySelectorAll("#hdr nav button").forEach(b=>b.onclick=()=>{if(line!=null&&dir!==null)leave();line=null;dir=null;b.dataset.t==="f"?fichesMenu():home()});
 home();
 </script></body></html>
