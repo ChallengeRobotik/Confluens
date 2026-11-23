@@ -387,6 +387,182 @@ button.row:active{transform:scale(.99)}
 .f-route:before{width:4px;background:var(--lc)}
 .f-line-tag img.hlp-lg{height:auto}
 @media(max-width:560px){.f-card{padding:14px 14px 14px 22px}.f-times .btn{flex:1 1 100%}}
+
+/* =========================================================
+   ÉCRANS NV — choix des véhicules, choix des lignes, régulation
+   (surcouche plein écran, indépendante du thème de l'accueil)
+   ========================================================= */
+html.nv-open,html.nv-open body{overflow:hidden}
+#nv{position:fixed;inset:0;z-index:200;font-family:Parisine,"Trebuchet MS",system-ui,sans-serif;--arr:none;animation:nvin .25s ease-out both}
+#nv[hidden]{display:none}
+@keyframes nvin{from{opacity:0}to{opacity:1}}
+:where(#nv) *{box-sizing:border-box;margin:0}
+#nv button{font:inherit;cursor:pointer;border:0;-webkit-tap-highlight-color:transparent}
+.nv-sc{position:absolute;inset:0;display:flex;flex-direction:column;background:#666;color:#fff;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.nv-top{flex:none;background:#4b4848;padding:6px 14px 8px;border-bottom:1px solid #353333;box-shadow:0 2px 4px rgba(0,0,0,.35);position:relative;z-index:2}
+.nv-top h1{font-size:28px;line-height:1.1;font-weight:700;letter-spacing:0;margin:0;color:#fff;display:flex;align-items:center;gap:6px}
+.nv-top h1 .arr{height:.78em;margin:0}
+.nv-top p{font-style:italic;font-size:13px;color:#fff;margin:0;line-height:1.25}
+.nv-mid{flex:1;min-height:0;overflow:auto;padding:14px 14px 22px}
+.nv-bot{flex:none;background:#4b4848;border-top:1px solid #353333;padding:7px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:2}
+.nv-red{background:#d0191f;color:#fff;font-weight:700;font-size:20px;height:44px;padding:0 24px 0 14px;border-radius:5px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 3px rgba(0,0,0,.4);transition:background .15s,transform .15s}
+.nv-red:hover{background:#e5242a}.nv-red:active,.nv-gray:active{transform:scale(.97)}
+.nv-red .arr{height:.9em;margin:0}
+.nv-gray{background:#a3a3a3;color:#fff;font-weight:700;font-size:20px;height:44px;min-width:min(425px,55vw);padding:0 14px 0 14px;border-radius:5px;display:flex;align-items:center;justify-content:space-between;gap:30px;box-shadow:0 2px 3px rgba(0,0,0,.35);transition:background .15s,transform .15s}
+.nv-gray:hover{background:#b6b6b6}
+.nv-gray .arr{height:.9em;margin:0}
+.nv-mini{display:flex;gap:8px}
+.nv-mini button{background:transparent;color:#fff;font-size:13px;font-weight:700;padding:8px 12px;border-radius:5px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.35);transition:background .15s}
+.nv-mini button:hover{background:rgba(255,255,255,.14)}
+
+/* ---- Écran 1 : constructeurs + véhicules ---- */
+.nv-pan{max-width:1225px;margin:0 auto;background:#555;border:1px solid #444;border-radius:9px;padding:8px;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+.nv-tabs{display:grid;grid-template-columns:repeat(7,minmax(104px,1fr));gap:10px;overflow-x:auto;padding-bottom:2px}
+.nv-tab{height:44px;border-radius:6px;background:#e4e4e4;display:flex;align-items:center;justify-content:center;padding:6px 14px;transition:background .15s,transform .15s,box-shadow .15s}
+.nv-tab img{max-height:24px;max-width:100%;object-fit:contain;pointer-events:none;transition:filter .15s}
+.nv-tab:hover:not(.on){background:#fff;transform:translateY(-2px);box-shadow:0 4px 8px rgba(0,0,0,.3)}
+.nv-tab.on{background:#0b94ff}.nv-tab.on img{filter:brightness(0) invert(1)}
+.nv-cards{margin-top:8px;display:flex;flex-wrap:wrap;gap:10px;padding:8px 6px 12px;min-height:290px;background:#666;border-radius:6px;align-content:flex-start}
+.nv-bc{position:relative;width:160px;height:250px;border-radius:6px;padding:0;background:transparent;box-shadow:none;transition:transform .2s,box-shadow .2s;animation:nvcard .35s both}
+@keyframes nvcard{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.nv-bc:hover{transform:translateY(-5px)}
+.nv-bc.on{box-shadow:0 0 0 3px #fff}
+.nv-bc.on:hover{box-shadow:0 0 0 3px #fff}
+.nv-bw{position:absolute;inset:0;border-radius:5px;overflow:hidden}
+.nv-bw img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s}
+.nv-bc:hover .nv-bw img{transform:scale(1.07)}
+
+.nv-bt{position:absolute;left:7px;right:26px;bottom:7px;z-index:1;text-align:left;color:#fff;pointer-events:none}
+.nv-bt b{display:block;font-size:14.5px;line-height:1.1;font-weight:800;text-shadow:0 1px 3px rgba(0,0,0,.7)}
+.nv-bt small{display:block;font-size:8px;letter-spacing:.04em;text-transform:uppercase;margin-top:2px;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.nv-ck{position:absolute;right:-9px;bottom:-9px;width:28px;height:28px;object-fit:contain;opacity:0;transform:scale(.3);transition:opacity .18s,transform .22s cubic-bezier(.3,1.6,.5,1);pointer-events:none;z-index:3}
+.on>.nv-ck{opacity:1;transform:none}
+.nv-empty{color:rgba(255,255,255,.7);font-style:italic;padding:12px}
+
+/* ---- Écran 2 : lignes du réseau ---- */
+.nv-grid{display:grid;grid-template-columns:repeat(4,190px);gap:10px 8px;justify-content:center;padding-top:6px}
+.nv-lt{position:relative;width:190px;height:197px;border-radius:5px;padding:0;background:transparent;box-shadow:none;transition:transform .22s,box-shadow .22s;animation:nvcard .35s both}
+.nv-lt:hover{transform:translateY(-6px) scale(1.045);z-index:3}
+.nv-lt.on{box-shadow:0 0 0 3px #fff}
+.nv-lt.on:hover{box-shadow:0 0 0 3px #fff}
+.nv-lw{position:absolute;inset:0;border-radius:5px;overflow:hidden}
+.nv-lw img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s,filter .25s}
+.nv-lt:hover .nv-lw img{transform:scale(1.08);filter:brightness(1.08)}
+
+.nv-ov{position:absolute;left:6px;right:6px;bottom:6px;z-index:2;text-align:left;pointer-events:none;color:#fff}
+.nv-lg{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.nv-lg .nv-bus{font-size:12px}
+.nv-lg .nv-bus.n{font-size:22px}
+.nv-lg .nv-pill{font-size:13px;padding:2px 7px;min-width:30px}
+.nv-tx{display:block;font-size:11px;font-weight:800;line-height:1.3;text-shadow:0 1px 3px rgba(0,0,0,.85)}
+.nv-tx .arr-dbl{height:.95em;margin:0 0 0 4px;vertical-align:-.12em}
+.nv-tx .nv-rer{margin-left:3px}
+.nv3-ls .nv-rer{font-size:.74em;margin-left:4px}.nv-tx .nv-rer{font-size:.78em}
+.nv-tr{width:.95em;height:.95em;vertical-align:-.12em;margin-left:3px}
+
+/* ---- pastille BUS / ligne / RER (partagé) ---- */
+.nv-bus{font-weight:800;font-size:13px;letter-spacing:.02em;line-height:1;padding:2px 1px;border-top:2px solid #fff;border-bottom:2px solid #fff;display:inline-block;color:#fff}
+.nv-bus.n{border:0;font-size:26px;padding:0}.nv-bus.n sup{font-size:.55em;vertical-align:.5em}
+.nv-pill{font-style:normal;font-weight:800;font-size:14px;line-height:1;padding:3px 8px;border-radius:4px;background:var(--lc);min-width:34px;text-align:center;display:inline-block;color:var(--li,#fff)}
+.nv-rer{display:inline-block;border:1.6px solid currentColor;border-radius:4px;font-size:.5em;font-weight:800;line-height:1;padding:.16em .26em .12em;letter-spacing:.02em;vertical-align:.25em;font-style:normal}
+
+/* ---- Écran 3 : régulation ---- */
+.nv3{position:absolute;inset:0;display:flex;flex-direction:column;background:#dcdcdc;color:#25303B;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+.nv3-h{flex:none;height:58px;display:flex;align-items:center;gap:14px;padding:0 16px;background:linear-gradient(#4a4a4a,#363636);border-bottom:2px solid #2b2b2b;color:#fff;box-shadow:0 2px 4px rgba(0,0,0,.4);position:relative;z-index:2}
+.nv3-logo{display:flex;align-items:center;gap:7px;background:none;color:#fff;padding:0;transition:opacity .15s}
+.nv3-logo:hover{opacity:.78}
+.nv3-dir{margin-right:auto;margin-left:2px;display:flex;flex-direction:column;line-height:1;min-width:0}
+.nv3-dir small{font-size:9px;font-style:italic}
+.nv3-dir b{font-size:22px;font-weight:700;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nv3-clk{background:#25303B;color:#ff7a00;font-weight:800;font-size:32px;line-height:1;padding:7px 14px;border-radius:7px;font-variant-numeric:tabular-nums;cursor:pointer;user-select:none}
+.nv3-b{flex:1;min-height:0;display:grid;grid-template-columns:minmax(250px,26%) 7px minmax(0,1.13fr) minmax(0,1fr);gap:0 8px;padding:8px 8px 8px}
+.nv3-c{background:#fff;border-radius:5px;box-shadow:0 1px 3px rgba(0,0,0,.35);padding:8px 10px;position:relative;min-height:0}
+.nv3-lab{display:block;font-size:11.5px;font-style:italic;color:#25303B;line-height:1.2}
+.nv3-bar{background:var(--lc);border-radius:4px}
+.nv3-l{display:flex;flex-direction:column;overflow:hidden}
+.nv3-ns{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-top:3px}
+.nv3-ns span{display:inline-block;font-size:clamp(20px,2.1vw,28px);font-weight:800;line-height:1.15;border-bottom:2px solid #25303B;padding-bottom:2px;min-width:0}
+.nv3-ns em{font-size:11px;font-style:italic;padding-top:8px;white-space:nowrap}
+.nv3-ls{position:relative;overflow:hidden;flex:1;min-height:0;list-style:none;padding:0 0 0 4px;margin:22px 0 0;display:flex;flex-direction:column}
+.nv3-ls li{position:relative;z-index:1;flex:0 0 var(--rh,44px);display:flex;align-items:center;gap:10px}
+/* un seul trait continu : de la 1re à la dernière pastille, jamais au-delà */
+.nv3-trk{position:absolute;left:9.5px;top:calc(var(--rh,44px)/2);width:3px;height:0;border-radius:2px;background:var(--lc);transition:height var(--td,.4s) cubic-bezier(.2,.8,.2,1);pointer-events:none;z-index:0}
+.nv-dot{position:relative;z-index:1;flex:none;width:14px;height:14px;border-radius:50%;background:var(--lc);border:2px solid #25303B;transition:width .3s cubic-bezier(.3,1.4,.5,1),height .3s cubic-bezier(.3,1.4,.5,1),margin .3s,background .3s,border-width .3s,box-shadow .3s}
+/* terminus : pastille plus grande, bague blanche cerclée */
+.nv3-ls li.l .nv-dot{width:20px;height:20px;margin:0 -3px;background:#fff;border:4px solid #25303B;box-shadow:0 0 0 2px var(--lc)}
+.nv3-ls li.l b{font-size:14px}
+.nv3-ls li.nv3-endn{flex:0 0 auto;font-size:13.5px;font-style:italic;opacity:.7;padding:4px 0}
+.nv3-ls b{font-size:13px;font-weight:800;line-height:1.15;min-width:0}
+.nv3-ls em{margin-left:auto;font-size:10.5px;font-style:italic;white-space:nowrap}
+.nv3-m{display:grid;grid-template-rows:1fr 1fr 1.25fr;gap:8px;min-height:0;margin-right:8px}
+.nv3-cons{overflow:auto}
+.nv3-cons p{font-size:13.5px;line-height:1.3;margin-top:5px}
+.nv3-cons p.f{font-weight:800}
+.nv3-tools{display:flex;gap:26px;align-items:flex-start;margin-top:4px}
+.nv3-dlt{width:100px;flex:none}
+.nv3-dbox{overflow:hidden;padding-left:6px;padding-right:6px;background:#25303B;color:#fff;border-radius:6px;height:90px;display:flex;align-items:baseline;justify-content:center;gap:3px;padding-top:12px}
+.nv3-dbox b{font-size:52px;line-height:1;font-weight:800;transition:color .2s}
+.nv3-dbox small{font-size:11px;font-style:italic}
+.nv3-mini{display:flex;gap:3px;margin-top:5px;justify-content:center}
+.nv3-mini button{background:#25303B;color:#fff;font-weight:700;font-size:11px;width:22px;height:21px;border-radius:4px;padding:0;transition:background .15s,transform .1s}
+.nv3-mini button:hover{background:#333}.nv3-mini button:active{transform:scale(.9)}
+.nv3-mini i{width:1px;background:#999;margin:2px 2px}
+.nv3-nav{flex:1;display:flex;flex-direction:column;gap:8px;min-width:0}
+.nv3-nb{height:38px;border-radius:6px;background:#d2d2d2;color:#25303B;font-weight:700;font-size:19px;display:flex;align-items:center;justify-content:space-between;gap:8px;padding:0 10px;box-shadow:0 1px 2px rgba(0,0,0,.35);transition:background .15s,transform .1s}
+.nv3-nb.pv{flex-direction:row-reverse}
+.nv3-nb .arr{height:.85em;margin:0;filter:brightness(0) saturate(100%) invert(16%) sepia(14%) saturate(1411%) hue-rotate(172deg) brightness(96%) contrast(92%)}
+.nv3-nb:hover:not([disabled]){background:#bfbfbf}.nv3-nb:active:not([disabled]){transform:scale(.98)}
+.nv3-nb[disabled]{color:#a9a9a9;box-shadow:none;cursor:default;background:#cfcfcf}
+.nv3-nb[disabled] .arr{filter:brightness(0) saturate(100%) invert(16%) sepia(14%) saturate(1411%) hue-rotate(172deg) brightness(96%) contrast(92%) opacity(.3)}
+.nv3-ar-h{display:flex;justify-content:space-between;font-size:11.5px;font-style:italic}
+.nv3-ar-r{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-top:6px}
+.nv3-ar-r .n{font-size:clamp(20px,2.3vw,30px);font-weight:400;line-height:1.15;min-width:0}
+.nv3-ar-r:first-of-type .n{font-weight:800}
+.nv3-ar-r .t{font-size:clamp(22px,2.4vw,30px);font-weight:800;white-space:nowrap}
+.nv3-ar-r .t small{font-size:11px;font-style:italic;font-weight:400;margin-left:2px}
+.nv3-r{display:flex;flex-direction:column}
+.nv3-msgs{flex:1;min-height:0;overflow:auto;margin-top:6px;display:flex;flex-direction:column;gap:7px}
+.nv3-msg{font-size:13.5px;line-height:1.3;word-break:break-word}
+.nv3-msg b{font-weight:800}.nv3-msg em{font-size:10px;color:#777;margin-left:6px;font-style:italic}
+.nv3-msg.me b{color:var(--lc)}
+.nv3-in{display:flex;gap:6px;margin-top:6px}
+.nv3-in input{flex:1;min-width:0;border:0;border-radius:5px;background:#ececec;padding:8px 10px;font:inherit;font-size:14px;color:#25303B;outline:none}
+.nv3-in input:focus{box-shadow:inset 0 0 0 2px #25303B}
+.nv3-in button{background:#25303B;color:#fff;border-radius:5px;font-weight:700;padding:0 14px}
+
+.nv-busimg{height:24px;width:auto;display:block;pointer-events:none}
+.nv-rerimg{height:.8em;width:auto;vertical-align:-.04em;margin-left:.35em;pointer-events:none}
+.nv3-h .nv-rerimg{filter:brightness(0) invert(1)}
+
+/* animations écran 3 */
+.nv-eta{display:inline-block}
+.nv3-ar-r[hidden]{display:none}
+.nv3-h{animation:nvdown .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes nvdown{from{transform:translateY(-100%)}to{transform:none}}
+.nv3-c{animation:nvup .55s var(--d,0s) cubic-bezier(.2,.8,.2,1) both}
+@keyframes nvup{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+.nv3-bar{transform-origin:top;animation:nvgrow .7s .05s cubic-bezier(.2,.8,.2,1) both}
+@keyframes nvgrow{from{transform:scaleY(0)}to{transform:none}}
+.nv3-nb .arr{transition:transform .2s}
+.nv3-nb.nx:hover:not([disabled]) .arr{transform:translateX(4px)}
+.nv3-nb.pv:hover:not([disabled]) .arr{transform:translateX(-4px)}
+.nv3-dbox b{transition:color .25s,font-size .2s}
+.nv3-send:active{transform:scale(.95)}
+@media(max-width:1000px){
+  .nv-grid{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+  .nv-lt{width:auto;height:178px}
+}
+@media(max-width:860px){
+  .nv3-b{grid-template-columns:1fr;grid-template-rows:none;overflow:auto;gap:8px}
+  .nv3-bar{height:6px;width:auto}
+  .nv3-l{min-height:520px}
+  .nv3-m{margin-right:0;grid-template-rows:none;gap:8px}
+  .nv3-m .nv3-c{min-height:150px}
+  .nv3-r{min-height:320px}
+  .nv3-dir b{font-size:17px}.nv3-clk{font-size:24px;padding:6px 10px}
+  .nv-gray{min-width:0;flex:1}.nv-mini button{padding:6px 8px;font-size:12px}
+}
+
 </style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
 <script>
 
@@ -470,6 +646,41 @@ const FREE_BUSES=[
   "Citelis 12 Diesel",
   "Volvo 7900E"
 ];
+const NVI="https://image.noelshack.com/fichiers/2026/48/1/";
+const COCHE=NVI+"1795471622-coche.png";
+const BUS_META={
+  "Volvo 7800E":{b:"volvo",t:"Volvo 7800E 18m",f:"Électrique",img:NVI+"1795471622-volvo7800e.jpg"},
+  "Volvo 7900E":{b:"volvo",t:"Volvo 7900E 12m",f:"Électrique",img:NVI+"1795471622-volvo7900e.png"},
+  "Solaris Urbino 18 GNV":{b:"solaris",t:"Solaris Urbino 18m",f:"GNV",img:NVI+"1795471622-solarisurbino.jpg"},
+  "Alstom Aptis":{b:"alstom",t:"Alstom Aptis 12m",f:"Électrique",img:NVI+"1795471625-alstomaptis.jpg"},
+  "Citelis 12 Hybride":{b:"irisbus",t:"Irisbus Citelis 12m",f:"Hybride",img:NVI+"1795471622-irisbuscitelishybride.jpg"},
+  "Citelis 12 Diesel":{b:"irisbus",t:"Irisbus Citelis 12m",f:"Diesel",img:NVI+"1795471622-irisbuscitelisdiesel.jpg"},
+  "Heuliez GX337 Electrique":{b:"heuliez",t:"Heuliez GX337",f:"Électrique"},
+  "Heuliez GX337 GNV":{b:"heuliez",t:"Heuliez GX337",f:"GNV"},
+  "MAN A37 Hybride":{b:"man",t:"MAN A37",f:"Hybride"},
+  "MAN A37 Diesel":{b:"man",t:"MAN A37",f:"Diesel"},
+  "MAN A21 GNV":{b:"man",t:"MAN A21",f:"GNV"},
+  "Urbanway 12 GNV":{b:"iveco",t:"Iveco Urbanway 12m",f:"GNV"},
+  "Urbanway 12 Hybride":{b:"iveco",t:"Iveco Urbanway 12m",f:"Hybride"},
+  "Urbanway 12 Diesel":{b:"iveco",t:"Iveco Urbanway 12m",f:"Diesel"}
+};
+Object.entries(BUS_META).forEach(([k,m])=>{if(!m.img)m.img=BUS_IMG[k]});
+const NV_BRANDS=[["man","MAN","1795472003-logo-man.png"],["iveco","IVECO","1795472003-logo-iveco.png"],["heuliez","Heuliez","1795472003-logoheuliez.png"],["solaris","Solaris","1795472003-logosolaris.png"],["irisbus","Irisbus","1795472003-logoirisbus.png"],["volvo","Volvo","1795472003-logovolvo.png"],["alstom","Alstom","1795472003-logoalstom.png"]];
+const LINE_TILE={
+  "134":{i:"1795471635-bus134icone.png",a:"Chaillot-Batignolles RER",b:"Sous-Préfecture – Champagne"},
+  "135":{i:"1795471635-bus135icone.png",a:"Chaillot-Batignolles RER",b:"Bismarck – Courboules §T"},
+  "142":{i:"1795471634-bus142icone.png",a:"Chaillot-Batignolles RER",b:"Port-Perret – Village"},
+  "149":{i:"1795471635-bus149icone.png",a:"Chaillot-Batignolles RER",b:"Pasteur"},
+  "233":{i:"1795471634-bus233icone.png",a:"Narbérale RER",b:"Hôtel de Ville de Ch.-Batignolles"},
+  "242":{i:"1795471626-bus242icone.png",a:"Cramain – Université RER",b:"Port-Perret – Village"},
+  "257":{i:"1795471625-bus257icone.png",a:"Les Hauts d’Arlande",b:"Berthée – Rosenberg"},
+  "315":{i:"1795471626-bus315icone.png",a:"Chaillot-Batignolles RER",b:"Houssaye – De Gaulle"},
+  "316":{i:"1795471626-bus316icone.png",a:"Narbérale - Rue de Cherbourg",b:"HdV de Denfert-la-Roche"},
+  "433":{i:"1795471626-bus433icone.png",a:"Narbérale",b:"Clémenceau"},
+  "N76":{i:"1795471627-busn76icone.png",a:"Le Pl.-Mendinel – Val de S. RER",b:"Berthée – Rosenberg"}
+};
+const NV_LINE_ORDER=["134","135","142","149","233","242","257","315","316","433","N76"];
+
 const DEPOTS={
   berthee:{
     name:"Centre Bus de Berthée",
@@ -579,6 +790,9 @@ function tick(){
   const now=Date.now();
   document.querySelectorAll(".mn[data-ts]").forEach(e=>{const ts=+e.dataset.ts,d=ts-now,c=d>=36e5;e.classList.toggle("clk",c);e.textContent=c?fmt(ts):Math.max(0,Math.floor(d/6e4))});
   clock();
+  const kc=document.getElementById("nvc"),ct=fmt(now);if(kc&&kc.textContent!==ct){kc.textContent=ct;anim(kc,[{opacity:.3},{opacity:1}],{duration:450})}
+  if(document.getElementById("nv-cons"))nvRenderCons();
+  document.querySelectorAll(".nv-eta[data-ts]").forEach(e=>{const v=String(Math.max(0,Math.ceil((+e.dataset.ts-now)/6e4)));if(e.textContent!==v){const had=e.textContent!=="";e.textContent=v;if(had)anim(e,[{opacity:.2,transform:"translateY(-6px)"},{opacity:1,transform:"none"}],{duration:280,easing:EASE})}});
   const m=Math.floor(now/6e4);
   if(m!==pm){pm=m;if($("#ch"))paint()}
   const r=$("#rm");if(!r||line==null||dir===null)return;
@@ -615,7 +829,7 @@ function rowH(r){
   return `<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="row${off?" off":""}"${attrs} style="--lc:${d.c}"><span class="lb${(PTK[r.n]||[]).includes(r.k)?" tri":""}" style="color:${ink(d.c)}">${r.n}</span><span class="dn">${sn(s)}</span><span class="tb">${box}</span></${tg}>${more}</div>`;
 }
 function home(refresh){
-  tab="d";mark();
+  tab="d";mark();origin="home";nvHide();
   const on=[],off=[];let c=0;
   for(const n in DATA)for(const k of[0,1]){
     const t=deps(n,k).filter(ts=>ts-Date.now()<=HORIZON);
@@ -664,6 +878,7 @@ function paint(){
   $("#go").disabled=!ok;
 }
 function dest(k0){
+  origin="dest";nvHide();
   if(dir!==null)leave();
   const d=DATA[line];
   pl={k:typeof k0==="number"?k0:(dir??0),a:null,b:null};
@@ -725,74 +940,11 @@ function flip(){
   view();push();
 }
 
-function view(){
-  const d=DATA[line],s=R();
-  setLineTheme(line);
-  A.innerHTML=`<div class="top"><button class="btn g" id="bk">${ic("g")} Destination</button>${img(line,"lg")}</div>
-  <div class="cols">
-    <section class="card v">
-      <div class="lab">Destination</div>
-      <div class="dest">${ic("d")} <span>${sn(s.at(-1))}</span> <span class="badge">${d.j}</span></div>
-      <div class="lab" id="lb"></div>
-      <div class="next nx"><span class="dot"></span><span id="nx"></span></div>
-      <div class="rm" id="rm"></div>
-      <div class="dep">
-        <label class="lab" for="dp">Heure de départ</label>
-        <input type="time" id="dp">
-        <button class="btn g" id="dn">Prochain départ</button>
-      </div>
-      <div class="bar"><i id="pg"></i></div>
-      <ul class="list" id="ls"></ul>
-      <div class="act">
-        <button class="btn g" id="prv">${ic("g")} Arrêt précédent</button>
-        <button class="btn" id="adv"></button>
-      </div>
-    </section>
-    <section class="card delta v" style="animation-delay:.1s">
-      <div class="lab">Écart horaire</div>
-      <div class="num" id="nm"></div>
-      <div class="st" id="st"></div>
-      <div class="ctl">
-        <button class="btn g" id="m5">−5</button>
-        <button class="btn g" id="m1">−</button>
-        <button class="btn g" id="p1">+</button>
-        <button class="btn g" id="p5">+5</button>
-      </div>
-    </section>
-  </div>`;
-  $("#bk").onclick=dest;$("#adv").onclick=next;$("#prv").onclick=prev;
-  [["m5",-5],["m1",-1],["p1",1],["p5",5]].forEach(([id,v])=>$("#"+id).onclick=()=>ecart(v));
-  const dp=$("#dp");dp.value=fmt(sTs(startIdx));
-  dp.onchange=()=>{
-    const[h,m]=dp.value.split(":").map(Number);if(isNaN(h))return;
-    const x=new Date();x.setHours(h,m,0,0);
-    let t=x.getTime();if(t<Date.now()-12*36e5)t+=864e5;
-    const p=nearestCourse(line,dir,startIdx,end,t);
-    cur={c:p.c,base:p.base,off:t-p.ts};upd();push();
-  };
-  $("#dn").onclick=()=>{const p=pickCourse(line,dir,startIdx,end,Date.now());cur={c:p.c,base:p.base,off:0};dp.value=fmt(sTs(startIdx));upd();push()};
-  upd();
-}
-
-function next(){if(line==null||dir===null)return;if(i<end){i++;upd();push()}else if(startIdx===0&&end===DATA[line].s[dir].length-1)flip();else dest()}
+function next(){if(line==null||dir===null)return;if(i<end){i++;upd();push()}else if(startIdx===0&&end===DATA[line].s[dir].length-1)flip();else quit()}
 function prev(){if(line==null||dir===null)return;if(i>startIdx){i--;upd();push()}}
 function ecart(v){dl+=v;upd();push()}
-addEventListener("keydown",e=>{if(line==null||dir===null||!$("#nx"))return;const m={PageDown:next,PageUp:prev,ArrowUp:()=>ecart(1),ArrowDown:()=>ecart(-1)}[e.key];if(m){e.preventDefault();m()}});
+addEventListener("keydown",e=>{if(line==null||dir===null||!$("#nv-ns")||/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;const m={PageDown:next,PageUp:prev,ArrowUp:()=>ecart(1),ArrowDown:()=>ecart(-1)}[e.key];if(m){e.preventDefault();m()}});
 
-function upd(){
-  const s=R(),rel=i-startIdx,span=Math.max(1,s.length-1),n=$("#nx");
-  n.style.animation="none";n.offsetWidth;n.style.animation="";n.innerHTML=sn(s[rel]);
-  $("#lb").textContent=i==end?"Terminus":i==startIdx?"Départ":"Prochain arrêt";
-  $("#pg").style.width=(rel/span*100)+"%";
-  $("#prv").style.opacity=i>startIdx?1:.35;
-  $("#adv").innerHTML=i<end?`Arrêt suivant ${ic("d")}`:(startIdx===0&&end===DATA[line].s[dir].length-1?`Terminus · changer de sens ${ic("dbl","arr-dbl")}`:`Fin de partiel · retour ${ic("g")}`);
-  $("#ls").innerHTML=s.slice(rel+1,rel+8).map((x,k)=>`<li class="${k?"":"t"}" style="animation-delay:${k*60}ms">${sn(x)}<small class="tm">${fmt(sTs(startIdx+rel+1+k)+dl*60000)}</small></li>`).join("")||`<li class="t">Fin de service du sens</li>`;
-  const nm=$("#nm"),st=$("#st"),c=dl>0?"var(--late)":dl<0?"var(--ok)":"var(--y)";
-  nm.textContent=(dl>0?"+":"")+dl;nm.style.color=st.style.color=c;
-  st.textContent=dl>0?"EN RETARD":dl<0?"EN AVANCE":"À L’HEURE";
-  nm.animate([{transform:"scale(1.15)"},{transform:"scale(1)"}],{duration:300,easing:"ease-out"});
-  tick();
-}
 function pickDepotForLine(lineCode){
   const stops=DATA[lineCode].s.flat().map(x=>x.toLowerCase());
   const matchB=DEPOTS.berthee.keywords.some(kw=>stops.some(st=>st.includes(kw)));
@@ -873,7 +1025,7 @@ function buildChain(count,prefs,mw=MAX_WAIT){
   return best}
 
 function generateDaySheet(){
-  const count=Math.min(5,Math.max(1,+fState.lineCount||1));
+  const count=Math.min(5,Math.max(1,(fState.prefLines||[]).length,2+Math.floor(Math.random()*3)));
   let chain=[];
   for(const mw of [MAX_WAIT,60,180,600,Infinity]){chain=buildChain(count,fState.prefLines||[],mw);if(chain.length)break}
   const assignedLines=chain.map(n=>n.L);
@@ -902,49 +1054,323 @@ function generateDaySheet(){
   saveFState();
 }
 
+
+/* =========================================================
+   ÉCRANS NV (JS)
+   ========================================================= */
+let origin="home";
+const NVH=document.createElement("div");NVH.id="nv";NVH.hidden=true;document.body.appendChild(NVH);
+let nvT=null;
+const nvShow=h=>{NVH.hidden=false;NVH.innerHTML=h;document.documentElement.classList.add("nv-open")};
+function nvHide(){if(NVH.hidden)return;NVH.hidden=true;NVH.innerHTML="";document.documentElement.classList.remove("nv-open");clearInterval(nvT);nvT=null}
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const BUSIMG=NVI+"1795474293-true.png",RERIMG=NVI+"1795474387-true.png";
+const RERB=`<img class="nv-rerimg" src="${RERIMG}" alt="RER">`;
+const nvN=s=>/ RER$/.test(s)?esc(short(s))+RERB:esc(s);
+const TRAM='<svg class="nv-tr" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="3" y="1.5" width="10" height="10" rx="2"/><path d="M3 7h10M5 14l-1.5 1.5M11 14l1.5 1.5"/></svg>';
+const nvLineN=s=>nvN(s.replace(" §T","")) + (/§T/.test(s)?TRAM:"");
+const nvBusLogo=n=>n==="N76"?'<span class="nv-bus n">N<sup>*</sup></span>':`<img class="nv-busimg" src="${BUSIMG}" alt="BUS">`;
+const nvPill=n=>{const c=LINE_COLOR[n]||"#0b6f86";return `<i class="nv-pill" style="--lc:${c};--li:${ink(c)==="#000"?"#25303B":"#fff"}">${n}</i>`};
+
+/* ---------- Écran 1 : véhicules ---------- */
+let nvBrand="man";
+function nvBuses(){
+  const own=b=>FREE_BUSES.includes(b)||fState.selectedPaid.includes(b);
+  nvShow(`<div class="nv-sc">
+    <div class="nv-top"><h1>${ic("d")} Mes véhicules</h1><p>Cochez les véhicules que vous possédez.</p></div>
+    <div class="nv-mid"><div class="nv-pan">
+      <div class="nv-tabs" id="nv-tabs"></div>
+      <div class="nv-cards" id="nv-cards"></div>
+    </div></div>
+    <div class="nv-bot">
+      <button type="button" class="nv-red" id="nv-back">${ic("g")} Retour</button>
+      <div class="nv-mini"><button type="button" id="nv-all">Tout cocher</button><button type="button" id="nv-none">Tout décocher</button></div>
+      <button type="button" class="nv-gray" id="nv-next"><span>Suivant</span>${ic("d")}</button>
+    </div></div>`);
+  const draw=(anim)=>{
+    $("#nv-tabs").innerHTML=NV_BRANDS.map(([k,n,f])=>`<button type="button" class="nv-tab${k===nvBrand?" on":""}" data-k="${k}" title="${n}"><img src="${NVI}${f}" alt="${n}"></button>`).join("");
+    const list=Object.entries(BUS_META).filter(([,m])=>m.b===nvBrand);
+    $("#nv-cards").innerHTML=list.length?list.map(([name,m],j)=>`<button type="button" class="nv-bc${own(name)?" on":""}" data-b="${esc(name)}" title="${esc(name)}" style="animation-delay:${anim?j*45:0}ms${anim?"":";animation:none"}"><span class="nv-bw"><img src="${m.img}" alt="${esc(m.t)}"></span><img class="nv-ck" src="${COCHE}" alt=""></button>`).join(""):`<div class="nv-empty">Aucun véhicule pour ce constructeur.</div>`;
+  };
+  const paint=()=>$("#nv-cards").querySelectorAll(".nv-bc").forEach(c=>c.classList.toggle("on",own(c.dataset.b)));
+  draw(true);
+  $("#nv-tabs").onclick=e=>{const b=e.target.closest(".nv-tab");if(!b||b.dataset.k===nvBrand)return;nvBrand=b.dataset.k;draw(true)};
+  $("#nv-cards").onclick=e=>{const c=e.target.closest(".nv-bc");if(!c)return;const n=c.dataset.b;if(FREE_BUSES.includes(n))return;
+    fState.selectedPaid=fState.selectedPaid.includes(n)?fState.selectedPaid.filter(x=>x!==n):[...fState.selectedPaid,n];saveFState();paint()};
+  $("#nv-all").onclick=()=>{fState.selectedPaid=[...PAID_BUSES];saveFState();paint()};
+  $("#nv-none").onclick=()=>{fState.selectedPaid=[];saveFState();paint()};
+  $("#nv-back").onclick=()=>{nvHide();home()};
+  $("#nv-next").onclick=()=>{fStep=2;fichesMenu()};
+}
+
+/* ---------- Écran 2 : lignes du réseau ---------- */
+function nvLines(){
+  const codes=NV_LINE_ORDER.filter(c=>DATA[c]);
+  nvShow(`<div class="nv-sc">
+    <div class="nv-top"><h1>${ic("d")} Les lignes du réseau</h1><p>Choisissez vos préférences d’affectation.</p></div>
+    <div class="nv-mid"><div class="nv-grid" id="nv-grid">${codes.map((c,j)=>{const t=LINE_TILE[c];const on=(fState.prefLines||[]).includes(c);
+      return `<button type="button" class="nv-lt${on?" on":""}" data-l="${c}" style="animation-delay:${j*30}ms"><span class="nv-lw"><img src="${NVI}${t.i}" alt="Ligne ${c}"></span><img class="nv-ck" src="${COCHE}" alt=""></button>`}).join("")}</div></div>
+    <div class="nv-bot">
+      <button type="button" class="nv-red" id="nv-back">${ic("g")} Retour</button>
+      <button type="button" class="nv-gray" id="nv-gen"><span>Générer ma fiche de service</span>${ic("d")}</button>
+    </div></div>`);
+  $("#nv-grid").onclick=e=>{const t=e.target.closest(".nv-lt");if(!t)return;const l=t.dataset.l;
+    if(!Array.isArray(fState.prefLines))fState.prefLines=[];
+    fState.prefLines=fState.prefLines.includes(l)?fState.prefLines.filter(x=>x!==l):[...fState.prefLines,l];saveFState();t.classList.toggle("on")};
+  $("#nv-back").onclick=()=>{fStep=1;fichesMenu()};
+  $("#nv-gen").onclick=()=>{generateDaySheet();renderSheetView()};
+}
+
 function fichesMenu(){
   tab="f";mark();setLineTheme(null);
-  if(fState.generated){renderSheetView();return}
-  const dots=`<div class="steps"><i class="${fStep===1?"on":""}"></i><i class="${fStep===2?"on":""}"></i></div>`;
-  if(fStep===1){
-    const card=(b,free)=>{const on=free||fState.selectedPaid.includes(b);
-      return `<button type="button" class="bcard ${on?"on":""} ${free?"free":""}" title="${b}" data-b="${b.replace(/"/g,"&quot;")}" ${free?"disabled":""}>${busImg(b,"bimg")}<span class="tick">✓</span></button>`};
-    A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-home">${ic("g")} Lignes</button></div>
-    <div class="v"><h1 style="font-size:clamp(34px,7vw,70px)">mes bus</h1>
-    <p class="hint">Coche les véhicules que tu possèdes. Ton choix est gardé sur cet appareil.</p>${dots}</div>
-    <div class="ctl" style="justify-content:flex-start;margin:0 0 14px;gap:10px"><button type="button" class="btn g" id="all-on" style="font-size:15px;min-width:0">Tout cocher</button><button type="button" class="btn g" id="all-off" style="font-size:15px;min-width:0">Tout décocher</button></div>
-    <div class="bgrid" id="paid-list">${PAID_BUSES.map(b=>card(b,false)).join("")}${FREE_BUSES.map(b=>card(b,true)).join("")}</div>
-    <div class="act"><button type="button" class="btn" id="f-next">Suivant ${ic("d")}</button></div>`;
-    $("#f-home").onclick=()=>home();
-    const refresh=()=>{A.querySelectorAll(".bcard:not(.free)").forEach(c=>c.classList.toggle("on",fState.selectedPaid.includes(c.dataset.b)))};
-    A.querySelectorAll(".bcard:not(.free)").forEach(c=>c.onclick=()=>{const n=c.dataset.b;
-      fState.selectedPaid=fState.selectedPaid.includes(n)?fState.selectedPaid.filter(x=>x!==n):[...fState.selectedPaid,n];saveFState();refresh()});
-    $("#all-on").onclick=()=>{fState.selectedPaid=[...PAID_BUSES];saveFState();refresh()};
-    $("#all-off").onclick=()=>{fState.selectedPaid=[];saveFState();refresh()};
-    $("#f-next").onclick=()=>{fStep=2;fichesMenu()};
-    return;
+  if(fState.generated){nvHide();renderSheetView();return}
+  fStep===1?nvBuses():nvLines();
+}
+
+/* ---------- Écran 3 : régulation ---------- */
+let nvCons=[],nvMsgs=[],nvLocal=[],nvChatSig="";
+const nvFlat=v=>v==null?[]:typeof v==="string"?[v]:typeof v==="object"?Object.values(v).map(x=>typeof x==="string"?x:x&&x.texte).filter(Boolean):[];
+function nvAuto(){
+  const s=R(),rel=i-startIdx,now=Date.now(),last=s.length-1,o=[];
+  if(rel===0){
+    const dep=sTs(i)+dl*60000;
+    o.push(now<dep-3e4?`Départ prévu à ${fmt(dep)} de ${short(s[0])}. Attendez l’heure théorique avant de partir.`:`Heure de départ atteinte : vous pouvez partir.`);
   }
-  const allCodes=Object.keys(DATA);
-  A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-back">${ic("g")} Mes bus</button></div>
-  <div class="v"><h1 style="font-size:clamp(34px,7vw,70px)">mes lignes</h1>
-  <p class="hint">Combien de lignes veux-tu faire aujourd’hui, et lesquelles te tentent ? Le reste est tiré au sort.</p>${dots}</div>
-  <div class="card pk v" style="margin-bottom:16px">
-    <div class="lab" style="margin-bottom:10px">Nombre de lignes (1 à 5)</div>
-    <div class="cnt">${[1,2,3,4,5].map(n=>`<button type="button" class="${fState.lineCount===n?"on":""}" data-cnt="${n}">${n}</button>`).join("")}</div>
-    <div class="line-cards" id="pref-cards">${allCodes.map(c=>{const active=(fState.prefLines||[]).includes(c);
-      return `<button type="button" class="lcard ${active?"on":""}" data-l="${c}" style="--lc:${DATA[c].c};--li:${ink(DATA[c].c)}"><span class="lbk">${c}</span><span class="lb2"><span>${DATA[c].s[0][0]}</span><span class="sep-v">${ic("bas")}</span><span>${DATA[c].s[0].at(-1)}</span></span><span class="lk">✓</span></button>`}).join("")}</div>
-  </div>
-  <div class="act" style="margin-top:0"><button type="button" class="btn" id="gen-sheet">Générer ma fiche de service ${ic("d")}</button></div>`;
-  $("#f-back").onclick=()=>{fStep=1;fichesMenu()};
-  A.querySelectorAll("[data-cnt]").forEach(btn=>btn.onclick=()=>{fState.lineCount=+btn.dataset.cnt;saveFState();fichesMenu()});
-  A.querySelectorAll("#pref-cards .lcard").forEach(card=>card.onclick=()=>{const l=card.dataset.l;
-    if(!Array.isArray(fState.prefLines))fState.prefLines=[];
-    fState.prefLines=fState.prefLines.includes(l)?fState.prefLines.filter(x=>x!==l):[...fState.prefLines,l];saveFState();card.classList.toggle("on")});
-  $("#gen-sheet").onclick=()=>{generateDaySheet();renderSheetView()};
+  if(rel<last){
+    if(dl<0)o.push(`Vous êtes en avance de ${-dl} min : patientez à l’arrêt ${short(s[rel])} jusqu’à ${fmt(sTs(i))}.`);
+    else if(dl>=8)o.push(`Retard important (${dl} min) : réduisez les temps d’arrêt et signalez-le dans les discussions.`);
+    else if(dl>=3)o.push(`Retard de ${dl} min : limitez le temps d’arrêt à chaque station.`);
+    else if(rel>0)o.push(`À l’heure : poursuivez normalement.`);
+  }else{
+    if(startIdx===0&&end===DATA[line].s[dir].length-1){
+      const k=1-dir,lastO=DATA[line].s[k].length-1,calc=sTs(end)+LAYOVER*MIN;
+      const p=nextCourse(line,k,0,lastO,calc)||pickCourse(line,k,0,lastO,calc);
+      if(p)o.push(`Terminus : faites descendre les voyageurs. Prochain départ à ${fmt(p.base+tOf(p.c,0)*MIN)} vers ${short(DATA[line].s[k].at(-1))}.`);
+    }else o.push(`Fin du partiel : terminez votre service.`);
+  }
+  return o;
+}
+const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
+const anim=(el,kf,o)=>(RM||!el||!el.animate)?null:el.animate(kf,o);
+const EASE="cubic-bezier(.2,.8,.2,1)";
+function nvSwap(el,html,dn){if(!el||el.innerHTML===html)return;const had=el.innerHTML!=="";el.innerHTML=html;if(had)anim(el,[{opacity:0,transform:`translateY(${14*dn}px)`},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
+let nvConsSig="",nvKeys=[],nvPrevI=null,nvShown=0,nvTw=0,nvR2a=null;
+function nvRenderCons(){
+  const e=$("#nv-cons");if(!e||line==null||dir===null)return;
+  const items=[...nvCons.map(t=>[t,1]),...nvAuto().map(t=>[t,0])];
+  const sig=JSON.stringify(items);if(sig===nvConsSig)return;nvConsSig=sig;
+  const prev=new Set([...e.children].map(p=>p.textContent));
+  e.innerHTML=items.map(([t,f])=>`<p${f?' class="f"':""}>${esc(t)}</p>`).join("");
+  [...e.children].forEach((p,j)=>{if(!prev.has(p.textContent))anim(p,[{opacity:0,transform:"translateX(-12px)"},{opacity:1,transform:"none"}],{duration:380,delay:j*60,easing:EASE,fill:"backwards"})});
+}
+const nvKey=m=>m.t+"|"+m.a+"|"+m.m;
+const nvMsgHtml=(m,me)=>`<div class="nv3-msg${m.a===me?" me":""}"><b>${esc(m.a)}</b><em>${fmt(m.t)}</em><br>${esc(m.m)}</div>`;
+function nvRenderChat(force){
+  const e=$("#nv-msgs");if(!e)return;
+  const all=[...nvMsgs];
+  nvLocal.forEach(l=>{if(!all.some(m=>m.t===l.t&&m.a===l.a&&m.m===l.m))all.push(l)});
+  all.sort((a,b)=>a.t-b.t);
+  const keys=all.map(nvKey);
+  if(!force&&keys.join("¦")===nvKeys.join("¦"))return;
+  const stick=e.scrollHeight-e.scrollTop-e.clientHeight<40;
+  const me=nvPseudo();
+  const prefix=nvKeys.length<=keys.length&&nvKeys.every((k,j)=>k===keys[j]);
+  if(!prefix||!nvKeys.length){e.innerHTML=all.map(m=>nvMsgHtml(m,me)).join("")}
+  else for(let j=nvKeys.length;j<all.length;j++){
+    const t=document.createElement("div");t.innerHTML=nvMsgHtml(all[j],me);const d=t.firstChild;e.appendChild(d);
+    anim(d,[{opacity:0,transform:"translateY(12px) scale(.97)"},{opacity:1,transform:"none"}],{duration:340,easing:EASE});
+  }
+  nvKeys=keys;
+  if(stick||force)e.scrollTo({top:e.scrollHeight,behavior:RM?"auto":"smooth"});
+}
+const nvPseudo=()=>{try{return localStorage.getItem("regulation_pseudo")||""}catch(_){return""}};
+async function nvPoll(){
+  if(NVH.hidden||line==null||dir===null)return;
+  const L=encodeURIComponent(line);
+  try{const[a,b]=await Promise.all([fetch(`${DB}/consignes/${L}.json`).then(r=>r.json()),fetch(`${DB}/consignes/all.json`).then(r=>r.json())]);
+    const n=[...nvFlat(b),...nvFlat(a)];if(n.join("|")!==nvCons.join("|")){nvCons=n;nvRenderCons()}}catch(_){}
+  try{const j=await fetch(`${DB}/discussions/${L}.json?orderBy="$key"&limitToLast=60`).then(r=>r.json());
+    if(j&&!j.error){nvMsgs=Object.values(j).filter(m=>m&&m.m);nvRenderChat()}}catch(_){}
+}
+function nvSend(){
+  const inp=$("#nv-in"),txt=inp.value.trim();if(!txt)return;
+  let p=nvPseudo();
+  if(!p){p=(prompt("Choisissez votre pseudo pour les discussions :","")||"").trim().slice(0,24);if(!p)return;try{localStorage.setItem("regulation_pseudo",p)}catch(_){}}
+  const m={a:p,m:txt.slice(0,300),t:Date.now()};
+  nvLocal.push(m);inp.value="";nvRenderChat(true);
+  fetch(`${DB}/discussions/${encodeURIComponent(line)}.json`,{method:"POST",body:JSON.stringify(m)}).catch(()=>{});
+}
+function nvSetDeparture(){
+  const v=prompt("Heure de départ du service (HH:MM) :",fmt(sTs(startIdx)));if(!v)return;
+  const m=/^(\d{1,2})\s*[:h]\s*(\d{2})$/.exec(v.trim());if(!m)return;
+  const x=new Date();x.setHours(+m[1],+m[2],0,0);
+  let t=x.getTime();if(t<Date.now()-12*36e5)t+=864e5;
+  const p=nearestCourse(line,dir,startIdx,end,t);
+  cur={c:p.c,base:p.base,off:t-p.ts};upd();push();
+}
+function quit(){
+  const o=origin,k=dir;leave();
+  if(o==="sheet"){line=null;dir=null;tab="f";mark();renderSheetView()}
+  else if(o==="dest"){dest(k??0)}
+  else{dir=null;home()}
+}
+function view(){
+  const d=DATA[line],s=R(),col=d.c;
+  setLineTheme(line);nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
+  nvShow(`<div class="nv3" style="--lc:${col};--li:${ink(col)}">
+    <header class="nv3-h">
+      <button type="button" class="nv3-logo" id="nv-quit" title="Quitter la ligne">${nvBusLogo(line)}${nvPill(line)}</button>
+      <div class="nv3-dir"><small>direction</small><b id="nv-dest">${nvN(s.at(-1))}</b></div>
+      <div class="nv3-clk" id="nvc" title="Régler l’heure de départ">${fmt(Date.now())}</div>
+    </header>
+    <div class="nv3-b">
+      <section class="nv3-c nv3-l" style="--d:0s">
+        <span class="nv3-lab">Prochain arrêt / Next stop / Proxima parada</span>
+        <div class="nv3-ns"><span id="nv-ns"></span><em id="nv-nt"></em></div>
+        <ul class="nv3-ls" id="nv-ls"></ul>
+      </section>
+      <div class="nv3-bar"></div>
+      <div class="nv3-m">
+        <section class="nv3-c nv3-cons" style="--d:.08s"><span class="nv3-lab">Consignes de régulation</span><div id="nv-cons"></div></section>
+        <section class="nv3-c" style="--d:.16s">
+          <span class="nv3-lab">Outils de régulation</span>
+          <div class="nv3-tools">
+            <div class="nv3-dlt">
+              <div class="nv3-dbox"><b id="nv-d">0</b><small>min</small></div>
+              <div class="nv3-mini"><button type="button" data-v="5">+5</button><button type="button" data-v="1">+1</button><i></i><button type="button" data-v="-1">-1</button><button type="button" data-v="-5">-5</button></div>
+            </div>
+            <div class="nv3-nav">
+              <button type="button" class="nv3-nb nx" id="nv-next"><span id="nv-nl">Arrêt suivant</span>${ic("d")}</button>
+              <button type="button" class="nv3-nb pv" id="nv-prev">${ic("g")}<span>Arrêt précédent</span></button>
+            </div>
+          </div>
+        </section>
+        <section class="nv3-c" style="--d:.24s"><div class="nv3-ar-h"><span>Arrivée à :</span><span>dans:</span></div>
+          <div id="nv-ar">
+            <div class="nv3-ar-r"><span class="n" id="ar1n"></span><span class="t"><span class="nv-eta" id="ar1t"></span><small>min</small></span></div>
+            <div class="nv3-ar-r" id="ar2" hidden><span class="n" id="ar2n"></span><span class="t"><span class="nv-eta" id="ar2t"></span><small>min</small></span></div>
+          </div></section>
+      </div>
+      <section class="nv3-c nv3-r" style="--d:.32s">
+        <span class="nv3-lab">Discussions</span>
+        <div class="nv3-msgs" id="nv-msgs"></div>
+        <div class="nv3-in"><input id="nv-in" type="text" maxlength="300" placeholder="Écrire un message…" autocomplete="off"><button type="button" id="nv-send">Envoyer</button></div>
+      </section>
+    </div></div>`);
+  $("#nv-quit").onclick=quit;
+  $("#nv-next").onclick=next;$("#nv-prev").onclick=prev;
+  NVH.querySelectorAll(".nv3-mini button").forEach(b=>b.onclick=()=>ecart(+b.dataset.v));
+  $("#nvc").onclick=nvSetDeparture;
+  $("#nv-send").onclick=nvSend;
+  $("#nv-in").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();nvSend()}};
+  if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(line!=null&&dir!==null&&$("#nv-ls"))nvList(i-startIdx,dl*60000,1,true)});ro.observe($("#nv-ls"))}
+  clearInterval(nvT);nvT=setInterval(nvPoll,4000);nvPoll();
+  upd();
+}
+function nvList(rel,dm,dn,quiet){
+  const ul=$("#nv-ls"),s=R(),last=s.length-1;
+  if(!ul)return;
+  const rh=Math.max(28,Math.min(52,Math.floor(ul.clientHeight/9)||44));
+  const rhChanged=ul.style.getPropertyValue("--rh")!==rh+"px";
+  ul.style.setProperty("--rh",rh+"px");
+  /* 1 pastille = 1 arrêt restant après le prochain (terminus inclus), 9 au maximum */
+  const want=[];for(let k=rel+1;k<=last&&want.length<9;k++)want.push(k);
+  let trk=ul.querySelector(".nv3-trk");
+  if(!trk){trk=document.createElement("i");trk.className="nv3-trk";ul.prepend(trk)}
+  const setTrk=n=>{trk.style.height=Math.max(0,n-1)*rh+"px"};
+  const rows=[...ul.children].filter(li=>li.dataset&&li.dataset.k!==undefined&&!li.classList.contains("gh"));
+  const old=new Map(rows.map(li=>[+li.dataset.k,li]));
+  const same=old.size===want.length&&want.every(k=>old.has(k));
+  const stamp=li=>{
+    const em=li.querySelector("em"),t=fmt(sTs(startIdx+(+li.dataset.k))+dm);
+    if(em.textContent===t)return;
+    const had=em.textContent!=="";em.textContent=t;
+    if(had)anim(em,[{opacity:.2,transform:"translateY(-4px)"},{opacity:1,transform:"none"}],{duration:260,easing:EASE});
+  };
+  if(same){
+    rows.forEach(stamp);
+    if(quiet){if(rhChanged){trk.style.transition="none";setTrk(want.length);void trk.offsetHeight;trk.style.transition=""}return}
+  }
+  const tops=new Map();old.forEach((li,k)=>tops.set(k,li.getBoundingClientRect().top));
+  const ulTop=ul.getBoundingClientRect().top;
+  /* sortie : l'arrêt disparaît en glissant, sans trait ni double pastille durable */
+  old.forEach((li,k)=>{if(!want.includes(k)){
+    const r=li.getBoundingClientRect(),g=li.cloneNode(true);
+    g.classList.add("gh");g.setAttribute("aria-hidden","true");
+    g.style.cssText=`position:absolute;left:0;right:0;top:${r.top-ulTop}px;height:${r.height}px;margin:0;pointer-events:none`;
+    ul.appendChild(g);li.remove();
+    const a=anim(g,[{opacity:1,transform:"none"},{opacity:0,transform:`translateY(${-rh*.7*dn}px)`}],{duration:240,easing:EASE,fill:"forwards"});
+    if(a)a.onfinish=()=>g.remove();else g.remove();
+  }});
+  const first=old.size===0;
+  want.forEach((k,j)=>{
+    let li=old.get(k);
+    if(!li){li=document.createElement("li");li.dataset.k=k;li.innerHTML=`<i class="nv-dot"></i><b>${nvN(s[k])}</b><em></em>`}
+    li.className=j===want.length-1?"l":"";
+    stamp(li);
+    ul.appendChild(li);
+  });
+  /* trait : se dessine à l'ouverture, puis suit exactement le nombre de pastilles */
+  if(first){
+    trk.style.transition="none";trk.style.height="0px";void trk.offsetHeight;trk.style.transition="";
+    trk.style.setProperty("--td",(300+want.length*50)+"ms");
+  }else trk.style.setProperty("--td",".4s");
+  setTrk(want.length);
+  /* fin de course : plus de pastille, un simple message */
+  const note=ul.querySelector(".nv3-endn");
+  if(!want.length){
+    if(!note){const n=document.createElement("li");n.className="nv3-endn";n.textContent="Dernier arrêt de la course";ul.appendChild(n);
+      anim(n,[{opacity:0,transform:"translateY(8px)"},{opacity:.7,transform:"none"}],{duration:380,delay:200,easing:EASE,fill:"backwards"})}
+  }else if(note)note.remove();
+  want.forEach((k,j)=>{
+    const li=ul.querySelector(`li[data-k="${k}"]:not(.gh)`);
+    if(old.has(k)){const dy=tops.get(k)-li.getBoundingClientRect().top;if(Math.abs(dy)>1)anim(li,[{transform:`translateY(${dy}px)`},{transform:"none"}],{duration:400,easing:EASE})}
+    else{
+      anim(li,[{opacity:0,transform:`translateY(${rh*.6*dn}px)`},{opacity:1,transform:"none"}],{duration:400,delay:first?j*45:0,easing:EASE,fill:"backwards"});
+      anim(li.firstChild,[{transform:"scale(.2)"},{transform:"scale(1)"}],{duration:440,delay:first?j*45+60:60,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"backwards"});
+    }
+  });
+}
+function nvDelta(){
+  const el=$("#nv-d"),box=el.parentNode,to=dl,from=nvShown;
+  const paint=v=>{const t=(v>0?"+":"")+v;el.textContent=t;el.style.fontSize=(t.length<=2?52:t.length===3?38:30)+"px"};
+  el.style.color=to>0?"#ff7b6e":to<0?"#6fe39a":"#fff";
+  cancelAnimationFrame(nvTw);
+  if(RM||from===to){nvShown=to;paint(to);return}
+  const t0=performance.now();
+  const step=t=>{const p=Math.min(1,(t-t0)/300),e=1-Math.pow(1-p,3);nvShown=p<1?Math.round(from+(to-from)*e):to;paint(nvShown);if(p<1)nvTw=requestAnimationFrame(step)};
+  nvTw=requestAnimationFrame(step);
+  anim(box,[{transform:"scale(1)"},{transform:"scale(1.07)"},{transform:"scale(1)"}],{duration:320,easing:EASE});
+}
+function upd(){
+  const s=R(),rel=i-startIdx,dm=dl*60000,last=s.length-1;
+  const ns=$("#nv-ns");if(!ns)return;
+  const dn=nvPrevI==null||i>=nvPrevI?1:-1;nvPrevI=i;
+  nvSwap(ns,nvN(s[rel]),dn);
+  nvSwap($("#nv-nt"),fmt(sTs(i)+dm),dn);
+  nvList(rel,dm,dn);
+  nvDelta();
+  const full=startIdx===0&&end===DATA[line].s[dir].length-1;
+  $("#nv-prev").disabled=i<=startIdx;
+  nvSwap($("#nv-nl"),i<end?"Arrêt suivant":(full?"Changer de sens":"Fin du partiel"),1);
+  nvSwap($("#ar1n"),nvN(s[last]),1);$("#ar1t").dataset.ts=sTs(end)+dm;
+  const r2=$("#ar2");
+  if(rel<last){
+    if(nvR2a){nvR2a.onfinish=null;nvR2a.cancel();nvR2a=null}
+    $("#ar2t").dataset.ts=sTs(i)+dm;nvSwap($("#ar2n"),nvN(s[rel]),dn);
+    if(r2.hidden){r2.hidden=false;anim(r2,[{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
+  }else if(!r2.hidden){
+    const a2=anim(r2,[{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px)"}],{duration:260,easing:EASE,fill:"forwards"});
+    nvR2a=a2;
+    if(a2)a2.onfinish=()=>{r2.hidden=true;a2.cancel();if(nvR2a===a2)nvR2a=null};else r2.hidden=true;
+  }
+  nvRenderCons();
+  tick();
 }
 
 function launchLineRegulation(seg){
   if(!seg||!DATA[seg.line])return;
+  origin="sheet";
   line=seg.line;
   dl=0;
   const dIdx=+(seg.dirIdx||0);
@@ -977,6 +1403,7 @@ function alignRailToCards(){
 }
 
 function renderSheetView(){
+  nvHide();
   const g=fState.generated;
   if(!g){fichesMenu();return;}
   setLineTheme(g.lines[0]||null);
