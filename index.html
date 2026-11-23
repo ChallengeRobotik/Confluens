@@ -325,6 +325,68 @@ button.row:active{transform:scale(.99)}
   .tb{grid-template-columns:repeat(2,54px);gap:4px;padding:0 6px 0 0}.tb b{height:40px;font-size:18px}.tb b.end{font-size:15px;padding:0 8px}
   .more{width:42px}.rowx{gap:6px}
 }
+
+/* =========================================================
+   REFONTE PROPRE — indices plats (comme l'accueil), menu des lignes, fiche
+   ========================================================= */
+.lbg{background:var(--lc);color:var(--li,#fff);font-weight:700;letter-spacing:0;box-shadow:none;border-radius:7px}
+.lbg.s{font-size:15px;height:24px;min-width:40px;padding:0 8px;border-radius:6px}
+.lbg.m{font-size:19px;height:32px;min-width:52px;padding:0 10px;border-radius:8px}
+.lbg.l{font-size:24px;height:40px;min-width:62px;padding:0 12px;border-radius:9px}
+.lbg.xl{font-size:28px;height:48px;min-width:72px;padding:0 14px;border-radius:10px}
+
+/* Menu des lignes : panneau gris légèrement plus clair que le fond */
+.card.pk{background:#171f33;color:#fff;box-shadow:none;--arr:none}
+.card.pk .lab{color:var(--on-dark-2);font-style:normal;font-size:14px}
+.pk .cnt{background:rgba(255,255,255,.06);border-radius:14px;padding:4px;gap:2px;margin-bottom:18px}
+.pk .cnt button{color:#fff;opacity:.75;border-radius:10px;height:42px;min-width:50px;font-weight:700}
+.pk .cnt button:hover{background:rgba(255,255,255,.08);opacity:1}
+.pk .cnt button.on{background:var(--blue);color:#fff;opacity:1;box-shadow:none}
+.pk .line-cards{grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px}
+.pk .lcard{flex-direction:row;align-items:stretch;min-height:74px;border-radius:12px;background:#222c45;color:#fff;box-shadow:none;--arr:none;transition:background .15s,box-shadow .15s}
+.pk .lcard:hover{transform:none;background:#2a3554;box-shadow:none}
+.pk .lcard .lbk{flex:0 0 76px;display:flex;align-items:center;justify-content:center;background:var(--lc);color:var(--li);font-size:30px;font-weight:700;letter-spacing:-.01em}
+.pk .lcard .lb2{flex:1;min-width:0;justify-content:center;gap:2px;padding:10px 12px 10px 14px;font-size:14px;font-weight:700;line-height:1.25;color:#fff}
+.pk .lcard .lb2 span{overflow:hidden;text-overflow:ellipsis}
+.pk .lcard .lb2 .sep-v .arr{height:.78em;opacity:.6;margin:0}
+.pk .lcard .lk{align-self:center;flex:none;margin-right:14px;width:24px;height:24px;font-size:13px;border:2px solid rgba(255,255,255,.28);color:transparent;background:transparent}
+.pk .lcard.on{background:#2a3554;box-shadow:inset 0 0 0 2px #fff;transform:none}
+.pk .lcard.on .lb2{background:none}
+.pk .lcard.on .lk{background:#fff;border-color:#fff;color:#171f33}
+@media(max-width:560px){.pk .line-cards{grid-template-columns:1fr;gap:8px}.pk .lcard .lbk{font-size:28px;flex-basis:68px}.pk .lcard .lb2{font-size:14px;padding:10px 12px}}
+
+/* Fiche de service : tout à plat */
+#f-view .card{background:#1d4ab0;box-shadow:none;border-radius:var(--r)}
+#f-view .f-bus{font-size:26px;font-weight:700}
+#f-view .card .badge{background:rgba(255,255,255,.14);box-shadow:none;font-weight:700}
+.f-launch-bar{gap:10px;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,.18)}
+.f-launch-bar .btn.sheet-go{background:#fff;color:var(--ink);box-shadow:none;border-radius:10px}
+.f-launch-bar .btn.sheet-go:hover{background:#eef2fb}
+.f-rail-line{background:repeating-linear-gradient(to bottom,rgba(255,255,255,.28) 0 6px,transparent 6px 12px)}
+.f-node{background:var(--lc,var(--blue-d));border-color:var(--page);box-shadow:none}
+.f-blocks{gap:10px}
+.f-card{border-radius:14px;padding:16px 20px 16px 26px;box-shadow:none;background:#fff}
+.f-card:before{width:6px;background:var(--lc,#8da0c8)}
+.f-card.walk{background:#e6ebf5}
+.f-card.walk:before{background:#9aa8c9}
+.f-card.run,.f-card.hlp{background:#fff;box-shadow:none}
+.f-card.run:before,.f-card.hlp:before{width:6px;background:var(--lc)}
+.f-card.brk{background:#efe9da;box-shadow:none;padding:14px 20px 14px 26px}
+.f-card.brk:before{background:#c9b27a}
+.f-card.brk .lab{font-style:normal;font-size:14px;color:#6b5f3f}
+.f-title{font-size:clamp(18px,2.8vw,23px)}
+.f-top{display:flex;align-items:center;gap:14px}
+.f-times{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-top:12px}
+.f-time{font-size:15px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;background:#eef1f8;border-radius:8px;padding:6px 11px}
+.f-card.run .btn.sheet-go{background:var(--blue);color:#fff;box-shadow:none;border-radius:10px;--arr:none}
+.f-card.run .btn.sheet-go:hover{background:var(--blue-h)}
+.f-card.run .btn.sheet-go .lbg{background:var(--lc);color:var(--li)}
+.f-card .badge,.f-card.run .badge{background:#eef1f8;box-shadow:none}
+.f-card.run .f-endpoints{border-top:1px solid #e3e8f3;margin-top:14px;padding-top:12px}
+.f-card.run .f-endpoints b{color:var(--muted);font-style:normal;font-size:12.5px;margin-bottom:2px}
+.f-route:before{width:4px;background:var(--lc)}
+.f-line-tag img.hlp-lg{height:auto}
+@media(max-width:560px){.f-card{padding:14px 14px 14px 22px}.f-times .btn{flex:1 1 100%}}
 </style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
 <script>
 
@@ -866,11 +928,11 @@ function fichesMenu(){
   A.innerHTML=`<div class="top"><button type="button" class="btn g" id="f-back">${ic("g")} Mes bus</button></div>
   <div class="v"><h1 style="font-size:clamp(34px,7vw,70px)">mes lignes</h1>
   <p class="hint">Combien de lignes veux-tu faire aujourd’hui, et lesquelles te tentent ? Le reste est tiré au sort.</p>${dots}</div>
-  <div class="card v" style="margin-bottom:16px">
+  <div class="card pk v" style="margin-bottom:16px">
     <div class="lab" style="margin-bottom:10px">Nombre de lignes (1 à 5)</div>
     <div class="cnt">${[1,2,3,4,5].map(n=>`<button type="button" class="${fState.lineCount===n?"on":""}" data-cnt="${n}">${n}</button>`).join("")}</div>
     <div class="line-cards" id="pref-cards">${allCodes.map(c=>{const active=(fState.prefLines||[]).includes(c);
-      return `<button type="button" class="lcard ${active?"on":""}" data-l="${c}" style="--lc:${DATA[c].c};--li:${ink(DATA[c].c)}"><span class="lh"><span class="ln">${c}</span><span class="lk">✓</span></span><span class="lb2"><span>${DATA[c].s[0][0]}</span><span class="sep-v">${ic("bas")}</span><span>${DATA[c].s[0].at(-1)}</span></span></button>`}).join("")}</div>
+      return `<button type="button" class="lcard ${active?"on":""}" data-l="${c}" style="--lc:${DATA[c].c};--li:${ink(DATA[c].c)}"><span class="lbk">${c}</span><span class="lb2"><span>${DATA[c].s[0][0]}</span><span class="sep-v">${ic("bas")}</span><span>${DATA[c].s[0].at(-1)}</span></span><span class="lk">✓</span></button>`}).join("")}</div>
   </div>
   <div class="act" style="margin-top:0"><button type="button" class="btn" id="gen-sheet">Générer ma fiche de service ${ic("d")}</button></div>`;
   $("#f-back").onclick=()=>{fStep=1;fichesMenu()};
@@ -964,15 +1026,13 @@ function renderSheetView(){
     }
     const rIdx=runSegments.indexOf(seg);
     return `<div class="f-card run ${ink(seg.color)==="#000"?"lt":""}" style="animation-delay:${idx*50}ms;--lc:${seg.color};--li:${ink(seg.color)}">
-      <div class="f-row" style="justify-content:space-between;flex-wrap:wrap;gap:10px">
-        <div class="f-row" style="gap:12px">
-          ${img(seg.line,"f-ico")}
-          <div class="f-title">${sn(seg.from)} ${ic("d")} ${sn(seg.to)}</div>
-        </div>
-        <div class="f-row" style="gap:8px;flex-wrap:wrap">
-          <span class="badge">${seg.startTime} → ${seg.endTime}</span>
-          <button type="button" class="btn sm sheet-go" data-direct-run="${rIdx}">Commencer la ligne ${img(seg.line,"btn-idl")} ${ic("d")}</button>
-        </div>
+      <div class="f-top">
+        ${img(seg.line,"f-ico")}
+        <div class="f-title">${sn(seg.from)} ${ic("d")} ${sn(seg.to)}</div>
+      </div>
+      <div class="f-times">
+        <span class="f-time">${seg.startTime} → ${seg.endTime}</span>
+        <button type="button" class="btn sm sheet-go" data-direct-run="${rIdx}">Commencer la ligne ${img(seg.line,"btn-idl")} ${ic("d")}</button>
       </div>
       <div class="f-endpoints">
         <div><b>Point de départ</b>${seg.from} (${seg.startTime})</div>
