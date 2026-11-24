@@ -43,6 +43,44 @@ label{display:block;font-size:14px;color:var(--ink)}
 #md{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;place-items:center;padding:14px}
 .mb{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:18px;width:min(520px,100%);max-height:92vh;overflow:auto}.mb .bs{display:flex;gap:8px;flex-wrap:wrap}
 #tt{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;border-radius:12px;padding:10px 16px;z-index:60;display:none}
+
+/* ===== Écran d'accueil « Prochains départs » — repris à l'identique d'index.html ===== */
+:root{--glass:rgba(255,255,255,.12);--on-dark-2:rgba(255,255,255,.72)}
+main[data-t="l"]{max-width:1100px;padding:clamp(16px,4vw,40px);padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+.hint{color:var(--on-dark-2);margin:6px 0 0;font-size:16px;line-height:1.4;max-width:560px}
+.hero{margin:6px 0 20px}.hero .hint{margin:4px 0 0}
+.hero h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margin:.1em 0 .25em;font-weight:700;color:#fff}
+.v{animation:in .55s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes pt{0%,49.99%{opacity:1}50%,100%{opacity:0}}
+.rerl{height:1.1em;width:auto;max-width:none;object-fit:contain;flex:none;vertical-align:-.16em;margin-left:15px;filter:none}
+.bdx{display:flex;flex-direction:column;gap:12px}
+.rowx{display:flex;gap:10px;align-items:stretch}
+.pop .rowx{animation:in .55s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*45ms)}
+.drow{flex:1;min-width:0;display:flex;align-items:stretch;min-height:86px;padding:0;overflow:hidden;font:inherit;text-align:left;cursor:pointer;border:0;border-radius:14px;background:var(--surface);color:var(--ink);box-shadow:0 4px 14px rgba(0,0,0,.25);transition:transform .15s,background .15s}
+button.drow:hover{transform:translateY(-1px);background:#eef2fa}
+button.drow:active{transform:scale(.99)}
+.drow.off{cursor:default}
+.rowx.off .drow{background:#c3c9d8;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+.rowx.off .dn{color:#7a839e}
+.rowx.off .tb b{opacity:.5}
+.rowx.off .more:disabled{cursor:default;pointer-events:none;opacity:.35}
+.lb{position:relative;flex:0 0 128px;width:128px;display:flex;align-items:center;justify-content:center;font-size:clamp(38px,8vw,56px);font-weight:700;letter-spacing:-.02em;background:var(--lc)}
+.lb.tri:after{content:"";position:absolute;inset:0;background:#000;clip-path:polygon(100% 0,100% 100%,0 100%);animation:pt 2s linear infinite}
+.dn{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:0 18px;color:var(--ink);font-weight:700;font-size:clamp(18px,3.8vw,30px);line-height:1.1}
+.tb{display:grid;grid-template-columns:repeat(2,92px);gap:8px;align-items:center;padding:0 14px 0 6px}
+.tb b{height:48px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#000;color:var(--led);font-size:26px;font-variant-numeric:tabular-nums}
+.tb b.end{grid-column:1/-1;font-size:22px;padding:0 16px}
+.mn:not(.clk):after{content:"min";font-size:.5em;margin-left:3px}
+.more{flex:none;width:58px;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass);color:#fff;cursor:pointer;transition:background .2s}
+.more:hover{background:rgba(255,255,255,.22)}
+.evx{margin:-4px 0 0}
+@media(max-width:560px){
+  .lb{flex-basis:86px;width:86px;font-size:36px}.dn{padding:0 8px;font-size:15px;overflow:hidden;flex-wrap:wrap}
+  .tb{grid-template-columns:repeat(2,54px);gap:4px;padding:0 6px 0 0}.tb b{height:40px;font-size:18px}.tb b.end{font-size:15px;padding:0 8px}
+  .more{width:42px}.rowx{gap:6px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style></head><body>
 <div id="pp"><b id="ppf"></b><p id="ppx"></p><button class="sb" id="ppc" data-a="ppc" disabled>Fermer</button><div class="bar"></div></div>
 <div id="md"></div><div id="tt"></div>
@@ -52,7 +90,7 @@ label{display:block;font-size:14px;color:var(--ink)}
 <script>
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
 const WEBHOOK_URL="";          /* ← même webhook Discord que index.html (format {content}) */
-const RER_IMG="";              /* ← URL de l’indice RER officiel (remplace le texte « RER ») */
+const RER_IMG="https://image.noelshack.com/fichiers/2026/48/1/1795444285-design-sans-titre.png";              /* ← URL de l’indice RER officiel (remplace le texte « RER ») */
 const ADMIN_UIDS=[];           /* ← identifiants autorisés à voir le journal en plus du créateur */
 const $=s=>document.querySelector(s),E=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const jg=p=>fetch(`${DB}/${p}.json`).then(r=>r.json()),js=(m,p,b)=>fetch(`${DB}/${p}.json`,{method:m,body:b===undefined?undefined:JSON.stringify(b)});
@@ -74,6 +112,37 @@ const LS=()=>Object.entries(S.d.lines||{}).map(([id,l])=>({id,...l})).sort((a,b)
 const lb=id=>LS().find(l=>l.id===id);
 const rl=()=>S.d.meta.owner===uid?2:(S.d.members?.[uid]?.r?1:0),isOwn=()=>rl()===2,isReg=()=>rl()>=1;
 const log=x=>js("POST",`prive/${S.id}/log`,{t:Date.now(),u:me.n,x});
+
+/* ---------- écran d'accueil « Prochains départs » (même rendu et mêmes horaires qu'index.html) ---------- */
+const GAME_OFFSET=36e5,MIN=6e4,HORIZON=120*MIN,gnow=()=>Date.now()+GAME_OFFSET;
+const dayMid=o=>{const b=new Date(gnow());b.setHours(0,0,0,0);b.setDate(b.getDate()+o);return b.getTime()};
+const decC=(r,len)=>{const t=new Array(len).fill(null);let a=r[0],x=r[1];t[a]=x;for(let k=2;k<r.length;k++){x+=r[k];t[a+k-1]=x}return{o:a,e:a+r.length-2,t}};
+const CC={};
+const courses=(b,k)=>{const key=b+"|"+k;if(CC[key])return CC[key];const d=T[b]&&T[b][k];if(!d)return null;return CC[key]=d.c.map(r=>decC(r,d.s.length))};
+const fmtT=ts=>new Date(ts).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+function deps(l,k,c=2){const now=gnow(),o=[],cs=l.b&&!l.s?courses(l.b,k):null;
+if(cs){const s=stp(l)[k],e=l.pt&&l.pt[k]?s.indexOf(l.pt[k]):-1;
+for(let i=-1;i<=2;i++){const base=dayMid(i);for(const x of cs){if(x.t[0]==null||(e>0&&x.t[e]==null))continue;const ts=base+x.t[0]*MIN;if(ts>=now-3e4)o.push(ts)}}}
+else if(l.cad>0){const q=l.cad*MIN;let t=Math.ceil(now/q)*q;for(let i=0;i<c;i++,t+=q)o.push(t)}
+return o.sort((a,b)=>a-b).slice(0,c)}
+const PLI='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="6" r="2.6"/><path d="M6 15.4V11a3 3 0 0 1 3-3h6.4"/></svg>';
+const sn=s=>/ RER$/.test(s)?`<span class="sn">${E(s.replace(/ RER$/,""))}<img class="rerl" src="${RER_IMG}" alt="RER"></span>`:E(s);
+let POP=false,LH="";
+function lignesHome(bn){const R=[];let c=0;
+LS().forEach(l=>{const s=stp(l);[0,1].forEach(k=>{if(!s[k].length)return;const q={l,k,i:c++,t:[],msg:"",int:0};
+if(l.st==="int"){q.msg="ligne interrompue";q.int=1}
+else{q.t=deps(l,k).filter(ts=>ts-gnow()<=HORIZON);if(!q.t.length)q.msg=(l.b&&!l.s)||l.cad>0?"service terminé":"pas d’horaire"}
+R.push(q)})});
+const on=R.filter(r=>r.t.length),all=[...on,...R.filter(r=>!r.t.length)];
+let nx=null;if(!on.length)R.forEach(r=>{if(r.int)return;const t=deps(r.l,r.k,1)[0];if(t!=null&&(!nx||t<nx.ts))nx={ts:t,n:r.l.n}});
+const seen={},row=r=>{const{l,k}=r,off=!r.t.length,tg=off?"div":"button",at=off?"":` data-a="take" data-id="${l.id}" data-k="${k}"`,
+box=off?`<b class="end">${r.msg}</b>`:r.t.map(ts=>`<b class="mn" data-ts="${ts}"></b>`).join(""),
+mo=isReg()||!off?`data-a="${isReg()?"edl":"take"}" data-id="${l.id}" data-k="${k}"`:"disabled",
+dp=l.dep&&Date.now()-l.dep<9e5,ev=[...(seen[l.id]?[]:bn.filter(b=>b.l===l.id).map(b=>b.x)),...(!seen[l.id]&&dp?["Départ ordonné à "+hm(l.dep)]:[])];seen[l.id]=1;
+return`<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="drow${off?" off":""}"${at} style="--lc:${l.c}"><span class="lb${isPt(l,k)?" tri":""}" style="color:${ink(l.c)}">${E(l.n)}</span><span class="dn">${sn(tm(l,k))}</span><span class="tb">${box}</span></${tg}><button class="more" ${mo} title="${isReg()?"Modifier la ligne":"Prendre la ligne"}" aria-label="${isReg()?"Modifier la ligne":"Prendre la ligne"}">${PLI}</button></div>`+ev.map(x=>`<div class="ev evx">${E(x)}</div>`).join("")};
+return`<div class="hero${POP?" v":""}"><h2>${on.length?"Prochains départs":all.length?"Plus de départ pour le moment":"Aucune ligne."}</h2>${nx?`<p class="hint">Reprise du service à <b>${fmtT(nx.ts)}</b> · ligne <b>${E(nx.n)}</b>.</p>`:""}</div>`+(all.length?`<div class="bdx${POP?" pop":""}">${all.map(row).join("")}</div>`:"")}
+function tickMn(){const now=gnow();document.querySelectorAll(".mn[data-ts]").forEach(e=>{const ts=+e.dataset.ts,d=ts-now,c=d>=36e5;e.classList.toggle("clk",c);e.textContent=c?fmtT(ts):Math.max(0,Math.floor(d/6e4))})}
+setInterval(tickMn,1000);
 /* ---------- accueil ---------- */
 function home(){S=null;clearInterval(PT);$("#ht").textContent="Serveurs privés";$("#bk").style.display="none";document.documentElement.style.setProperty("--tc","#2458c4");const m=$("#main");m.dataset.t="";
 m.innerHTML=`<div class="card"><h2>Créer un serveur privé</h2><input id="cn" maxlength="30" placeholder="Nom du serveur"><button class="pb" data-a="cr">Créer</button></div>
@@ -98,7 +167,7 @@ function tabsBar(){const t=[["l","Lignes"],["p","Présence"]];if(isReg())t.push(
 return`<div class="tabs">${t.map(([k,n])=>`<button class="${tab===k?"on":""}" data-a="tab" data-k="${k}">${n}</button>`).join("")}</div>`}
 function draw(f){if(!S)return;const d=S.d;if(!d)return;const m=$("#main");document.documentElement.style.setProperty("--tc",d.meta.color||"#2458c4");$("#ht").textContent=d.meta.name;$("#bk").style.display="";
 $("#sn").textContent=localStorage.sse_snd==="0"?"Son : non":"Son : oui";
-if(!f&&"crg".includes(tab)&&m.dataset.t===tab)return;m.dataset.t=tab;m.innerHTML=tabsBar()+V[tab]();if(tab==="c")chatLoad();if(tab==="g")qr()}
+if(!f&&"crg".includes(tab)&&m.dataset.t===tab)return;const first=m.dataset.t!==tab;POP=first;const hh=tabsBar()+V[tab]();if(!f&&!first&&tab==="l"&&hh===LH)return;LH=hh;m.dataset.t=tab;m.innerHTML=hh;if(tab==="l"){document.querySelectorAll(".lb.tri").forEach(e=>e.style.animationDelay=-(Date.now()%2000)/1000+"s");tickMn()}if(tab==="c")chatLoad();if(tab==="g")qr()}
 /* ---------- vues ---------- */
 const V={};
 V.l=()=>{const d=S.d,bn=Object.values(d.banners||{}),rel=Object.values(d.msgs||{}).filter(relv).slice(-3).reverse();let h="";
@@ -107,9 +176,7 @@ bn.filter(b=>b.l==="all").forEach(b=>h+=`<div class="pin">${E(b.x)}</div>`);
 if(me.l&&lb(me.l)){const l=lb(me.l),s=stp(l)[me.dr]||[];h+=`<div class="my">${bd(l)}<div><b>→ ${E(tm(l,me.dr))}</b><div>${E(s[me.i]||"")}</div></div><div class="bs"><button class="sb" data-a="nx">Arrêt suivant</button><button class="sb" data-a="dl" data-v="-1">−</button><span>${me.dl>0?"+":""}${me.dl||0} min</span><button class="sb" data-a="dl" data-v="1">+</button><button class="sb" data-a="qt">Quitter</button></div></div>`}
 if(rel.length)h+=`<div class="card"><h2>Consignes de régulation</h2>${rel.map(m=>`<div class="cm"><b>${hm(m.t)}</b> ${E(m.x)}</div>`).join("")}</div>`;
 if(isReg())h+=`<button class="pb" style="margin-bottom:12px" data-a="edl" data-id="">+ Nouvelle ligne</button>`;
-return h+`<div class="grid">${LS().map(l=>{const x=l.st==="int",ev=bn.filter(b=>b.l===l.id).map(b=>`<div class="ev">${E(b.x)}</div>`).join(""),dp=l.dep&&Date.now()-l.dep<9e5;
-const inf=x?'<span class="un">Information indisponible</span>':[0,1].map(k=>`<div>${isPt(l,k)?'<i class="tri"></i>':"→ "}${E(tm(l,k))}</div>`).join("");
-return`<div class="tl${x?" x":""}" style="--c:${l.c}"${x?"":` data-a="take" data-id="${l.id}"`}>${bd(l)}<div class="inf">${inf}</div>${isReg()?`<button class="sb" data-a="edl" data-id="${l.id}">Modifier</button>`:"<span></span>"}${l.cad&&!x?`<small>Toutes les ${l.cad} min${dp?` · <b style="color:var(--led)">Départ ordonné à ${hm(l.dep)}</b>`:""}</small>`:""}${ev}</div>`}).join("")||"Aucune ligne."}</div>`};
+return h+lignesHome(bn)};
 V.p=()=>{const d=S.d,ms=Object.entries(d.members||{}).sort((a,b)=>b[1].t-a[1].t);
 return`<div class="card"><h2>Présence</h2>${ms.map(([u,m])=>{const on=Date.now()-m.t<15000,l=m.l&&lb(m.l),s=l?(stp(l)[m.dr]||[])[m.i]:"",mod=u!==uid&&u!==d.meta.owner;
 return`<div class="row"><i class="on-dot${on?" o":""}"></i><b>${E(m.n)}</b>${u===d.meta.owner?'<span class="tag">Créateur</span>':m.r?'<span class="tag">Régulateur</span>':""}${on&&l?`${bd(l)}<span>→ ${E(tm(l,m.dr))} · ${E(s||"")}</span><span class="${m.dl>0?"late":"ok"}">${m.dl>0?"+":""}${m.dl||0} min</span>`:`<span>${on?"En ligne":"Hors ligne"}</span>`}<span class="sp"></span>${u!==uid?`<button class="sb" data-a="dm" data-u="${u}">Chat privé</button>`:""}${mod&&isReg()?`<button class="sb" data-a="kick" data-u="${u}">Exclure 10 min</button>`:""}${mod&&isOwn()?`<button class="sb" data-a="ban" data-u="${u}">Bannir</button><button class="sb" data-a="role" data-u="${u}">${m.r?"Retirer régulateur":"Régulateur"}</button><button class="sb" data-a="own" data-u="${u}">Transférer</button>`:""}</div>`}).join("")}</div>`};
@@ -162,7 +229,7 @@ A.cr=async()=>{const name=$("#cn").value.trim();if(!name)return tt("Donne un nom
 await js("PUT","prive/"+id,{meta:{name,color:"#2458c4",pub:0,pin:"",owner:uid,code},lines:seed()});await js("PUT","prive_codes/"+code,{id,max:0,used:0});
 if(WEBHOOK_URL)fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"Régulation Bus",content:`Nouveau serveur privé : ${name.replace(/[@`]/g,"")} (${code})`,allowed_mentions:{parse:[]}})}).catch(()=>{});
 enter(id)};
-A.take=a=>{cur=lb(a.id);md(`<h2>${bd(cur)}</h2><label>Sens<select id="tdr" onchange="fillSt()">${[0,1].map(k=>`<option value="${k}">→ ${E(tm(cur,k))}</option>`).join("")}</select></label><label>Arrêt actuel<select id="tst"></select></label><div class="bs"><button class="pb" data-a="go" data-id="${a.id}">Prendre la ligne</button><button class="sb" data-a="mc">Annuler</button></div>`);fillSt()};
+A.take=a=>{cur=lb(a.id);md(`<h2>${bd(cur)}</h2><label>Sens<select id="tdr" onchange="fillSt()">${[0,1].map(k=>`<option value="${k}">→ ${E(tm(cur,k))}</option>`).join("")}</select></label><label>Arrêt actuel<select id="tst"></select></label><div class="bs"><button class="pb" data-a="go" data-id="${a.id}">Prendre la ligne</button><button class="sb" data-a="mc">Annuler</button></div>`);fillSt();if(a.k!==undefined){$("#tdr").value=a.k;fillSt()}};
 A.go=a=>{me.l=a.id;me.dr=+$("#tdr").value;me.i=+$("#tst").value;me.dl=0;md();draw(true);poll()};
 A.nx=()=>{const l=lb(me.l);me.i=Math.min((me.i||0)+1,stp(l)[me.dr].length-1);poll();draw(true)};
 A.dl=a=>{me.dl=(me.dl||0)+ +a.v;draw(true);poll()};A.qt=()=>{me.l="";draw(true);poll()};
