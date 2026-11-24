@@ -138,7 +138,6 @@ button.row:active{transform:scale(.99)}
 .tb{display:grid;grid-template-columns:repeat(2,92px);gap:8px;align-items:center;padding:0 14px 0 6px}
 .tb b{height:48px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#000;color:var(--led);font-size:26px;font-variant-numeric:tabular-nums}
 .tb b.end{grid-column:1/-1;font-size:22px;padding:0 16px}
-.mn:not(.clk):after{content:"min";font-size:.5em;margin-left:3px}
 .more{flex:none;width:58px;display:grid;place-items:center;border:0;border-radius:14px;background:var(--glass);color:#fff;cursor:pointer;transition:background .2s}
 .more:hover{background:rgba(255,255,255,.22)}
 
@@ -572,7 +571,7 @@ html.nv-open,html.nv-open body{overflow:hidden}
 /* =========================================================
    COMPTE · MODÉRATION
    ========================================================= */
-.ovl{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(14,22,40,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:nvin .25s ease-out both;overflow:auto}
+.ovl{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(14,22,40,.88);animation:nvin .25s ease-out both;overflow:auto}
 #lock{z-index:600}
 .ovl .card{width:min(440px,100%);display:flex;flex-direction:column;gap:14px;animation:in .45s cubic-bezier(.2,.8,.2,1) both}
 .ovl h2{color:var(--ink);font-size:clamp(26px,6vw,34px);margin:0}
@@ -600,7 +599,171 @@ button.led:active{transform:scale(.97)}
 .lf-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lf-g label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-style:italic}
 .lf-ck{display:flex;gap:8px;align-items:center;color:var(--ink)}
 @media(max-width:760px){.lf-g{grid-template-columns:1fr}}
-</style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
+
+/* ===== Fond unifié, bandeau d'attente, animations ===== */
+:root{--bgx:radial-gradient(120% 70% at 50% -10%,#24376b 0%,rgba(36,55,107,0) 60%),linear-gradient(180deg,#14203f 0%,#0e1628 100%);--ez:cubic-bezier(.2,.8,.2,1)}
+html,body{background:var(--bgx) fixed,var(--page)}
+.nv-sc{background:var(--bgx),var(--page)}
+.nv-top,.nv-bot{background:var(--bar);border-color:rgba(255,255,255,.08);box-shadow:0 2px 10px rgba(0,0,0,.35)}
+.nv-top p{font-style:normal;color:var(--on-dark-2)}
+.nv-gray{background:var(--blue)}.nv-gray:hover{background:var(--blue-h);transform:translateY(-1px)}
+.nv-red:hover{transform:translateY(-1px)}
+.nv-tab{background:var(--surface);border-radius:8px;padding:4px 10px;transition:background .2s,transform .2s,box-shadow .2s}
+.nv-tab.on{background:#0b94ff;box-shadow:0 6px 16px rgba(11,148,255,.4)}
+.wait-hd{display:flex;justify-content:flex-end;margin:0 82px -2px 0;animation:wdin .6s var(--ez) both}
+.wait-hd img{width:192px;max-width:100%;height:auto;display:block;user-select:none;-webkit-user-drag:none}
+@keyframes wdin{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:none}}
+@media(max-width:640px){.wait-hd{margin-right:54px}.wait-hd img{width:112px}}
+.row{transition:transform .25s var(--ez),box-shadow .25s,filter .25s}
+.row:not(.off):hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.35);filter:brightness(1.03)}
+.row:not(.off):active{transform:scale(.99)}
+.more{transition:background .2s,transform .2s var(--ez)}.more:hover{background:rgba(255,255,255,.22);transform:scale(1.06)}
+.tb b{transition:transform .25s var(--ez),box-shadow .25s}.row:hover .tb b{box-shadow:0 0 0 1px rgba(255,138,0,.4),0 0 14px rgba(255,138,0,.18)}
+#hdr nav button{transition:background .2s,color .2s,transform .2s}#hdr nav button:hover{transform:translateY(-1px)}
+.nv-cmid{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px}
+.nv-nums{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.nv-num{width:132px;height:152px;border-radius:16px;background:var(--surface);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 6px 18px rgba(0,0,0,.3);transition:transform .25s var(--ez),box-shadow .25s,background .2s,color .2s;animation:nvcard .45s var(--ez) both}
+.nv-num b{font-size:62px;line-height:1;font-variant-numeric:tabular-nums}.nv-num span{font-size:14px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.nv-num:hover{transform:translateY(-6px) scale(1.04)}
+.nv-num.on{background:var(--blue);color:#fff;box-shadow:0 0 0 3px var(--led),0 14px 30px rgba(36,88,196,.5);transform:translateY(-4px)}
+.nv-cnote{color:var(--on-dark-2);font-size:16px;min-height:1.4em}
+@media(max-width:640px){.nv-num{width:clamp(58px,17vw,88px);height:112px}.nv-num b{font-size:40px}.nv-num span{font-size:10px;letter-spacing:.04em}.nv-nums{gap:8px;flex-wrap:nowrap}}
+.nv-pan{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.1);box-shadow:0 8px 24px rgba(0,0,0,.3)}.nv-cards{background:rgba(255,255,255,.04)}
+@media(max-width:640px){.nv-bot{gap:6px;padding:7px 8px}.nv-gray{min-width:0;gap:8px;font-size:16px;padding:0 10px}.nv-red{font-size:16px;padding:0 10px;gap:8px}.nv-mini{gap:4px}.nv-mini button{font-size:11px;padding:0 6px}}
+
+/* ===== v3 : menus, régulation, préchargement ===== */
+#pre{position:fixed;inset:0;z-index:1000;background:var(--bgx),var(--page);display:grid;place-items:center;transition:opacity .55s ease,visibility .55s}
+#pre.out{opacity:0;visibility:hidden;pointer-events:none}
+.pre-in{display:flex;flex-direction:column;align-items:center;gap:16px;color:#fff;font-weight:700;letter-spacing:.04em}
+.pre-sp{width:44px;height:44px;border-radius:50%;border:4px solid rgba(255,255,255,.15);border-top-color:var(--led);animation:presp .8s linear infinite}
+@keyframes presp{to{transform:rotate(360deg)}}
+.pre-in i{display:block;width:190px;height:5px;border-radius:5px;background:rgba(255,255,255,.14);overflow:hidden}
+.pre-in u{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue-h),var(--led));transition:width .25s ease}
+.nv-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 18px 14px}
+.nv-top h1{font-size:30px}
+.nv-steps{display:flex;gap:8px;align-items:center}
+.nv-steps i{width:26px;height:6px;border-radius:6px;background:rgba(255,255,255,.2);transition:background .3s,width .3s var(--ez)}
+.nv-steps i.d{background:rgba(255,255,255,.55)}.nv-steps i.on{background:var(--led);width:42px}
+.nv-pan{border-radius:20px;padding:16px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);box-shadow:0 18px 40px rgba(0,0,0,.35);backdrop-filter:blur(6px)}
+.nv-tabs{gap:12px;padding-bottom:6px}
+.nv-tab{height:52px;border-radius:12px;box-shadow:0 3px 10px rgba(0,0,0,.28)}
+.nv-tab img{width:62%;height:58%}
+.nv-tab:hover:not(.on){transform:translateY(-3px);box-shadow:0 8px 18px rgba(0,0,0,.4)}
+.nv-tab.on{background:linear-gradient(135deg,#2f66d8,#0b94ff);box-shadow:0 8px 20px rgba(11,148,255,.45)}
+.nv-cards{gap:26px 22px;padding:22px 12px 26px;margin-top:12px;border-radius:16px;background:rgba(0,0,0,.16);justify-content:flex-start}
+.nv-bc{width:176px;height:262px;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.45);transition:transform .28s var(--ez),box-shadow .28s,filter .28s}
+.nv-bw{border-radius:14px}
+.nv-bc:hover{transform:translateY(-7px) scale(1.02);box-shadow:0 16px 32px rgba(0,0,0,.55)}
+.nv-bc:not(.on){filter:saturate(.75) brightness(.9)}.nv-bc:not(.on):hover{filter:none}
+.nv-bc.on,.nv-bc.on:hover{box-shadow:0 0 0 3px var(--led),0 14px 30px rgba(255,138,0,.28)}
+.nv-ck{width:32px;height:32px;right:-10px;bottom:-10px;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.nv-grid{grid-template-columns:repeat(4,190px);gap:34px 30px;padding:14px 10px 22px}
+.nv-lt{border-radius:12px;box-shadow:0 8px 22px rgba(0,0,0,.45)}.nv-lw{border-radius:12px}
+.nv-lt.on,.nv-lt.on:hover{box-shadow:0 0 0 3px #fff,0 12px 26px rgba(0,0,0,.5)}
+.nv-lt .nv-ov{left:0;right:0;bottom:0;padding:38px 10px 10px;border-radius:0 0 12px 12px;background:linear-gradient(180deg,rgba(8,14,30,0) 0,rgba(8,14,30,.94) 30%)}
+.nv-ov .nv-busimg{height:17px;filter:brightness(0) invert(1)}
+.nv-ov .nv-rerimg{filter:brightness(0) invert(1)}
+.nv-tx{display:block;font-size:11.5px;margin-top:2px}
+.nv-par{display:inline-block;margin-left:6px;vertical-align:-1px;width:11px;height:11px;border-radius:2px;background:linear-gradient(to top left,#000 50%,#fff 50%)}
+.nv-rerimg{margin-left:5px}
+.nv3{background:var(--bgx),var(--page)}
+.nv3-h{background:var(--bar);border-bottom:1px solid rgba(255,255,255,.1);box-shadow:0 2px 12px rgba(0,0,0,.4)}
+.nv3-ns span{border-bottom:0;padding-bottom:0}
+@media(max-width:900px){.nv-grid{grid-template-columns:repeat(2,minmax(0,190px));gap:26px 20px}.nv-cards{gap:20px 14px;justify-content:center}.nv-bc{width:150px;height:224px}}
+
+/* ===== v4 : sobriété — pas d'effets, pas de contours sur les images ===== */
+:root{--bgx:linear-gradient(var(--page),var(--page))}
+.nv-pan{backdrop-filter:none;border-radius:6px;box-shadow:none;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:12px}
+.nv-cards{border-radius:4px;background:rgba(0,0,0,.18)}
+.nv-bc,.nv-lt{border-radius:0;box-shadow:none;filter:none}
+.nv-bw,.nv-lw{border-radius:0}
+.nv-bc:not(.on),.nv-bc:not(.on):hover{filter:none}
+.nv-bc:hover,.nv-lt:hover{transform:translateY(-3px);box-shadow:none}
+.nv-lt:hover .nv-lw img{filter:none}
+.nv-bc.on,.nv-bc.on:hover,.nv-lt.on,.nv-lt.on:hover{box-shadow:none}
+.nv-ck{filter:none}
+.nv-tab{border-radius:4px;box-shadow:none}
+.nv-tab:hover:not(.on){transform:none;box-shadow:none}
+.nv-tab.on{background:#0b94ff;box-shadow:none}
+.nv-top,.nv-bot{box-shadow:none}
+.nv-gray{background:var(--blue)}.nv-gray:hover{background:var(--blue-h);transform:none}
+.nv-red:hover{transform:none}
+.nv-num{border-radius:6px;box-shadow:none}.nv-num:hover{transform:translateY(-3px)}
+.nv-num.on,.nv-num.on:hover{background:var(--blue);color:#fff;box-shadow:none;transform:none}
+.row{border-radius:8px}.row:not(.off):hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(0,0,0,.25);filter:none}
+.row:hover .tb b{box-shadow:none}
+.more{border-radius:8px}.more:hover{transform:none}
+.tb b{border-radius:6px}
+.pre-in u{background:var(--led)}
+.lbg,.lbg.s,.lbg.m,.lbg.l,.lbg.xl{border-radius:3px}
+.nv-pill{border-radius:2px}
+.nv3-h{box-shadow:none}
+@media(max-width:900px){.nv-bc{border-radius:0}}
+/* ===== v5 : indices de ligne peu arrondis, aucun effet sur les images ===== */
+.lbg,.lbg.s,.lbg.m,.lbg.l,.lbg.xl,.nv-pill{border-radius:2px}
+.nv-bc,.nv-bc.on,.nv-bc:hover,.nv-bc.on:hover,.nv-lt,.nv-lt.on,.nv-lt:hover,.nv-lt.on:hover{box-shadow:none;outline:0;filter:none}
+.nv-ov{display:none}
+/* ===== v6 : écran 3 sans blanc, images non rognées ===== */
+.nv-bw img,.nv-lw img{object-fit:contain;background:var(--bar)}
+.nv-bc:hover .nv-bw img,.nv-lt:hover .nv-lw img{transform:none}
+.nv3{color:#e8edf8}
+.nv3-c{background:#1a274b;box-shadow:none;border-radius:4px}
+.nv3-lab{color:#9fb0d6}
+.nv3-ns em,.nv3-ls em,.nv3-ar-h,.nv3-ar-r .t small{color:#9fb0d6}
+.nv-dot{border-color:#1a274b}
+.nv3-ls li.l .nv-dot{background:#e8edf8;border-color:#1a274b}
+.nv3-dbox,.nv3-mini button{background:#0e1628}
+.nv3-mini button:hover{background:#243662}
+.nv3-mini i{background:#3b4c7a}
+.nv3-nb{background:#2c4278;color:#fff;box-shadow:none}
+.nv3-nb:hover:not([disabled]){background:#37508e}
+.nv3-nb .arr{filter:brightness(0) invert(1)}
+.nv3-nb[disabled]{background:#222f57;color:#6f7fa8}
+.nv3-nb[disabled] .arr{filter:brightness(0) invert(1) opacity(.35)}
+.nv3-c .nv-rerimg{filter:brightness(0) invert(1)}
+.nv3-msg em{color:#8190b6}
+.nv3-in input{background:#0e1628;color:#e8edf8}
+.nv3-in input::placeholder{color:#7384ad}
+.nv3-in input:focus{box-shadow:inset 0 0 0 2px #2c4278}
+.nv3-in button{background:#2c4278}
+.nv3-clk{background:#0e1628}
+/* ===== v7 : bouton accueil + animations des prochains arrêts ===== */
+.nv3-home{flex:none;width:36px;height:36px;display:grid;place-items:center;border-radius:4px;background:transparent;color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.28);transition:background .15s}
+.nv3-home:hover{background:rgba(255,255,255,.12)}
+.nv3-home:active{background:rgba(255,255,255,.2)}
+.nv3-trk{overflow:hidden}
+.nv3-trk::after{content:"";position:absolute;left:0;right:0;top:-24px;height:24px;background:rgba(255,255,255,.55);animation:nvflow 2.4s linear infinite}
+@keyframes nvflow{to{top:100%}}
+.nv3-ls li:first-of-type .nv-dot{animation:nvping 1.8s ease-out infinite}
+@keyframes nvping{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--lc) 70%,transparent)}70%,100%{box-shadow:0 0 0 9px transparent}}
+.nv3-ls li b{transition:transform .2s}
+.nv3-ls li:hover b{transform:translateX(3px)}
+.nv3-ls li:nth-of-type(n+5){opacity:.85}
+.nv3-ls li:nth-of-type(n+7){opacity:.7}
+.nv3-ns span{position:relative}
+.nv3-ns span::after{content:"";position:absolute;left:0;bottom:-3px;height:2px;width:100%;background:var(--lc);transform-origin:left;animation:nvunder 2.6s cubic-bezier(.4,0,.2,1) infinite}
+@keyframes nvunder{0%{transform:scaleX(0)}55%,80%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1);opacity:0}}
+@media(prefers-reduced-motion:reduce){.nv3-trk::after,.nv3-ls li:first-of-type .nv-dot,.nv3-ns span::after{animation:none}}
+/* ===== v8 : tutoriel de première utilisation ===== */
+#tr{position:fixed;inset:0;z-index:900;font-family:Parisine,"Trebuchet MS",system-ui,sans-serif}
+.tr-hole{position:fixed;border-radius:6px;box-shadow:0 0 0 2px #fff,0 0 0 200vmax rgba(8,13,26,.82);pointer-events:none}
+#tr.nohole .tr-hole{box-shadow:0 0 0 200vmax rgba(8,13,26,.82)}
+#tr.go .tr-hole{transition:left .3s var(--ez),top .3s var(--ez),width .3s var(--ez),height .3s var(--ez)}
+.tr-card{position:fixed;width:min(340px,calc(100vw - 24px));background:var(--surface);color:#1d2a4d;border-radius:8px;padding:16px 18px 14px;animation:nvin .3s ease-out both}
+#tr.go .tr-card{transition:left .3s var(--ez),top .3s var(--ez)}
+.tr-n{display:block;font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7ba8}
+.tr-t{font-size:20px;line-height:1.15;margin:4px 0 6px;color:var(--ink)}
+.tr-p{font-size:15px;line-height:1.4;margin:0}
+.tr-b{display:flex;align-items:center;gap:8px;margin-top:14px}
+.tr-b button{font:inherit;font-weight:700;border:0;border-radius:6px;padding:9px 14px;cursor:pointer}
+.tr-b button[hidden]{display:none}
+.tr-skip{background:none;color:#6b7ba8;padding-left:0!important;margin-right:auto}
+.tr-skip:hover{color:var(--ink)}
+.tr-prev{background:#d5dcec;color:var(--ink)}
+.tr-next{background:var(--blue);color:#fff}
+.tr-next:hover{background:var(--blue-h)}
+.pg-ghost{position:fixed;z-index:300;pointer-events:none;overflow:hidden}
+</style></head><body><div id="pre"><div class="pre-in"><div class="pre-sp"></div><b id="pre-t">Chargement…</b><i><u id="pre-b"></u></i></div></div><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
 <script>
 
 const GAME_OFFSET=36e5;
@@ -693,29 +856,29 @@ const BUS_META={
   "Alstom Aptis":{b:"alstom",t:"Alstom Aptis 12m",f:"Électrique",img:NVI+"1795471625-alstomaptis.jpg"},
   "Citelis 12 Hybride":{b:"irisbus",t:"Irisbus Citelis 12m",f:"Hybride",img:NVI+"1795471622-irisbuscitelishybride.jpg"},
   "Citelis 12 Diesel":{b:"irisbus",t:"Irisbus Citelis 12m",f:"Diesel",img:NVI+"1795471622-irisbuscitelisdiesel.jpg"},
-  "Heuliez GX337 Electrique":{b:"heuliez",t:"Heuliez GX337",f:"Électrique"},
-  "Heuliez GX337 GNV":{b:"heuliez",t:"Heuliez GX337",f:"GNV"},
-  "MAN A37 Hybride":{b:"man",t:"MAN A37",f:"Hybride"},
-  "MAN A37 Diesel":{b:"man",t:"MAN A37",f:"Diesel"},
-  "MAN A21 GNV":{b:"man",t:"MAN A21",f:"GNV"},
-  "Urbanway 12 GNV":{b:"iveco",t:"Iveco Urbanway 12m",f:"GNV"},
-  "Urbanway 12 Hybride":{b:"iveco",t:"Iveco Urbanway 12m",f:"Hybride"},
-  "Urbanway 12 Diesel":{b:"iveco",t:"Iveco Urbanway 12m",f:"Diesel"}
+  "Heuliez GX337 Electrique":{b:"heuliez",t:"Heuliez GX337",f:"Électrique",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556800-heuliezgx337elec.jpg"},
+  "Heuliez GX337 GNV":{b:"heuliez",t:"Heuliez GX337",f:"GNV",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556800-heuliezgx337gnv.png"},
+  "MAN A37 Hybride":{b:"man",t:"MAN A37",f:"Hybride",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556799-manlionscitya37hybride.jpg"},
+  "MAN A37 Diesel":{b:"man",t:"MAN A37",f:"Diesel",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556800-manlionscitya37diesel.jpg"},
+  "MAN A21 GNV":{b:"man",t:"MAN A21",f:"GNV",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556800-manlionscitya21gnv.jpg"},
+  "Urbanway 12 GNV":{b:"iveco",t:"Iveco Urbanway 12m",f:"GNV",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556802-ivecourbanwaygnv.jpg"},
+  "Urbanway 12 Hybride":{b:"iveco",t:"Iveco Urbanway 12m",f:"Hybride",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556800-ivecourbanwayhybride.png"},
+  "Urbanway 12 Diesel":{b:"iveco",t:"Iveco Urbanway 12m",f:"Diesel",img:"https://image.noelshack.com/fichiers/2026/48/2/1795556802-ivecourbanwaydiesel.png"}
 };
 Object.entries(BUS_META).forEach(([k,m])=>{if(!m.img)m.img=BUS_IMG[k]});
-const NV_BRANDS=[["man","MAN","1795472003-logo-man.png"],["iveco","IVECO","1795472003-logo-iveco.png"],["heuliez","Heuliez","1795472003-logoheuliez.png"],["solaris","Solaris","1795472003-logosolaris.png"],["irisbus","Irisbus","1795472003-logoirisbus.png"],["volvo","Volvo","1795472003-logovolvo.png"],["alstom","Alstom","1795472003-logoalstom.png"]];
+const NV_BRANDS=[["man","MAN","https://image.noelshack.com/fichiers/2026/48/2/1795556945-manlogopropre.png"],["iveco","IVECO","https://image.noelshack.com/fichiers/2026/48/2/1795556945-ivecologopropre.png"],["heuliez","Heuliez","https://image.noelshack.com/fichiers/2026/48/2/1795556944-heuliezlogopropre.png"],["solaris","Solaris","https://image.noelshack.com/fichiers/2026/48/2/1795556944-solaris-logo-propre.png"],["irisbus","Irisbus","https://image.noelshack.com/fichiers/2026/48/2/1795556944-irisbuslogopropre.png"],["volvo","Volvo","https://image.noelshack.com/fichiers/2026/48/2/1795556944-volvologopropre.png"],["alstom","Alstom","https://image.noelshack.com/fichiers/2026/48/2/1795556944-alstomlogopropre.png"]];
 const LINE_TILE={
   "134":{i:"1795471635-bus134icone.png",a:"Chaillot-Batignolles RER",b:"Sous-Préfecture – Champagne"},
   "135":{i:"1795471635-bus135icone.png",a:"Chaillot-Batignolles RER",b:"Bismarck – Courboules §T"},
   "142":{i:"1795471634-bus142icone.png",a:"Chaillot-Batignolles RER",b:"Port-Perret – Village"},
   "149":{i:"1795471635-bus149icone.png",a:"Chaillot-Batignolles RER",b:"Pasteur"},
-  "233":{i:"1795471634-bus233icone.png",a:"Narbérale RER",b:"Hôtel de Ville de Ch.-Batignolles"},
-  "242":{i:"1795471626-bus242icone.png",a:"Cramain – Université RER",b:"Port-Perret – Village"},
+  "233":{i:"1795471634-bus233icone.png",a:"Narbérale RER",b:"Hôtel de Ville de Chaillot-Batignolles"},
+  "242":{i:"1795471626-bus242icone.png",a:"Gare de Cramain - Université",b:"Port-Perret – Village"},
   "257":{i:"1795471625-bus257icone.png",a:"Les Hauts d’Arlande",b:"Berthée – Rosenberg"},
   "315":{i:"1795471626-bus315icone.png",a:"Chaillot-Batignolles RER",b:"Houssaye – De Gaulle"},
-  "316":{i:"1795471626-bus316icone.png",a:"Narbérale - Rue de Cherbourg",b:"HdV de Denfert-la-Roche"},
-  "433":{i:"1795471626-bus433icone.png",a:"Narbérale",b:"Clémenceau"},
-  "N76":{i:"1795471627-busn76icone.png",a:"Le Pl.-Mendinel – Val de S. RER",b:"Berthée – Rosenberg"}
+  "316":{i:"1795471626-bus316icone.png",a:"Narbérale - Rue de Cherbourg (Soufflot)",b:"Hôtel de Ville de Denfert-la-Roche"},
+  "433":{i:"1795471626-bus433icone.png",a:"Narbérale RER",b:"Clemenceau"},
+  "N76":{i:"1795471627-busn76icone.png",a:"Chaillot-Batignolles RER",b:"Berthée - Rosenberg"}
 };
 const NV_LINE_ORDER=["134","135","142","149","233","242","257","315","316","433","N76"];
 
@@ -848,8 +1011,9 @@ if(location.hash==="#seed")fetch(DB+"/lines.json",{method:"PUT",body:JSON.string
 addEventListener("pagehide",()=>{if(line)leave()});
 
 const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
-const SVC={"134":[[0,25],[7,33]],"135":[[4,31],[0,27]],"142":[[0,19],[14,33]],"149":[[0,15],[6,19]],"315":[[0,12],[13,25]],"316":[[7,30,"Narbérale - Rue de Cherbourg"],[14,37]],"433":[[19,28],[0,10]],"N76":[[21,42],[25,47,"Berthée - Rosenberg"]]};
+const SVC={"134":[[0,25],[7,33]],"135":[[4,31],[0,27]],"142":[[0,19],[14,33]],"149":[[0,15],[6,19]],"315":[[0,12],[13,25]],"316":[[7,30,"Narbérale - Rue de Cherbourg (Soufflot)"],[14,37]],"433":[[19,28],[0,10]],"N76":[[21,42],[25,47,"Berthée - Rosenberg"]]};
 const PTK={"134":[0],"135":[1],"142":[0],"149":[0],"315":[0],"316":[0,1],"433":[1],"N76":[0,1]};
+["233","242","257"].forEach(n=>{SVC[n]=DATA[n].s.map(s=>[0,s.length-1])});
 const svc=(n,k)=>ovGet(n,k)||(SVC[n]?SVC[n][k]:[0,DATA[n].s[k].length-1]);
 function deps(n,k,c=2){const[a,e]=svc(n,k),p=!!SVC[n]||!!ovGet(n,k),now=Date.now(),o=[];for(const b of bases())for(const x of DATA[n].C[k]){if(x.t[a]==null||(p&&x.t[e]==null))continue;const ts=b+x.t[a]*MIN;if(ts>=now-3e4)o.push(ts)}return o.sort((q,w)=>q-w).slice(0,c)}
 const RER="https://image.noelshack.com/fichiers/2026/48/1/1795444285-design-sans-titre.png";
@@ -881,7 +1045,7 @@ function home(refresh){
   A.classList.toggle("pop",!refresh);
   const hint=nx?`Reprise du service à <b>${fmt(nx.ts)}</b> · ligne <b>${nx.n}</b>.`:"";
   A.innerHTML=`<div class="hero v"><h2>${on.length?"Prochains départs":"Plus de départ pour le moment"}</h2>${nx?`<p class="hint">${hint}</p>`:""}</div>`
-    +(on.length||off.length?`<div class="bd">${[...on,...off].map(rowH).join("")}</div>`:"");
+    +(on.length||off.length?`<div class="bd">${on.length?`<div class="wait-hd"><img src="https://image.noelshack.com/fichiers/2026/48/2/1795549179-temps-dattente.png" alt="Temps d’attente en minutes" draggable="false"></div>`:""}${[...on,...off].map(rowH).join("")}</div>`:"");
   A.querySelectorAll(".row[data-l]").forEach(b=>b.onclick=()=>{line=b.dataset.l;const k=+b.dataset.k,[a,e]=svc(line,k);go(k,a,e)});
   A.querySelectorAll(".lb.tri").forEach(e=>e.style.animationDelay=-(Date.now()%2000)/1000+"s");
   A.querySelectorAll(".more").forEach(b=>b.onclick=()=>{line=b.dataset.m;dest(+b.dataset.k)});
@@ -1037,9 +1201,8 @@ function lineNodes(){return lineNodesAll().filter(x=>lineOn(x.L))}
 function lineNodesAll(){
   if(NODES)return NODES;NODES=[];
   for(const L in DATA)if(!DATA[L].custom)for(const d of [0,1]){
-    const st=DATA[L].s[d],seen=new Set();
-    for(const c of DATA[L].C[d]){const key=c.o+"-"+c.e;if(seen.has(key))continue;seen.add(key);
-      NODES.push({L,d,a:c.o,b:c.e,from:canonStop(st[c.o]),to:canonStop(st[c.e])})}}
+    const st=DATA[L].s[d],[a,b]=svc(L,d);
+    if(DATA[L].C[d].some(c=>c.t[a]!=null&&c.t[b]!=null))NODES.push({L,d,a,b,from:canonStop(st[a]),to:canonStop(st[b])})}
   return NODES}
 const MAX_WAIT=20;
 function legEnd(n,cur,first){
@@ -1078,7 +1241,7 @@ function generateDaySheet(){
   const segments=[{type:"walk",bus,depot:firstDepot.name,startTime:fmt(curTs)}];
   chain.forEach((n,idx)=>{
     const lCode=n.L,dirIdx=n.d,d=DATA[lCode],st=d.s[dirIdx];
-    const originStop=st[n.a],destStop=st[n.b];
+    const originStop=st[n.a],destStop=svc(lCode,dirIdx)[2]||st[n.b];
     const leg=legEnd(n,curTs,idx===0);
     const matchedDep=leg.dep;
     if(idx===0){
@@ -1102,7 +1265,8 @@ let origin="home";
 const NVH=document.createElement("div");NVH.id="nv";NVH.hidden=true;document.body.appendChild(NVH);
 let nvT=null;
 const nvShow=h=>{NVH.hidden=false;NVH.innerHTML=h;document.documentElement.classList.add("nv-open")};
-function nvHide(){if(NVH.hidden)return;NVH.hidden=true;NVH.innerHTML="";document.documentElement.classList.remove("nv-open");clearInterval(nvT);nvT=null}
+let NVSNAP=null;
+function nvHide(){if(NVH.hidden)return;if(NVH.firstElementChild)NVSNAP={el:NVH.cloneNode(true),t:performance.now()};NVH.hidden=true;NVH.innerHTML="";document.documentElement.classList.remove("nv-open");clearInterval(nvT);nvT=null}
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const BUSIMG=NVI+"1795474293-true.png",RERIMG=NVI+"1795474387-true.png";
 const RERB=`<img class="nv-rerimg" src="${RERIMG}" alt="RER">`;
@@ -1117,7 +1281,7 @@ let nvBrand="man";
 function nvBuses(){
   const own=b=>FREE_BUSES.includes(b)||fState.selectedPaid.includes(b);
   nvShow(`<div class="nv-sc">
-    <div class="nv-top cn"><div><h1>${ic("d")} Mes véhicules</h1><p>Cochez les véhicules que vous possédez.</p></div><div class="nv-cnt"><span>Nombre de lignes</span><button type="button" id="nv-cm" aria-label="Moins de lignes">−</button><b id="nv-cn">${Math.min(5,Math.max(1,fState.lineCount||2))}</b><button type="button" id="nv-cp" aria-label="Plus de lignes">+</button></div></div>
+    <div class="nv-top"><div><h1>${ic("d")} Mes véhicules</h1><p>Cochez les véhicules que vous possédez.</p></div>${nvSteps(1)}</div>
     <div class="nv-mid"><div class="nv-pan">
       <div class="nv-tabs" id="nv-tabs"></div>
       <div class="nv-cards" id="nv-cards"></div>
@@ -1128,7 +1292,7 @@ function nvBuses(){
       <button type="button" class="nv-gray" id="nv-next"><span>Suivant</span>${ic("d")}</button>
     </div></div>`);
   const draw=(anim)=>{
-    $("#nv-tabs").innerHTML=NV_BRANDS.map(([k,n,f])=>`<button type="button" class="nv-tab${k===nvBrand?" on":""}" data-k="${k}" title="${n}"><img src="${NVI}${f}" alt="${n}"></button>`).join("");
+    $("#nv-tabs").innerHTML=NV_BRANDS.map(([k,n,f])=>`<button type="button" class="nv-tab${k===nvBrand?" on":""}" data-k="${k}" title="${n}"><img src="${f}" alt="${n}" draggable="false"></button>`).join("");
     const list=Object.entries(BUS_META).filter(([,m])=>m.b===nvBrand);
     $("#nv-cards").innerHTML=list.length?list.map(([name,m],j)=>`<button type="button" class="nv-bc${own(name)?" on":""}" data-b="${esc(name)}" title="${esc(name)}" style="animation-delay:${anim?j*45:0}ms${anim?"":";animation:none"}"><span class="nv-bw"><img src="${m.img}" alt="${esc(m.t)}"></span><img class="nv-ck" src="${COCHE}" alt=""></button>`).join(""):`<div class="nv-empty">Aucun véhicule pour ce constructeur.</div>`;
   };
@@ -1139,34 +1303,52 @@ function nvBuses(){
     fState.selectedPaid=fState.selectedPaid.includes(n)?fState.selectedPaid.filter(x=>x!==n):[...fState.selectedPaid,n];saveFState();paint()};
   $("#nv-all").onclick=()=>{fState.selectedPaid=[...PAID_BUSES];saveFState();paint()};
   $("#nv-none").onclick=()=>{fState.selectedPaid=[];saveFState();paint()};
-  const cnt=d=>{fState.lineCount=Math.min(5,Math.max(1,(fState.lineCount||2)+d));$("#nv-cn").textContent=fState.lineCount;saveFState()};
-  $("#nv-cm").onclick=()=>cnt(-1);$("#nv-cp").onclick=()=>cnt(1);
   $("#nv-back").onclick=()=>{nvHide();home()};
   $("#nv-next").onclick=()=>{fStep=2;fichesMenu()};
 }
 
 /* ---------- Écran 2 : lignes du réseau ---------- */
+const NV_TERM={"134":[["Chaillot-Batignolles RER",0],["Sous-Préfecture – Champagne",1]],"135":[["Chaillot-Batignolles RER",0],["Bismarck – Courboules §T",1]],"142":[["Chaillot-Batignolles RER",0],["Port-Perret - Village",1]],"149":[["Chaillot-Batignolles RER",0],["Pasteur",1]],"233":[["Narbérale RER",0],["Hôtel de Ville de Chaillot-Batignolles",0]],"242":[["Gare de Cramain - Université",0],["Port-Perret – Village",0]],"257":[["Les Hauts d’Arlande",0],["Berthée - Rosenberg",0]],"315":[["Chaillot-Batignolles RER",0],["Houssaye – De Gaulle",1]],"316":[["Narbérale - Rue de Cherbourg (Soufflot)",1],["Hôtel de Ville de Denfert-la-Roche",1]],"433":[["Narbérale RER",0],["Clemenceau",1]],"N76":[["Chaillot-Batignolles RER",1],["Berthée - Rosenberg",1]]};
+const nvSteps=()=>"";
+const nvTx=([t,p])=>`<span class="nv-tx">${nvLineN(t)}${p?'<i class="nv-par" title="Partiel"></i>':""}</span>`;
 function nvLines(){
   const codes=NV_LINE_ORDER.filter(c=>DATA[c]);
   nvShow(`<div class="nv-sc">
-    <div class="nv-top"><h1>${ic("d")} Les lignes du réseau</h1><p>Choisissez vos préférences d’affectation.</p></div>
+    <div class="nv-top"><div><h1>${ic("d")} Les lignes du réseau</h1><p>Choisissez vos préférences d’affectation.</p></div>${nvSteps(2)}</div>
     <div class="nv-mid"><div class="nv-grid" id="nv-grid">${codes.map((c,j)=>{const t=LINE_TILE[c];const on=(fState.prefLines||[]).includes(c);
-      return `<button type="button" class="nv-lt${on?" on":""}" data-l="${c}" style="animation-delay:${j*30}ms"><span class="nv-lw"><img src="${NVI}${t.i}" alt="Ligne ${c}"></span><img class="nv-ck" src="${COCHE}" alt=""></button>`}).join("")}</div></div>
+      return `<button type="button" class="nv-lt${on?" on":""}" data-l="${c}" style="animation-delay:${j*30}ms"><span class="nv-lw"><img src="${NVI}${t.i}" alt="Ligne ${c}" draggable="false"></span><img class="nv-ck" src="${COCHE}" alt=""></button>`}).join("")}</div></div>
     <div class="nv-bot">
       <button type="button" class="nv-red" id="nv-back">${ic("g")} Retour</button>
-      <button type="button" class="nv-gray" id="nv-gen"><span>Générer ma fiche de service</span>${ic("d")}</button>
+      <button type="button" class="nv-gray" id="nv-gen"><span>Suivant</span>${ic("d")}</button>
     </div></div>`);
   $("#nv-grid").onclick=e=>{const t=e.target.closest(".nv-lt");if(!t)return;const l=t.dataset.l;
     if(!Array.isArray(fState.prefLines))fState.prefLines=[];
     fState.prefLines=fState.prefLines.includes(l)?fState.prefLines.filter(x=>x!==l):[...fState.prefLines,l];saveFState();t.classList.toggle("on")};
   $("#nv-back").onclick=()=>{fStep=1;fichesMenu()};
+  $("#nv-gen").onclick=()=>{fStep=3;fichesMenu()};
+}
+
+/* ---------- Écran 3 : nombre de lignes ---------- */
+function nvCount(){
+  const cur=Math.min(5,Math.max(1,fState.lineCount||2));
+  nvShow(`<div class="nv-sc">
+    <div class="nv-top"><div><h1>${ic("d")} Nombre de lignes</h1><p>Combien de lignes souhaitez-vous assurer sur cette fiche de service ?</p></div>${nvSteps(3)}</div>
+    <div class="nv-mid nv-cmid"><div class="nv-nums" id="nv-nums">${[1,2,3,4,5].map((n,j)=>`<button type="button" class="nv-num${n===cur?" on":""}" data-n="${n}" style="animation-delay:${j*70}ms"><b>${n}</b><span>${n>1?"lignes":"ligne"}</span></button>`).join("")}</div><p class="nv-cnote" id="nv-cnote"></p></div>
+    <div class="nv-bot">
+      <button type="button" class="nv-red" id="nv-back">${ic("g")} Retour</button>
+      <button type="button" class="nv-gray" id="nv-gen"><span>Générer ma fiche de service</span>${ic("d")}</button>
+    </div></div>`);
+  const note=()=>{const n=Math.min(5,Math.max(1,fState.lineCount||2));$("#nv-cnote").textContent=n===1?"Une seule ligne sur toute la journée.":`Une fiche enchaînant ${n} lignes.`};
+  note();
+  $("#nv-nums").onclick=e=>{const b=e.target.closest(".nv-num");if(!b)return;fState.lineCount=+b.dataset.n;saveFState();$("#nv-nums").querySelectorAll(".nv-num").forEach(x=>x.classList.toggle("on",x===b));note()};
+  $("#nv-back").onclick=()=>{fStep=2;fichesMenu()};
   $("#nv-gen").onclick=()=>{generateDaySheet();renderSheetView()};
 }
 
 function fichesMenu(){
   tab="f";mark();setLineTheme(null);
   if(fState.generated){nvHide();renderSheetView();return}
-  fStep===1?nvBuses():nvLines();
+  fStep===1?nvBuses():fStep===2?nvLines():nvCount();
 }
 
 /* ---------- Écran 3 : régulation ---------- */
@@ -1195,7 +1377,7 @@ function nvAuto(){
 const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const anim=(el,kf,o)=>(RM||!el||!el.animate)?null:el.animate(kf,o);
 const EASE="cubic-bezier(.2,.8,.2,1)";
-function nvSwap(el,html,dn){if(!el||el.innerHTML===html)return;const had=el.innerHTML!=="";el.innerHTML=html;if(had)anim(el,[{opacity:0,transform:`translateY(${14*dn}px)`},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
+function nvSwap(el,html,dn){if(!el||el.innerHTML===html)return;const had=el.innerHTML!=="";el.innerHTML=html;if(had)anim(el,[{opacity:0,transform:`translateY(${22*dn}px)`},{opacity:1,transform:"none"}],{duration:460,easing:"cubic-bezier(.45,0,.2,1)"})}
 let nvConsSig="",nvKeys=[],nvPrevI=null,nvShown=0,nvTw=0,nvR2a=null,nvAnc=null;
 /* Estimation : dès qu’on valide un arrêt, le bus est considéré à cet arrêt « maintenant » ;
    l’arrivée = maintenant + temps de parcours théorique des arrêts restants (+ écart réglé). */
@@ -1260,13 +1442,16 @@ function quit(){
   else if(o==="dest"){dest(k??0)}
   else{dir=null;home()}
 }
+const termLab=s=>{const v=svc(line,dir);return v&&v[2]&&end===v[1]?v[2]:s.at(-1)};
+const nvImp=n=>/\bRER\b|\bGare\b|Métro|Tramway|\bTram\b|\bT[0-9]{1,2}\b|Transilien|Pôle d.échanges|Aéroport/i.test(n);
 function view(){
   const d=DATA[line],s=R(),col=d.c;
   setLineTheme(line);nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvAnc=null;nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
   nvShow(`<div class="nv3" style="--lc:${col};--li:${ink(col)}">
     <header class="nv3-h">
+      <button type="button" class="nv3-home" id="nv-home" title="Retour à l’accueil" aria-label="Accueil"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg></button>
       <button type="button" class="nv3-logo" id="nv-quit" title="Quitter la ligne">${nvBusLogo(line)}${nvPill(line)}</button>
-      <div class="nv3-dir"><small>direction</small><b id="nv-dest">${nvN(s.at(-1))}</b></div>
+      <div class="nv3-dir"><small>direction</small><b id="nv-dest">${nvN(termLab(s))}</b></div>
       <div class="nv3-clk" id="nvc" title="Régler l’heure de départ">${fmt(Date.now())}</div>
     </header>
     <div class="nv3-b">
@@ -1304,6 +1489,7 @@ function view(){
       </section>
     </div></div>`);
   $("#nv-quit").onclick=quit;
+  $("#nv-home").onclick=()=>{leave();line=null;dir=null;home()};
   $("#nv-next").onclick=next;$("#nv-prev").onclick=prev;
   NVH.querySelectorAll(".nv3-mini button").forEach(b=>b.onclick=()=>ecart(+b.dataset.v));
   $("#nvc").onclick=nvSetDeparture;
@@ -1345,7 +1531,7 @@ function nvList(rel,dm,dn,quiet){
     g.classList.add("gh");g.setAttribute("aria-hidden","true");
     g.style.cssText=`position:absolute;left:0;right:0;top:${r.top-ulTop}px;height:${r.height}px;margin:0;pointer-events:none`;
     ul.appendChild(g);li.remove();
-    const a=anim(g,[{opacity:1,transform:"none"},{opacity:0,transform:`translateY(${-rh*.7*dn}px)`}],{duration:240,easing:EASE,fill:"forwards"});
+    const a=anim(g,[{opacity:1,transform:"none"},{opacity:0,transform:`translateY(${-rh*1.2*dn}px)`}],{duration:460,easing:"cubic-bezier(.45,0,.2,1)",fill:"forwards"});
     if(a)a.onfinish=()=>g.remove();else g.remove();
   }});
   const first=old.size===0;
@@ -1370,9 +1556,9 @@ function nvList(rel,dm,dn,quiet){
   }else if(note)note.remove();
   want.forEach((k,j)=>{
     const li=ul.querySelector(`li[data-k="${k}"]:not(.gh)`);
-    if(old.has(k)){const dy=tops.get(k)-li.getBoundingClientRect().top;if(Math.abs(dy)>1)anim(li,[{transform:`translateY(${dy}px)`},{transform:"none"}],{duration:400,easing:EASE})}
+    if(old.has(k)){const dy=tops.get(k)-li.getBoundingClientRect().top;if(Math.abs(dy)>1)anim(li,[{transform:`translateY(${dy}px)`},{transform:"none"}],{duration:560,delay:j*30,easing:"cubic-bezier(.45,0,.2,1)",fill:"backwards"})}
     else{
-      anim(li,[{opacity:0,transform:`translateY(${rh*.6*dn}px)`},{opacity:1,transform:"none"}],{duration:400,delay:first?j*45:0,easing:EASE,fill:"backwards"});
+      anim(li,[{opacity:0,transform:`translateY(${rh*(first?.6:1.2)*dn}px)`},{opacity:1,transform:"none"}],{duration:first?400:560,delay:first?j*45:want.length*30,easing:first?EASE:"cubic-bezier(.45,0,.2,1)",fill:"backwards"});
       anim(li.firstChild,[{transform:"scale(.2)"},{transform:"scale(1)"}],{duration:440,delay:first?j*45+60:60,easing:"cubic-bezier(.3,1.6,.5,1)",fill:"backwards"});
     }
   });
@@ -1399,11 +1585,12 @@ function upd(){
   const full=startIdx===0&&end===DATA[line].s[dir].length-1;
   $("#nv-prev").disabled=i<=startIdx;
   nvSwap($("#nv-nl"),i<end?"Arrêt suivant":(full?"Changer de sens":"Fin du partiel"),1);
-  nvSwap($("#ar1n"),nvN(s[last]),1);$("#ar1t").dataset.ts=nvEta(end);
+  nvSwap($("#ar1n"),nvN(termLab(s)),1);$("#ar1t").dataset.ts=nvEta(end);
   const r2=$("#ar2");
-  if(rel<last){
+  let imp=-1;for(let q=rel;q<last;q++)if(nvImp(s[q])){imp=q;break}
+  if(imp>=0){
     if(nvR2a){nvR2a.onfinish=null;nvR2a.cancel();nvR2a=null}
-    $("#ar2t").dataset.ts=nvEta(i);nvSwap($("#ar2n"),nvN(s[rel]),dn);
+    $("#ar2t").dataset.ts=nvEta(startIdx+imp);nvSwap($("#ar2n"),nvN(s[imp]),dn);
     if(r2.hidden){r2.hidden=false;anim(r2,[{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
   }else if(!r2.hidden){
     const a2=anim(r2,[{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px)"}],{duration:260,easing:EASE,fill:"forwards"});
@@ -1724,4 +1911,186 @@ async function boot(){
 }
 
 boot();
+
+/* ==== Abréviations officielles RATP (norme 2.06) — à utiliser avec parcimonie : écrire en entier de préférence ==== */
+const ABBR_RATP={
+  voirie:{"Allée":"al.","Avenue":"av","Boulevard":"bd","Carrefour":"carr.","Centre Commercial":"Centre cial","Château":"Chât.","Chemin":"che.","Cimetière":"Cim.","Collège":"Coll.","Cité":"cité","Cour":"cour","Cours":"cours","École":"Éc.","Église":"Égl.","Esplanade":"espl.","Faculté":"Fac.","Faubourg":"fg.","Galerie":"Gal","Hameau":"hameau","Hôtel":"Hôt.","Île":"Île","Impasse":"imp.","Jardin":"jardin","Lycée":"lyc.","Musée":"mus.","Parc":"parc","Parvis":"parv.","Passage":"pass.","Place":"pl.","Pont":"pont","Port":"port","Porte":"pte","Promenade":"prom.","Quai":"quai","Sentier":"sent.","Rond-Point":"rd-pt","Rue":"r.","Square":"sq.","Théâtre":"Th.","Université":"Univ.","Villa":"villa","Voie":"voie","Zone":"z.","Zone artisanale":"Z.A.","Zone industrielle":"Z.I."},
+  titres:{"Abbé":"Abbé","Adjudant":"Adjt","Amiral":"Am.","Capitaine":"Cap.","Colonel":"Col.","Commandant":"Cdt","Docteur":"Dr","Général":"Gén.","Maréchal":"Mar.","Monseigneur":"Mgr","Président":"Pdt","Professeur":"Prof.","Sergent":"Sgt"},
+  prenoms:{"Paul-Louis Cour":"P-L. Cour","Philippe-Auguste":"Ph.-Auguste","Robert Schuman":"R. Schuman"},
+  divers:{"Saint":"St","Sainte":"Ste","Grand":"Gd","Grande":"Gde","Petit":"Pt","Petite":"Pte","Haut":"Ht","Haute":"Hte","Hauts":"Hts","Hautes":"Htes"}
+};
+/* abrev("Place du Général Leclerc",["Général"]) → "Place du Gén. Leclerc" : n'abrège QUE les mots demandés */
+const abrev=(t,mots=[])=>{const all={...ABBR_RATP.voirie,...ABBR_RATP.titres,...ABBR_RATP.divers};let o=String(t);mots.forEach(m=>{if(all[m])o=o.replace(new RegExp("(^|[\\s-])"+m+"(?=$|[\\s-])","g"),(_,p)=>p+all[m])});return o};
+
+/* ==== Transitions de pages : glissement droite / gauche ==== */
+const PAGE_RANK={home:0,dest:1,go:2,nvBuses:10,nvLines:11,nvCount:12,renderSheetView:13,launchLineRegulation:14};
+let curRank=0;
+function slidePage(name,fn,args,self){
+  const rank=PAGE_RANK[name];
+  if(rank===curRank||!document.body.animate){curRank=rank;return fn.apply(self,args)}
+  curRank=rank;
+  const oldNv=(!NVH.hidden&&NVH.firstElementChild)?NVH:(NVSNAP&&performance.now()-NVSNAP.t<200?NVSNAP.el:null);
+  NVSNAP=null;
+  let ghost=null;
+  try{
+    if(oldNv){ghost=oldNv.cloneNode(true);ghost.hidden=false;ghost.className="pg-ghost";ghost.id="nv";}
+    else{const r=A.getBoundingClientRect();ghost=document.createElement("div");ghost.className="pg-ghost";ghost.style.cssText=`left:${r.left}px;top:${Math.max(r.top,0)}px;width:${r.width}px;height:${Math.min(innerHeight,r.height)}px`;const c=A.cloneNode(true);c.removeAttribute("id");c.style.margin="0";ghost.appendChild(c)}
+    ghost.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));
+    ghost.querySelectorAll("*").forEach(e=>{e.style.animation="none"});
+    document.body.appendChild(ghost);
+  }catch(_){ghost=null}
+  NVH.style.animation="none";
+  const res=fn.apply(self,args);
+  const toNv=!NVH.hidden&&NVH.firstElementChild;
+  const tgt=toNv?NVH.firstElementChild:A;
+  const o={duration:260,easing:"cubic-bezier(.3,0,.2,1)",fill:"backwards"};
+  if(ghost){
+    if(toNv&&oldNv){ghost.style.cssText="position:fixed;inset:0;z-index:199;pointer-events:none;animation:none";}
+    else if(toNv){ghost.remove();ghost=null}
+    else{ghost.style.zIndex="300"}
+  }
+  tgt.animate(toNv?[{opacity:0,transform:"translateY(14px)"},{opacity:1,transform:"none"}]:[{transform:"translateY(10px)"},{transform:"none"}],o);
+  if(ghost){
+    const fade=!(toNv&&oldNv);
+    if(fade){const a=ghost.animate([{opacity:1},{opacity:0}],{duration:220,easing:"ease-out",fill:"forwards"});a.onfinish=()=>ghost.remove()}
+    else setTimeout(()=>ghost.remove(),300);
+    setTimeout(()=>ghost&&ghost.remove(),700)
+  }
+  return res;
+}
+Object.keys(PAGE_RANK).forEach(n=>{const f=window[n];if(typeof f!=="function")return;
+  window[n]=function(...a){if(n==="home"&&a[0])return f.apply(this,a);return slidePage(n,f,a,this)}});
+
+
+/* ==== Préchargement de toutes les images ==== */
+(()=>{
+  const set=new Set((document.scripts[document.scripts.length-1].textContent.match(/https:\/\/image\.noelshack\.com\/[^"'`\s)\\]+/g)||[]));
+  const add=u=>{if(typeof u==="string"&&/^https?:/.test(u))set.add(u)};
+  try{Object.values(BUS_META).forEach(m=>add(m.img));NV_BRANDS.forEach(x=>add(x[2]));NV_LINE_ORDER.forEach(c=>LINE_TILE[c]&&add(NVI+LINE_TILE[c].i));Object.values(IMG).forEach(f=>add(N+f));Object.values(BUS_IMG).forEach(add);Object.values(ARR).forEach(add);[COCHE,RER,BUSIMG,RERIMG].forEach(add)}catch(_){}
+  const urls=[...set],tot=urls.length||1;let n=0,fin=false;
+  window.__imgs=[];
+  const bar=document.getElementById("pre-b"),pre=document.getElementById("pre"),txt=document.getElementById("pre-t");
+  const done=()=>{if(fin)return;fin=true;if(bar)bar.style.width="100%";setTimeout(()=>pre&&pre.classList.add("out"),150);setTimeout(()=>pre&&pre.remove(),900)};
+  const step=()=>{n++;if(bar)bar.style.width=Math.round(n/tot*100)+"%";if(txt)txt.textContent="Chargement… "+Math.round(n/tot*100)+" %";if(n>=urls.length)done()};
+  if(!urls.length)return done();
+  urls.forEach(u=>{const im=new Image();im.onload=im.onerror=step;im.src=u;window.__imgs.push(im)});
+  setTimeout(done,10000);
+})();
+
+/* ==== Protection anti-inspection (dissuasive : un navigateur reçoit toujours le code) ==== */
+(()=>{
+  if(!PROD)return;
+  let done=false;
+  const kill=()=>{if(done)return;done=true;try{document.documentElement.innerHTML='<body style="margin:0;background:#0e1628;color:#fff;font:600 18px system-ui;display:grid;place-items:center;height:100vh;text-align:center;padding:24px">Outils de développement détectés.<br>Fermez-les puis rechargez la page.</body>'}catch(_){}};
+  const key=e=>{const k=(e.key||"").toLowerCase(),c=e.ctrlKey||e.metaKey;
+    if(e.keyCode===123||k==="f12"||(c&&e.shiftKey&&["i","j","c","k"].includes(k))||(c&&["u","s","p"].includes(k))||(e.metaKey&&e.altKey&&["i","j","c","u"].includes(k))){e.preventDefault();e.stopPropagation();return false}};
+  addEventListener("keydown",key,true);addEventListener("keyup",key,true);
+  addEventListener("contextmenu",e=>e.preventDefault(),true);
+  addEventListener("copy",e=>{if(!/^(INPUT|TEXTAREA)$/.test((e.target&&e.target.tagName)||""))e.preventDefault()});
+  addEventListener("dragstart",e=>e.preventDefault(),true);
+  const probe=()=>{
+    const t=performance.now();(function(){debugger})();if(performance.now()-t>120)return kill();
+    const el=new Image();let hit=false;Object.defineProperty(el,"id",{get(){hit=true;return""}});console.debug(el);if(hit)kill();
+  };
+  setInterval(probe,1500);
+  document.querySelectorAll("img").forEach(i=>i.setAttribute("draggable","false"));
+  try{console.log=console.info=console.warn=()=>{}}catch(_){}
+})();
+
+/* ==== Tutoriel de première utilisation (une seule fois par appareil) ==== */
+;(()=>{
+  const K="reg_tour_";
+  const got=id=>{try{return!!localStorage.getItem(K+id)}catch(_){return true}};
+  const remember=id=>{try{localStorage.setItem(K+id,"1")}catch(_){}};
+  const q=x=>typeof x==="function"?x():(x?document.querySelector(x):null);
+  let cur=null;
+  const busy=()=>!!document.getElementById("pre")||!!document.querySelector(".ovl")||!!cur;
+  function run(id,steps){
+    if(cur||got(id))return;
+    remember(id);
+    let i=0,raf=0,first=true;
+    const root=document.createElement("div");root.id="tr";
+    root.innerHTML='<div class="tr-hole"></div><div class="tr-card" role="dialog" aria-live="polite"><small class="tr-n"></small><h3 class="tr-t"></h3><p class="tr-p"></p><div class="tr-b"><button type="button" class="tr-skip">Passer</button><button type="button" class="tr-prev">Précédent</button><button type="button" class="tr-next"></button></div></div>';
+    document.body.appendChild(root);
+    const $q=c=>root.querySelector(c),hole=$q(".tr-hole"),card=$q(".tr-card"),n=$q(".tr-n"),t=$q(".tr-t"),p=$q(".tr-p"),prev=$q(".tr-prev"),next=$q(".tr-next");
+    const show=()=>{
+      const s=steps[i];
+      n.textContent=(i+1)+" / "+steps.length;t.textContent=s.t;p.textContent=s.p;
+      prev.hidden=i===0;next.textContent=i===steps.length-1?"Terminer":"Suivant";
+      const el=q(s.el);if(el&&el.scrollIntoView)el.scrollIntoView({block:"nearest"});
+    };
+    const place=()=>{
+      const s=steps[i],el=q(s.el),vw=innerWidth,vh=innerHeight,pad=s.pad==null?6:s.pad;
+      let r=el?el.getBoundingClientRect():null;
+      if(r&&(r.width<2||r.height<2||r.bottom<0||r.top>vh))r=null;
+      root.classList.toggle("nohole",!r);
+      const cw=card.offsetWidth,ch=card.offsetHeight;
+      let cx,cy;
+      if(r){
+        const x=Math.max(0,r.left-pad),y=Math.max(0,r.top-pad),w=Math.min(vw,r.right+pad)-x,h=Math.min(vh,r.bottom+pad)-y;
+        hole.style.cssText="left:"+x+"px;top:"+y+"px;width:"+w+"px;height:"+h+"px";
+        if(vh-(y+h)>=ch+20)cy=y+h+12;
+        else if(y>=ch+20)cy=y-ch-12;
+        else{
+          cy=Math.max(12,Math.min(vh-ch-12,y+h/2-ch/2));
+          if(x+w+12+cw<=vw-8)cx=x+w+12;
+          else if(x-cw-12>=8)cx=x-cw-12;
+          else cy=vh-ch-12;
+        }
+        if(cx==null)cx=Math.max(12,Math.min(vw-cw-12,x+w/2-cw/2));
+      }else{
+        hole.style.cssText="left:"+vw/2+"px;top:"+vh/2+"px;width:0;height:0";
+        cx=(vw-cw)/2;cy=(vh-ch)/2;
+      }
+      card.style.left=Math.round(cx)+"px";card.style.top=Math.round(cy)+"px";
+    };
+    const loop=()=>{place();if(first){first=false;requestAnimationFrame(()=>root.classList.add("go"))}raf=requestAnimationFrame(loop)};
+    const end=()=>{cancelAnimationFrame(raf);removeEventListener("keydown",key,true);root.remove();cur=null};
+    const go=d=>{const j=i+d;if(j<0)return;if(j>=steps.length)return end();i=j;show()};
+    const key=e=>{
+      e.stopPropagation();
+      if(e.key==="Escape"){e.preventDefault();end()}
+      else if(e.key==="ArrowRight"||e.key==="Enter"||e.key===" "){e.preventDefault();go(1)}
+      else if(e.key==="ArrowLeft"){e.preventDefault();go(-1)}
+    };
+    addEventListener("keydown",key,true);
+    $q(".tr-skip").onclick=end;prev.onclick=()=>go(-1);next.onclick=()=>go(1);
+    cur={end};show();loop();
+  }
+
+  const HOME=[
+    {t:"Bienvenue sur Régulation Bus",p:"Ce site t’accompagne pendant ton service : horaires, arrêts, écart avec l’horaire théorique et consignes. Voici un tour rapide, il ne s’affichera qu’une seule fois."},
+    {el:"#hc",t:"L’horloge",p:"Elle sert de référence pour tous les horaires du site."},
+    {el:"#hdr nav",t:"Départs et Fiches",p:"« Départs » liste les lignes en service avec leur prochain départ. « Fiches » prépare ton service : tes véhicules, tes lignes préférées et le nombre de courses."},
+    {el:".rowx .row",t:"Une ligne, un sens",p:"Chaque tuile indique l’indice de la ligne, son terminus et le temps avant le prochain départ. Touche-la pour choisir ton arrêt de départ, puis ta destination."},
+    {el:".rowx .more",t:"Partiel libre",p:"Ce bouton permet de ne faire qu’une partie de la ligne, en choisissant toi-même l’arrêt de départ et l’arrêt d’arrivée."},
+    {t:"À toi de jouer",p:"Choisis une ligne pour lancer la régulation. Un second tour rapide t’expliquera l’écran de régulation."}
+  ];
+  const REG=[
+    {el:".nv3-l",pad:4,t:"Prochain arrêt",p:"Le nom et l’heure théorique du prochain arrêt. En dessous, les arrêts suivants : la liste remonte à chaque arrêt validé."},
+    {el:".nv3-nav",t:"Valider un arrêt",p:"Touche « Arrêt suivant » quand le bus quitte l’arrêt. « Arrêt précédent » corrige une erreur."},
+    {el:".nv3-dlt",t:"Écart horaire",p:"Règle ton avance ou ton retard avec +5, +1, -1 et -5 minutes : les heures de passage s’ajustent."},
+    {el:".nv3-cons",pad:4,t:"Consignes de régulation",p:"Les consignes automatiques (attendre, limiter les arrêts…) et celles envoyées pour ta ligne s’affichent ici."},
+    {el:()=>{const e=document.querySelector("#ar1n");return e&&e.closest(".nv3-c")},pad:4,t:"Arrivée",p:"Le terminus et le temps estimé avant d’y arriver, mis à jour selon ton écart."},
+    {el:".nv3-r",pad:4,t:"Discussions",p:"Échange avec les autres régulateurs de la même ligne."},
+    {el:"#nvc",t:"Heure de départ",p:"Touche l’horloge pour régler l’heure de départ de ton service."},
+    {el:"#nv-home",t:"Retour à l’accueil",p:"Ce bouton te ramène à l’accueil. Le bouton avec l’indice de ligne te ramène à l’écran précédent."}
+  ];
+
+  /* accueil : dès que le chargement est fini et que les lignes sont affichées */
+  let tries=0;
+  const wait=setInterval(()=>{
+    if(got("home")||++tries>100)return clearInterval(wait);
+    if(busy()||!NVH.hidden||!document.querySelector(".rowx"))return;
+    clearInterval(wait);setTimeout(()=>{if(!busy()&&NVH.hidden)run("home",HOME)},500);
+  },300);
+
+  /* écran de régulation : la première fois qu'il s'ouvre */
+  const v0=window.view;
+  window.view=function(...a){
+    const r=v0.apply(this,a);
+    if(!got("reg"))setTimeout(()=>{if(!NVH.hidden&&document.querySelector(".nv3-l")&&!busy())run("reg",REG)},1100);
+    return r;
+  };
+})();
 </script></body></html>
