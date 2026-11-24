@@ -130,6 +130,9 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .toast.on{opacity:1;transform:translate(-50%,0)}
 #gate .dlg{--x:0}
 @media(max-width:760px){.two{grid-template-columns:1fr}.acts{justify-content:flex-start}}
+.lf-g{display:grid;grid-template-columns:1fr 1fr;gap:10px}.lf-g label{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-style:italic}
+.lf-ck{display:flex;gap:8px;align-items:center;color:var(--ink)}.fld textarea{min-height:100px;resize:vertical}
+@media(max-width:760px){.lf-g{grid-template-columns:1fr}}
 </style></head>
 <body>
 <header id="hdr" hidden><div class="hi"><div class="gt"><b id="hg">Administration</b><small id="hd">Régulation Bus</small></div><time id="hc">--:--:--</time>
@@ -312,8 +315,44 @@ async function vAcc(){
 /* =========================================================
    LIGNES — activer / désactiver, partiels
    ========================================================= */
-let CF={lines:{},svc:{}};
-async function cfLoad(){const c=await GET("config")||{};CF={lines:c.lines||{},svc:c.svc||{}}}
+let CF={lines:{},svc:{},custom:{}};
+async function cfLoad(){const c=await GET("config")||{};CF={lines:c.lines||{},svc:c.svc||{},custom:c.custom||{}}}
+const tmin=v=>{const m=/^(\d{1,2}):(\d{2})$/.exec(v||"");return m?+m[1]*60+ +m[2]:null};
+const tstr=m=>String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0");
+const cl=x=>String(x).replace(/[<>&"`]/g,"").replace(/'/g,"’").replace(/\s+/g," ").trim().slice(0,60);
+function lineForm({title,init,taken}){
+  return new Promise(res=>{
+    const o=document.createElement("div");o.className="ovl";const r=init||{},sc=r.sch||{first:300,last:1380,freq:15,dur:30};
+    const st=a=>esc((a||[]).join("\n")),two=r.s&&r.s[1]&&r.s[1].length>1;
+    o.innerHTML=`<form class="card dlg" novalidate style="max-height:92vh;overflow:auto"><h2>${esc(title)}</h2>
+    <div class="frow" style="justify-content:stretch"><label class="fld" style="flex:1"><input id="lf-n" maxlength="5" placeholder="Numéro (ex. 12)" value="${esc(r.n||"")}"${init?" readonly":""} autocomplete="off"></label><input id="lf-c" type="color" value="${esc(r.c||"#2458c4")}" aria-label="Couleur" style="width:52px;height:48px;border:0;background:none;padding:0;flex:none"></div>
+    <label class="fld"><textarea id="lf-a" placeholder="Arrêts du sens 1, un par ligne (du départ au terminus)" aria-label="Arrêts du sens 1">${st(r.s&&r.s[0])}</textarea></label>
+    <label class="lf-ck"><input type="checkbox" id="lf-r"${two?"":" checked"}> Sens 2 = sens 1 à l’envers</label>
+    <label class="fld" id="lf-bl" hidden><textarea id="lf-b" placeholder="Arrêts du sens 2, un par ligne" aria-label="Arrêts du sens 2">${st(r.s&&r.s[1])}</textarea></label>
+    <div class="lf-g"><label>Premier départ<span class="fld"><input id="lf-f" type="time" value="${tstr(sc.first)}"></span></label><label>Dernier départ<span class="fld"><input id="lf-l" type="time" value="${tstr(sc.last)}"></span></label><label>Toutes les (min)<span class="fld"><input id="lf-q" type="number" min="1" max="240" value="${+sc.freq}"></span></label><label>Durée du trajet (min)<span class="fld"><input id="lf-d" type="number" min="1" max="400" value="${+sc.dur}"></span></label></div>
+    <p class="msg-err" role="alert"></p><div class="frow"><button type="button" class="btn g" data-x>Annuler</button><button type="submit" class="btn">${init?"Enregistrer":"Créer la ligne"}</button></div></form>`;
+    document.body.appendChild(o);
+    const q=s=>o.querySelector(s),er=q("p[role=alert]"),close=v=>{o.remove();res(v)};
+    const tg=()=>{q("#lf-bl").hidden=q("#lf-r").checked};q("#lf-r").onchange=tg;tg();
+    setTimeout(()=>q(init?"#lf-a":"#lf-n").focus(),50);
+    q("[data-x]").onclick=()=>close(null);
+    o.addEventListener("mousedown",e=>{if(e.target===o)close(null)});
+    q("form").onsubmit=e=>{e.preventDefault();
+      const fail=m=>{er.textContent=m},n=init?r.n:q("#lf-n").value.trim().toUpperCase(),c=q("#lf-c").value;
+      const L=v=>v.split("\n").map(cl).filter(Boolean),a=L(q("#lf-a").value),b=q("#lf-r").checked?null:L(q("#lf-b").value);
+      const first=tmin(q("#lf-f").value),last=tmin(q("#lf-l").value),freq=Math.round(+q("#lf-q").value),dur=Math.round(+q("#lf-d").value);
+      if(!/^[A-Z0-9]{1,5}$/.test(n))return fail("Numéro : 1 à 5 lettres ou chiffres.");
+      if(!init&&taken&&taken(n))return fail("Ce numéro est déjà utilisé.");
+      if(a.length<2||a.length>80)return fail("Sens 1 : entre 2 et 80 arrêts.");
+      if(b&&(b.length<2||b.length>80))return fail("Sens 2 : entre 2 et 80 arrêts.");
+      if(first==null||last==null)return fail("Horaires invalides.");
+      if(!(freq>=1&&freq<=240&&dur>=1&&dur<=400))return fail("Fréquence ou durée invalide.");
+      if(Math.floor(((last<first?last+1440:last)-first)/freq)>400)return fail("Trop de départs : augmente la fréquence.");
+      close({n,c,s:b?[a,b]:[a],sch:{first,last,freq,dur}});
+    };
+  });
+}
+
 const svcOv=(n,k)=>{const x=CF.svc[n];return x?x[k]:null};
 const svcDef=(n,k)=>{const d=LINES[n].svc&&LINES[n].svc[k];return d?[d[0],d[1]]:[0,LINES[n].s[k].length-1]};
 const lineIsOn=n=>!(CF.lines[n]&&CF.lines[n].on===false);
@@ -327,12 +366,26 @@ function dirBox(n,k){
     <div class="frow" style="justify-content:space-between"><span class="sub">Service assuré de l’arrêt ${a+1} à l’arrêt ${e+1}</span><span style="display:flex;gap:6px;flex:0 0 auto"><button class="btn g sm" data-a="reset"${ov?"":" disabled"}>Par défaut</button><button class="btn sm" data-a="save">Appliquer</button></span></div></div>`;
 }
 async function vLig(){
-  A.innerHTML=`<div class="hero v"><h2>Lignes</h2><p class="hint">Désactive une ligne (elle devient « suspendue » pour tout le monde) et ajuste le partiel assuré dans chaque sens.</p></div><div class="lgrid" id="lg"><p class="empty">Chargement…</p></div>`;
+  A.innerHTML=`<div class="hero v"><h2>Lignes</h2><p class="hint">Désactive une ligne (elle devient « suspendue » pour tout le monde) et ajuste le partiel assuré dans chaque sens.</p></div><div class="lgrid" id="lg"><p class="empty">Chargement…</p></div>
+  <div class="sec">Lignes personnalisées</div><div class="frow" style="justify-content:flex-start;margin-bottom:12px"><button type="button" class="btn" id="cu-new">Créer une ligne</button></div><div class="bd" id="cu-l"></div>`;
   await guard(cfLoad);
   if(tab!=="lig")return;
   $("#lg").innerHTML=ORDER.filter(n=>LINES[n]).map((n,j)=>{const c=LINES[n].c,on=lineIsOn(n);
     return`<section class="card lcard${on?"":" offl"}" data-n="${n}" style="--i:${j};animation:in .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:${j*35}ms"><div class="lhd"><span class="lb" style="--lc:${c};--li:${ink(c)}">${n}</span>
       <div class="ub"><b>Ligne ${n}</b><small class="state">${on?"Active":"Désactivée"}</small></div><button type="button" class="sw" role="switch" aria-checked="${on}" aria-label="Activer la ligne ${n}"></button></div>${[0,1].map(k=>dirBox(n,k)).join("")}</section>`}).join("");
+  const cuDraw=()=>{const ks=Object.keys(CF.custom);
+    $("#cu-l").innerHTML=ks.length?ks.map(n=>{const r=CF.custom[n],on=lineIsOn(n),a=Object.values(r.s[0]),sc=r.sch||{};
+      return`<div class="urow" data-n="${esc(n)}"><span class="lb" style="--lc:${esc(r.c)};--li:${ink(/^#[0-9a-f]{6}$/i.test(r.c)?r.c:"#2458c4")}">${esc(n)}</span><div class="ub"><b>${esc(short(a[0]))} ⇄ ${esc(short(a.at(-1)))}</b><small>${tstr(sc.first)} → ${tstr(sc.last)} · toutes les ${sc.freq} min · ${on?"Active":"Désactivée"}</small></div><div class="acts"><button class="btn g sm" data-a="tog">${on?"Désactiver":"Activer"}</button><button class="btn g sm" data-a="edit">Modifier</button><button class="btn g sm" data-a="del">Supprimer</button></div></div>`}).join(""):`<p class="empty">Aucune ligne personnalisée.</p>`};
+  cuDraw();
+  $("#cu-new").onclick=async()=>{const r=await lineForm({title:"Créer une ligne",taken:n=>!!LINES[n]||!!CF.custom[n]});if(!r)return;
+    if(await guard(()=>api("PUT","config/custom/"+r.n,r))===undefined)return;CF.custom[r.n]=r;cuDraw();toast(`Ligne ${r.n} créée`)};
+  $("#cu-l").onclick=async e=>{const b=e.target.closest("[data-a]");if(!b)return;const n=b.closest("[data-n]").dataset.n,r=CF.custom[n];
+    if(b.dataset.a==="tog"){const on=lineIsOn(n);if(await guard(()=>on?api("PUT","config/lines/"+n,{on:false,t:Date.now()}):api("DELETE","config/lines/"+n))===undefined)return;
+      if(on)CF.lines[n]={on:false};else delete CF.lines[n];cuDraw()}
+    else if(b.dataset.a==="edit"){const v=await lineForm({title:"Modifier la ligne "+n,init:{...r,s:r.s.map(x=>Object.values(x))}});if(!v)return;
+      if(await guard(()=>api("PUT","config/custom/"+n,v))===undefined)return;CF.custom[n]=v;cuDraw();toast("Ligne modifiée")}
+    else{const v=await ask({title:"Supprimer la ligne "+n,text:"Elle disparaît pour tous les utilisateurs.",ok:"Supprimer",danger:true});if(!v)return;
+      if(await guard(async()=>{await api("DELETE","config/custom/"+n);await api("DELETE","config/lines/"+n)})===undefined)return;delete CF.custom[n];delete CF.lines[n];cuDraw();toast("Ligne supprimée")}};
   const L=$("#lg");
   L.onclick=async e=>{
     const sw=e.target.closest(".sw");
@@ -384,18 +437,19 @@ async function vSal(){
 }
 async function roomAdmin(c){
   const o=document.createElement("div");o.className="ovl";
-  o.innerHTML=`<div class="card dlg wide"><h2 id="ra-t"></h2><div class="two"><div class="stack"><div class="lab">Membres</div><ul class="stack" id="ra-m" style="list-style:none;padding:0"></ul><div class="lab">Message général</div><div class="frow"><label class="fld" style="flex:1"><input id="ra-gi" maxlength="300" placeholder="Envoyer à tout le salon" autocomplete="off"></label><button class="btn" id="ra-gs">Envoyer</button></div><div class="lab">Messages généraux</div><div class="stack" id="ra-g"></div></div>
+  o.innerHTML=`<div class="card dlg wide"><h2 id="ra-t"></h2><div class="two"><div class="stack"><div class="lab">Membres</div><ul class="stack" id="ra-m" style="list-style:none;padding:0"></ul><div class="lab">Lignes du salon</div><div class="stack" id="ra-ln"></div><div class="lab">Message général</div><div class="frow"><label class="fld" style="flex:1"><input id="ra-gi" maxlength="300" placeholder="Envoyer à tout le salon" autocomplete="off"></label><button class="btn" id="ra-gs">Envoyer</button></div><div class="lab">Messages généraux</div><div class="stack" id="ra-g"></div></div>
   <div class="stack"><div class="lab">Discussion</div><div class="stack" id="ra-c" style="max-height:52vh;overflow:auto"></div></div></div><div class="frow"><button class="btn g" data-x>Fermer</button></div></div>`;
   document.body.appendChild(o);
   const close=()=>{o.remove()};
   o.querySelector("[data-x]").onclick=close;o.addEventListener("mousedown",e=>{if(e.target===o)close()});o.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
   const load=async()=>{
-    const[m,mem,rg,g,ch]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`),GET(`rooms/${c}/general`),GET(`rooms/${c}/chat`)]);
+    const[m,mem,rg,g,ch,ln]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`),GET(`rooms/${c}/general`),GET(`rooms/${c}/chat`),GET(`rooms/${c}/lines`)]);
     if(!m){close();toast("Salon introuvable");return}
     RM[c]={...m,members:mem||{},regs:rg||{}};
     $("#ra-t").textContent=`${m.name} · ${c}`;
     $("#ra-m").innerHTML=Object.entries(mem||{}).map(([u,v])=>`<li class="cmsg"><span>${esc(v.p||u)}<small>${u===m.owner?"Créateur":(rg||{})[u]?"Régulateur":""}</small></span>${u===m.owner?"":`<span class="x" style="display:flex;gap:6px"><button class="btn g sm" data-r="${u}" data-v="${(rg||{})[u]?0:1}">${(rg||{})[u]?"Retirer rég.":"Régulateur"}</button><button class="xbtn" data-k="${u}" title="Retirer du salon" aria-label="Retirer du salon">×</button></span>`}</li>`).join("");
     const lst=(o2,key)=>Object.entries(o2||{}).filter(([,v])=>v&&v.m).sort((x,y)=>x[1].t-y[1].t).slice(-60).map(([id,v])=>`<div class="cmsg"><span><b>${esc(v.a||"Admin")}</b><small>${fh(key==="chat"?v.t-GAME_OFFSET:v.t)}</small><br>${esc(v.m)}</span><button class="xbtn x" data-d="${key}/${id}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Rien pour le moment.</p>`;
+    $("#ra-ln").innerHTML=Object.entries(ln||{}).map(([n,r])=>`<div class="cmsg"><span><b>${esc(n)}</b><small>${esc(short(Object.values(r.s[0])[0]||""))} ⇄ ${esc(short(Object.values(r.s[0]).at(-1)||""))}</small></span><button class="xbtn x" data-d="lines/${esc(n)}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Aucune ligne.</p>`;
     $("#ra-g").innerHTML=lst(g,"general");$("#ra-c").innerHTML=lst(ch,"chat");
   };
   await guard(load);
