@@ -8,7 +8,8 @@
 @font-face{font-family:Parisine;src:url(Parisine-Regular.otf) format("opentype");font-weight:400;font-display:swap}
 @font-face{font-family:Parisine;src:url(Parisine-Bold.otf) format("opentype");font-weight:700;font-display:swap}
 :root{--page:#0e1628;--bar:#162343;--ink:#425ba2;--blue:#2458c4;--blue-d:#173c8c;--surface:#e6ebf5;--surface-2:#f4f6fb;--line:rgba(18,40,90,.14);--led:#ff8a00;--ok:#0a8a4a;--late:#d6281c;--tc:#2458c4;--r:16px;--glass:rgba(255,255,255,.12);--on-dark-2:rgba(255,255,255,.72)}
-*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+input,textarea,select,[contenteditable="true"]{user-select:text;-webkit-user-select:text}
 body{min-height:100vh;background:var(--page);color:#fff;font-family:Parisine,"Trebuchet MS",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
 button,input,select,textarea{font:inherit}
 header{position:sticky;top:0;z-index:5;background:var(--bar);padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:4px solid var(--tc)}
@@ -122,6 +123,15 @@ button.drow:active{transform:scale(.99)}
 <main id="main"></main>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
+/* ---------- protection basique contre l'inspection ---------- */
+document.addEventListener("contextmenu",e=>{if(!e.target.closest("input,textarea"))e.preventDefault()});
+document.addEventListener("keydown",e=>{
+  const k=String(e.key||"").toLowerCase();
+  if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&["i","j","c","k"].includes(k))||(e.metaKey&&e.altKey&&["i","j","c"].includes(k))||(e.ctrlKey&&["u","s"].includes(k))){
+    e.preventDefault();e.stopPropagation();return false;
+  }
+},true);
+
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
 const WEBHOOK_URL="";
 const RER_IMG="https://image.noelshack.com/fichiers/2026/48/1/1795444285-design-sans-titre.png";
@@ -146,6 +156,18 @@ let T={},LC={},S=null,tab="l",me={},PT,pq=[],chan="gen",cur=null;
 const tt=m=>{const e=$("#tt");e.textContent=m;e.style.display="block";clearTimeout(tt._t);tt._t=setTimeout(()=>e.style.display="none",3000)};
 const md=h=>{const m=$("#md");m.innerHTML=h?`<div class="mb">${h}</div>`:"";m.style.display=h?"grid":"none"};
 
+/* ---------- pseudos uniques ---------- */
+const normPseudo=s=>String(s||"").trim().replace(/\s+/g," ").toLowerCase();
+function isPseudoTaken(name,membersObj,selfUid=uid){
+  const target=normPseudo(name);
+  if(!target)return false;
+  return Object.entries(membersObj||{}).some(([u,m])=>{
+    if(u===selfUid||!m||!m.n)return false;
+    const active=(Date.now()-(m.t||0))<86400000;
+    return active&&normPseudo(m.n)===target;
+  });
+}
+
 /* ---------- lignes de référence (lues dans index.html) ---------- */
 async function loadBase(){try{const h=await(await fetch("index.html")).text();T=JSON.parse(h.match(/^const TT=(\{.*\});\s*$/m)[1]);[...h.match(/const LINE_COLOR=\{([^}]*)\}/)[1].matchAll(/"(\w+)":"(#\w{6})"/g)].forEach(x=>LC[x[1]]=x[2])}catch(e){}}
 const seed=()=>Object.fromEntries(Object.keys(T).map((n,i)=>["l"+i,{n,c:LC[n]||"#0b6f86",dg:/^(N76|135)$/.test(n)?1:0,b:n,st:"ok",o:i,cad:0,pt:["",""],pto:[0,0]}]));
@@ -160,7 +182,11 @@ const isPt=(l,k)=>{const p=((l.pt&&l.pt[k])||"").trim(),last=rawStp(l)[k].at(-1)
 
 const LS=()=>Object.entries(S?.d?.lines||{}).filter(([,l])=>l&&l.n).map(([id,l])=>({id,...l})).sort((a,b)=>(a.o??99)-(b.o??99)||String(a.n).localeCompare(String(b.n)));
 const lb=id=>LS().find(l=>l.id===id);
-const rl=()=>S.d.meta.owner===uid?2:(S.d.members?.[uid]?.r?1:0),isOwn=()=>rl()===2,isReg=()=>rl()>=1;
+const isAdmin=()=>ADMIN_UIDS.includes(uid);
+const rl=()=>S.d.meta.owner===uid?2:(S.d.members?.[uid]?.r?1:0);
+const isOwn=()=>rl()===2;
+const isReg=()=>rl()>=1||isAdmin();
+const canJson=()=>isOwn()||isReg()||isAdmin();
 const log=x=>js("POST",`prive/${S.id}/log`,{t:Date.now(),u:me.n,x});
 
 /* ---------- horaires & courses (identiques à index.html) ---------- */
@@ -273,20 +299,32 @@ e.innerHTML=l.map(([id,x])=>`<div class="row"><b style="border-left:8px solid ${
 setInterval(()=>{if(!S)pubLoad()},10000);
 
 /* ---------- entrée dans un serveur ---------- */
-async function enter(id){const b=await jg(`prive/${id}/ban/${uid}`);if(b===1||b>Date.now())return tt("Accès refusé : vous êtes exclu de ce serveur.");
-const n=localStorage["sse_n_"+id];if(!n)return md(`<h2>Choisis ton pseudo</h2><p>Il sera propre à ce serveur.</p><input id="nk" maxlength="20" placeholder="Pseudo"><button class="pb" data-a="nk" data-id="${id}">Entrer</button>`);
-me={n};S={id,d:null};tab="l";clearInterval(PT);PT=setInterval(poll,3000);poll()}
+function promptPseudo(id,reason=""){
+  const prev=(localStorage["sse_n_"+id]||"").trim();
+  md(`<h2>Choisis ton pseudo</h2><p>Il sera propre et unique sur ce serveur.${reason?` <b style="color:var(--late)">${E(reason)}</b>`:""}</p><input id="nk" maxlength="20" placeholder="Pseudo" value="${E(prev)}"><div class="bs"><button class="pb" data-a="nk" data-id="${id}">Entrer</button><button class="sb" data-a="back">Quitter</button></div>`);
+}
+async function enter(id){
+  const b=await jg(`prive/${id}/ban/${uid}`);if(b===1||b>Date.now())return tt("Accès refusé : vous êtes exclu de ce serveur.");
+  const members=await jg(`prive/${id}/members`)||{};
+  const saved=(localStorage["sse_n_"+id]||"").trim();
+  if(!saved||isPseudoTaken(saved,members,uid))return promptPseudo(id,saved?"Ce pseudo est déjà utilisé sur ce serveur.":"");
+  me={n:saved};S={id,d:null};tab="l";clearInterval(PT);PT=setInterval(poll,3000);poll();
+}
 async function joinCode(code){code=code.trim().toUpperCase();if(!/^SSE(-[A-Z0-9]{4}){3}$/.test(code))return tt("Code invalide.");
 const c=await jg("prive_codes/"+code);if(!c)return tt("Code inconnu ou révoqué.");
 const known=await jg(`prive/${c.id}/members/${uid}`);if(!known){if(c.max&&(c.used||0)>=c.max)return tt("Ce lien a atteint sa limite d’utilisations.");js("PATCH","prive_codes/"+code,{used:(c.used||0)+1})}
 history.replaceState(null,"",location.pathname);enter(c.id)}
-function leaveSrv(m){if(S)js("PATCH",`prive/${S.id}/members/${uid}`,{l:""});me={};home();if(m)tt(m)}
+function leaveSrv(m){md();if(S)js("PATCH",`prive/${S.id}/members/${uid}`,{l:""});me={};home();if(m)tt(m)}
 
 /* ---------- synchro ---------- */
 async function poll(){if(!S)return;try{const d=await jg("prive/"+S.id);if(!d){js("DELETE","prive_pub/"+S.id);return leaveSrv("Ce serveur n’existe plus.")}
 const b=(d.ban||{})[uid];if(b===1||b>Date.now())return leaveSrv("Vous avez été exclu du serveur.");
+if(isPseudoTaken(me.n,d.members,uid)){
+  const id=S.id;S=null;clearInterval(PT);localStorage.removeItem("sse_n_"+id);
+  return promptPseudo(id,"Un autre joueur utilise déjà ce pseudo.");
+}
 S.d=d;if(d.meta.owner===uid&&d.meta.pub&&!S.healed){S.healed=1;await js("PUT","prive_pub/"+S.id,{n:d.meta.name,c:d.meta.color||"#2458c4"})}js("PATCH",`prive/${S.id}/members/${uid}`,{n:me.n,t:Date.now(),l:me.l||"",dr:me.dr||0,i:me.i||0,dl:me.dl||0});checkPop();draw();if(tab==="c")chatLoad()}catch(e){}}
-function tabsBar(){const t=[["l","Lignes"],["p","Présence"]];if(isReg())t.push(["r","Régulation"]);t.push(["c","Chat"]);if(isOwn())t.push(["g","Réglages"]);if(isOwn()||ADMIN_UIDS.includes(uid))t.push(["j","Journal"]);
+function tabsBar(){const t=[["l","Lignes"],["p","Présence"]];if(isReg())t.push(["r","Régulation"]);t.push(["c","Chat"]);if(isOwn())t.push(["g","Réglages"]);if(isOwn()||isAdmin())t.push(["j","Journal"]);
 return`<div class="tabs">${t.map(([k,n])=>`<button class="${tab===k?"on":""}" data-a="tab" data-k="${k}">${n}</button>`).join("")}</div>`}
 function draw(f){if(!S)return;const d=S.d;if(!d)return;const m=$("#main");document.documentElement.style.setProperty("--tc",d.meta.color||"#2458c4");$("#ht").textContent=d.meta.name;$("#bk").style.display="";
 $("#sn").textContent=localStorage.sse_snd==="0"?"Son : non":"Son : oui";
@@ -299,7 +337,12 @@ if(d.meta.pin)h+=`<div class="pin">Épinglé · ${rich(d.meta.pin)}</div>`;
 bn.filter(b=>b.l==="all").forEach(b=>h+=`<div class="pin">${rich(b.x)}</div>`);
 h+=activeServiceCard();
 if(rel.length)h+=`<div class="card"><h2>Consignes de régulation</h2>${rel.map(m=>`<div class="cm"><b>${hm(m.t)}</b> ${rich(m.x)}</div>`).join("")}</div>`;
-if(isReg())h+=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="pb" data-a="edl" data-id="">+ Nouvelle ligne</button><button class="sb" data-a="jsonio">Exporter / Importer JSON</button>${LS().length?`<button class="sb" data-a="dellines">Supprimer des lignes</button>`:""}</div>`;
+if(isReg()){
+  h+=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px"><button class="pb" data-a="edl" data-id="">+ Nouvelle ligne</button>`;
+  if(canJson())h+=`<button class="sb" data-a="jsonio">Exporter / Importer JSON</button>`;
+  if(LS().length)h+=`<button class="sb" data-a="dellines">Supprimer des lignes</button>`;
+  h+=`</div>`;
+}
 return h+lignesHome(bn)};
 V.p=()=>{const d=S.d,ms=Object.entries(d.members||{}).sort((a,b)=>b[1].t-a[1].t);
 return`<div class="card"><h2>Présence</h2>${ms.map(([u,m])=>{const on=Date.now()-m.t<15000,l=m.l&&lb(m.l),s=l?(stp(l)[m.dr]||[])[m.i]:"",mod=u!==uid&&u!==d.meta.owner;
@@ -313,8 +356,16 @@ ${Object.entries(d.banners||{}).map(([k,b])=>`<div class="row"><span>${rich(b.x)
 <div class="card"><h2>Messages envoyés</h2>${Object.entries(d.msgs||{}).slice(-20).reverse().map(([k,m])=>`<div class="row"><span>${hm(m.t)} · ${E(m.f)} → ${E(tgn(m.tg))} : ${rich(m.x)}</span><span class="sp"></span><button class="sb" data-a="dmg" data-k="${k}">Supprimer</button></div>`).join("")}</div>`};
 V.c=()=>{const d=S.d;return`<div class="card"><h2>Chat</h2><select id="cc" onchange="chan=this.value;chatLoad()"><option value="gen">Général</option>${Object.entries(d.members||{}).filter(([u])=>u!==uid).map(([u,m])=>`<option value="${dmk(u)}"${chan===dmk(u)?" selected":""}>Privé · ${E(m.n)}</option>`).join("")}</select><div id="cl"></div><input id="ci" maxlength="300" placeholder="Votre message" onkeydown="if(event.key==='Enter')A.cs()"><button class="pb" data-a="cs">Envoyer</button></div>`};
 V.g=()=>{const m=S.d.meta,c=m.code,lk=location.origin+location.pathname+"#"+c,bn=Object.keys(S.d.ban||{}).filter(u=>S.d.ban[u]===1);
+const members=Object.entries(S.d.members||{}).filter(([u])=>u!==m.owner);
+const regs=members.filter(([,x])=>x&&x.r);
 return`<div class="card"><h2>Paramètres</h2><label>Nom<input id="gn" maxlength="30" value="${E(m.name)}"></label><label>Couleur thématique<input id="gc" type="color" value="${m.color}"></label>
 <label><input id="gp" type="checkbox"${m.pub?" checked":""}>Serveur public (visible dans la liste, accessible sans code)</label><br><label><input id="gi" type="checkbox"${m.ix===0?"":" checked"}>Afficher les numéros de ligne en indices (annonces, bannières, consignes, chat)</label><br><label>Message épinglé<input id="gm" maxlength="200" value="${E(m.pin||"")}"></label><button class="pb" data-a="sv">Enregistrer</button></div>
+<div class="card"><h2>Régulateurs du serveur</h2><p style="margin-bottom:10px">Définis qui a accès à la régulation, à l’édition des lignes et à l’export/import JSON.</p>
+<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+  <select id="reg_sel" style="flex:1;min-width:200px;margin:0">${members.map(([u,x])=>`<option value="${E(u)}">${E(x.n||u)} ${x.r?"(déjà régulateur)":""}</option>`).join("")||`<option value="">Aucun autre membre enregistré</option>`}</select>
+  <button class="pb" data-a="addreg">Nommer régulateur</button>
+</div>
+<div style="margin-top:12px">${regs.length?regs.map(([u,x])=>`<div class="row"><b>${E(x.n||u)}</b><span class="tag">Régulateur</span><span class="sp"></span><button class="sb" data-a="role" data-u="${E(u)}">Retirer</button></div>`).join(""):"Aucun régulateur défini pour le moment."}</div></div>
 <div class="card"><h2>Lignes & sauvegarde</h2><p style="margin-bottom:10px">Exporte ou importe la configuration des lignes de ce serveur au format JSON.</p><button class="sb" data-a="jsonio">Exporter / Importer les lignes (JSON)</button></div>
 <div class="card"><h2>Invitation</h2><p><b>${c}</b></p><input readonly value="${lk}" onclick="this.select()"><label>Limite d’utilisations (0 = illimité)<input id="gx" type="number" min="0" value="${S.cd?.max||0}"></label>
 <div class="bs"><button class="sb" data-a="cp">Copier le lien</button><button class="sb" data-a="gx">Appliquer la limite</button><button class="pb dg" data-a="rg">Révoquer et régénérer</button></div><div id="qr" style="margin-top:12px;background:#fff;display:inline-block;padding:8px"></div></div>
@@ -339,7 +390,7 @@ function qr(){const e=$("#qr");if(e&&window.QRCode&&S.d.meta.code){e.innerHTML="
 function fillSt(){const l=cur,k=+$("#tdr").value;$("#tst").innerHTML=stp(l)[k].map((s,i)=>`<option value="${i}">${E(s)}</option>`).join("")}
 function fillTakeCourses(){const l=cur,k=+$("#tdr").value,cs=courseObjs(l,k,8);
 $("#tcs").innerHTML=cs.length?cs.map(c=>`<option value="${c.ts}">Départ ${fmtT(c.ts)}</option>`).join(""):`<option value="0">Service libre</option>`}
-function edl(id){const l=id?lb(id):{n:"",c:"#2458c4",dg:0,cad:0,st:"ok",pt:["",""],pto:[0,0],s:[[],[]]},s=rawStp(l);
+function edl(id){if(!isReg())return tt("Réservé au créateur, aux régulateurs et aux admins.");const l=id?lb(id):{n:"",c:"#2458c4",dg:0,cad:0,st:"ok",pt:["",""],pto:[0,0],s:[[],[]]},s=rawStp(l);
 md(`<h2>${id?"Modifier la ligne":"Nouvelle ligne"}</h2><label>Indice (1 à 4 caractères · « RER » = indice RER)<input id="en" maxlength="12" value="${E(l.n)}"></label>
 <label>Couleur de fond<input id="ec" type="color" value="${l.c}"></label><label><input id="ed" type="checkbox"${l.dg?" checked":""}>Diagonale noire (façon N76 / 135)</label><br>
 <label>Cadence (minutes, 0 = aucune)<input id="ek" type="number" min="0" value="${l.cad||0}"></label>
@@ -352,7 +403,7 @@ md(`<h2>${id?"Modifier la ligne":"Nouvelle ligne"}</h2><label>Indice (1 à 4 car
 <label style="margin:-4px 0 10px"><input id="po1" type="checkbox"${l.pto?.[1]?" checked":""}>Terminus officiel (sans triangle de service partiel)</label>
 <div class="bs"><button class="pb" data-a="esv" data-id="${id}">Enregistrer</button>${id?`<button class="sb" data-a="edp" data-id="${id}">Dupliquer</button><button class="sb" data-a="eor" data-id="${id}">Ordonner un départ</button><button class="pb dg" data-a="edel" data-id="${id}">Supprimer</button>`:""}<button class="sb" data-a="mc">Annuler</button></div>`)}
 
-function delLinesModal(){const list=LS();
+function delLinesModal(){if(!isReg())return tt("Réservé au créateur, aux régulateurs et aux admins.");const list=LS();
 md(`<h2>Supprimer des lignes</h2><p>Coche les lignes à supprimer de ce serveur.</p>
 <div style="display:flex;gap:8px;margin-bottom:8px"><button type="button" class="sb" data-a="selall" data-v="1">Tout cocher</button><button type="button" class="sb" data-a="selall" data-v="0">Tout décocher</button></div>
 <div class="del-list">${list.map(l=>`<label class="del-item"><input type="checkbox" class="dlchk" value="${E(l.id)}">${bd(l)}<b>Ligne ${E(l.n)}</b><span style="margin-left:auto;font-size:13px;opacity:.75">${E(tm(l,0))}</span></label>`).join("")||"Aucune ligne."}</div>
@@ -364,6 +415,7 @@ function exportLinesJSON(){
 }
 
 function jsonModal(){
+  if(!canJson())return tt("Export/Import JSON réservé aux admins, au créateur et aux régulateurs.");
   md(`<h2>Exporter / Importer les lignes (JSON)</h2>
   <p style="margin-bottom:8px">Copie ou télécharge le JSON des lignes actuelles, ou colle/charge un fichier JSON pour importer des lignes.</p>
   <textarea id="jtxt" rows="9" spellcheck="false" style="font-family:ui-monospace,Consolas,monospace;font-size:12px">${E(exportLinesJSON())}</textarea>
@@ -384,7 +436,13 @@ const A={};
 A.back=()=>leaveSrv();A.mc=()=>md();A.ppc=()=>{};
 A.snd=()=>{localStorage.sse_snd=localStorage.sse_snd==="0"?"1":"0";$("#sn").textContent=localStorage.sse_snd==="0"?"Son : non":"Son : oui"};
 A.tab=a=>{tab=a.k;draw(true)};
-A.nk=a=>{const n=$("#nk").value.trim();if(!n)return;localStorage["sse_n_"+a.id]=n;md();enter(a.id)};
+A.nk=async a=>{
+  const n=$("#nk").value.trim().replace(/\s+/g," ");
+  if(!n)return tt("Entre un pseudo.");
+  const members=await jg(`prive/${a.id}/members`)||{};
+  if(isPseudoTaken(n,members,uid))return tt("Ce pseudo est déjà pris sur ce serveur.");
+  localStorage["sse_n_"+a.id]=n;md();enter(a.id);
+};
 A.jn=()=>joinCode($("#jc").value);A.jp=a=>enter(a.id);
 A.cr=async()=>{const name=$("#cn").value.trim();if(!name)return tt("Donne un nom au serveur.");await loadBase();const id=rnd(10),code=mkCode();
 const pub=$("#cp")&&$("#cp").checked?1:0;const rSrv=await js("PUT","prive/"+id,{meta:{name,color:"#2458c4",pub,ix:1,pin:"",owner:uid,code},lines:seed()});
@@ -411,30 +469,31 @@ A.dl=a=>{me.dl=(me.dl||0)+ +a.v;draw(true);poll()};
 A.qt=()=>{me.l="";me.depTs=0;draw(true);poll()};
 
 A.dm=a=>{chan=dmk(a.u);tab="c";draw(true)};
-A.kick=async a=>{await js("PUT",`prive/${S.id}/ban/${a.u}`,Date.now()+6e5);log("a exclu "+S.d.members[a.u].n+" (10 min)");tt("Exclu pour 10 minutes.")};
-A.ban=async a=>{if(!confirm("Bannir définitivement ?"))return;await js("PUT",`prive/${S.id}/ban/${a.u}`,1);log("a banni "+S.d.members[a.u].n)};
-A.unban=async a=>{await js("DELETE",`prive/${S.id}/ban/${a.u}`);log("a levé le bannissement de "+(S.d.members[a.u]?.n||a.u));poll();setTimeout(()=>draw(true),500)};
-A.role=async a=>{const m=S.d.members[a.u];await js("PATCH",`prive/${S.id}/members/${a.u}`,{r:m.r?"":1});log((m.r?"a retiré le rôle de régulateur à ":"a nommé régulateur ")+m.n)};
-A.own=async a=>{if(!confirm("Transférer la propriété du serveur ?"))return;await js("PATCH",`prive/${S.id}/meta`,{owner:a.u});log("a transféré la propriété à "+S.d.members[a.u].n);tab="l";poll()};
-A.sm=async()=>{const x=$("#rx").value.trim();if(!x)return;const u=[...document.querySelectorAll(".pu:checked")].map(e=>e.value),tg=u.length?"u:"+u.join(","):$("#rt").value;
+A.kick=async a=>{if(!isReg())return;await js("PUT",`prive/${S.id}/ban/${a.u}`,Date.now()+6e5);log("a exclu "+S.d.members[a.u].n+" (10 min)");tt("Exclu pour 10 minutes.")};
+A.ban=async a=>{if(!isOwn())return;if(!confirm("Bannir définitivement ?"))return;await js("PUT",`prive/${S.id}/ban/${a.u}`,1);log("a banni "+S.d.members[a.u].n)};
+A.unban=async a=>{if(!isOwn())return;await js("DELETE",`prive/${S.id}/ban/${a.u}`);log("a levé le bannissement de "+(S.d.members[a.u]?.n||a.u));poll();setTimeout(()=>draw(true),500)};
+A.role=async a=>{if(!isOwn())return;const m=S.d.members?.[a.u];if(!m)return;await js("PATCH",`prive/${S.id}/members/${a.u}`,{r:m.r?"":1});log((m.r?"a retiré le rôle de régulateur à ":"a nommé régulateur ")+m.n);await poll();draw(true)};
+A.addreg=async()=>{if(!isOwn())return;const u=$("#reg_sel")?.value;if(!u)return tt("Sélectionne un membre.");const m=S.d.members?.[u];if(!m)return;await js("PATCH",`prive/${S.id}/members/${u}`,{r:1});log("a nommé régulateur "+m.n);tt(`${m.n} est maintenant régulateur.`);await poll();draw(true)};
+A.own=async a=>{if(!isOwn())return;if(!confirm("Transférer la propriété du serveur ?"))return;await js("PATCH",`prive/${S.id}/meta`,{owner:a.u});log("a transféré la propriété à "+S.d.members[a.u].n);tab="l";poll()};
+A.sm=async()=>{if(!isReg())return;const x=$("#rx").value.trim();if(!x)return;const u=[...document.querySelectorAll(".pu:checked")].map(e=>e.value),tg=u.length?"u:"+u.join(","):$("#rt").value;
 await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x,tg});log("message de régulation → "+tgn(tg));poll();setTimeout(()=>draw(true),500)};
-A.sb=async()=>{const x=$("#bx").value.trim();if(!x)return;await js("POST",`prive/${S.id}/banners`,{x,l:$("#bl").value});log("bannière publiée : "+x);poll();setTimeout(()=>draw(true),500)};
-A.db=async a=>{await js("DELETE",`prive/${S.id}/banners/${a.k}`);poll();setTimeout(()=>draw(true),500)};
-A.dmg=async a=>{await js("DELETE",`prive/${S.id}/msgs/${a.k}`);poll();setTimeout(()=>draw(true),500)};
+A.sb=async()=>{if(!isReg())return;const x=$("#bx").value.trim();if(!x)return;await js("POST",`prive/${S.id}/banners`,{x,l:$("#bl").value});log("bannière publiée : "+x);poll();setTimeout(()=>draw(true),500)};
+A.db=async a=>{if(!isReg())return;await js("DELETE",`prive/${S.id}/banners/${a.k}`);poll();setTimeout(()=>draw(true),500)};
+A.dmg=async a=>{if(!isReg())return;await js("DELETE",`prive/${S.id}/msgs/${a.k}`);poll();setTimeout(()=>draw(true),500)};
 A.cs=async()=>{const i=$("#ci"),x=i.value.trim();if(!x)return;i.value="";await js("POST",`prive_chat/${S.id}/${chan}`,{u:uid,n:me.n,x,t:Date.now()});chatLoad()};
-A.sv=async()=>{const name=$("#gn").value.trim()||S.d.meta.name,pub=$("#gp").checked?1:0,color=$("#gc").value;const r1=await js("PATCH",`prive/${S.id}/meta`,{name,color,pub,ix:$("#gi").checked?1:0,pin:$("#gm").value.trim()});
+A.sv=async()=>{if(!isOwn())return;const name=$("#gn").value.trim()||S.d.meta.name,pub=$("#gp").checked?1:0,color=$("#gc").value;const r1=await js("PATCH",`prive/${S.id}/meta`,{name,color,pub,ix:$("#gi").checked?1:0,pin:$("#gm").value.trim()});
 const r2=await js(pub?"PUT":"DELETE","prive_pub/"+S.id,pub?{n:name,c:color}:undefined);log("paramètres modifiés");
 const ok1=await okRes(r1),ok2=await okRes(r2);
 if(!ok1||!ok2)tt("Enregistrement refusé par la base de données (règles Firebase).");else tt(pub?"Enregistré · serveur visible dans la liste publique.":"Enregistré.");poll();setTimeout(()=>draw(true),500)};
 A.cp=()=>navigator.clipboard?.writeText(location.origin+location.pathname+"#"+S.d.meta.code).then(()=>tt("Lien copié."));
-A.gx=async()=>{await js("PATCH","prive_codes/"+S.d.meta.code,{max:+$("#gx").value||0});tt("Limite appliquée.")};
-A.rg=async()=>{if(!confirm("L’ancien lien cessera de fonctionner. Continuer ?"))return;const old=S.d.meta.code,c=mkCode(),mx=+$("#gx").value||0;await js("DELETE","prive_codes/"+old);await js("PUT","prive_codes/"+c,{id:S.id,max:mx,used:0});await js("PATCH",`prive/${S.id}/meta`,{code:c});log("lien d’invitation régénéré");await poll();draw(true)};
-A.delsrv=async()=>{if(!confirm("Supprimer définitivement ce serveur ?"))return;const id=S.id,c=S.d.meta.code;await Promise.all([js("DELETE","prive/"+id),js("DELETE","prive_codes/"+c),js("DELETE","prive_pub/"+id),js("DELETE","prive_chat/"+id)]);leaveSrv("Serveur supprimé.")};
+A.gx=async()=>{if(!isOwn())return;await js("PATCH","prive_codes/"+S.d.meta.code,{max:+$("#gx").value||0});tt("Limite appliquée.")};
+A.rg=async()=>{if(!isOwn())return;if(!confirm("L’ancien lien cessera de fonctionner. Continuer ?"))return;const old=S.d.meta.code,c=mkCode(),mx=+$("#gx").value||0;await js("DELETE","prive_codes/"+old);await js("PUT","prive_codes/"+c,{id:S.id,max:mx,used:0});await js("PATCH",`prive/${S.id}/meta`,{code:c});log("lien d’invitation régénéré");await poll();draw(true)};
+A.delsrv=async()=>{if(!isOwn())return;if(!confirm("Supprimer définitivement ce serveur ?"))return;const id=S.id,c=S.d.meta.code;await Promise.all([js("DELETE","prive/"+id),js("DELETE","prive_codes/"+c),js("DELETE","prive_pub/"+id),js("DELETE","prive_chat/"+id)]);leaveSrv("Serveur supprimé.")};
 
 A.edl=a=>edl(a.id);
 A.dellines=()=>delLinesModal();
 A.selall=a=>{const v=a.v==="1";document.querySelectorAll(".dlchk").forEach(c=>{c.checked=v})};
-A.dellines_go=async()=>{const ids=[...document.querySelectorAll(".dlchk:checked")].map(c=>c.value);if(!ids.length)return tt("Coche au moins une ligne.");
+A.dellines_go=async()=>{if(!isReg())return;const ids=[...document.querySelectorAll(".dlchk:checked")].map(c=>c.value);if(!ids.length)return tt("Coche au moins une ligne.");
 const names=ids.map(id=>lb(id)?.n).filter(Boolean);
 if(!confirm(`Supprimer ${ids.length} ligne(s) (${names.join(", ")}) ?`))return;
 await Promise.all(ids.map(id=>js("DELETE",`prive/${S.id}/lines/${id}`)));
@@ -442,10 +501,11 @@ if(me.l&&ids.includes(me.l))me.l="";
 log("lignes supprimées : "+names.join(", "));md();tt(`${ids.length} ligne(s) supprimée(s).`);await poll();draw(true)};
 
 A.jsonio=()=>jsonModal();
-A.jcopy=()=>navigator.clipboard?.writeText($("#jtxt").value).then(()=>tt("JSON copié dans le presse-papiers."));
-A.jdl=()=>{const blob=new Blob([$("#jtxt").value],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`lignes-${(S.d.meta.name||"serveur").toLowerCase().replace(/[^a-z0-9]+/g,"-")}.json`;a.click();URL.revokeObjectURL(a.href)};
-A.jfile=inp=>{const f=inp.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("#jtxt").value=String(r.result||"");tt("Fichier chargé.")};r.readAsText(f)};
+A.jcopy=()=>{if(!canJson())return;navigator.clipboard?.writeText($("#jtxt").value).then(()=>tt("JSON copié dans le presse-papiers."))};
+A.jdl=()=>{if(!canJson())return;const blob=new Blob([$("#jtxt").value],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`lignes-${(S.d.meta.name||"serveur").toLowerCase().replace(/[^a-z0-9]+/g,"-")}.json`;a.click();URL.revokeObjectURL(a.href)};
+A.jfile=inp=>{if(!canJson())return;const f=inp.files?.[0];if(!f)return;const r=new FileReader();r.onload=()=>{$("#jtxt").value=String(r.result||"");tt("Fichier chargé.")};r.readAsText(f)};
 A.jimp=async a=>{
+  if(!canJson())return tt("Export/Import JSON réservé aux admins, au créateur et aux régulateurs.");
   let raw;try{raw=JSON.parse($("#jtxt").value)}catch{return tt("JSON invalide.")}
   const src=Array.isArray(raw)?raw:(raw&&typeof raw.lines==="object"?(Array.isArray(raw.lines)?raw.lines:Object.entries(raw.lines).map(([id,v])=>({id,...v}))):null);
   if(!src||!src.length)return tt("Aucune ligne valide trouvée dans le JSON.");
@@ -478,15 +538,15 @@ A.jimp=async a=>{
   md();tt(`${count} ligne(s) importée(s).`);await poll();draw(true);
 };
 
-A.esv=async a=>{const n=$("#en").value.trim().toUpperCase();if(!n||n.replace(/RER/g,"R").length>4)return tt("Indice : 1 à 4 caractères.");
+A.esv=async a=>{if(!isReg())return;const n=$("#en").value.trim().toUpperCase();if(!n||n.replace(/RER/g,"R").length>4)return tt("Indice : 1 à 4 caractères.");
 const old=a.id?lb(a.id):null,ln=k=>$("#e"+k).value.split("\n").map(s=>s.trim()).filter(Boolean),s=[ln(0),ln(1)],same=old&&!old.s&&JSON.stringify(s)===JSON.stringify(rawStp(old)),
 l={n,c:$("#ec").value,dg:$("#ed").checked?1:0,cad:+$("#ek").value||0,st:$("#es").value,pt:[$("#p0").value.trim(),$("#p1").value.trim()],pto:[$("#po0").checked?1:0,$("#po1").checked?1:0],o:old?.o??LS().length};
 if(old?.dep)l.dep=old.dep;if(same)l.b=old.b;else if(old?.b&&!old.s&&!s[0].length&&!s[1].length)l.b=old.b;else l.s=s;
 if(!l.b&&!l.s[0].length&&!l.s[1].length)return tt("Ajoute au moins un arrêt.");
 await js("PUT",`prive/${S.id}/lines/${a.id||"l"+Date.now().toString(36)}`,l);log((old?"ligne modifiée : ":"ligne créée : ")+n+(old&&old.st!==l.st?(l.st==="int"?" (interrompue)":" (réactivée)"):""));md();poll()};
-A.edp=async a=>{const l={...lb(a.id)};delete l.id;l.n=l.n.slice(0,3)+"2";l.o=LS().length;const id="l"+Date.now().toString(36);await js("PUT",`prive/${S.id}/lines/${id}`,l);log("ligne dupliquée : "+l.n);await poll();edl(id)};
-A.eor=async a=>{const l=lb(a.id);await js("PATCH",`prive/${S.id}/lines/${a.id}`,{dep:Date.now()});await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x:"Départ ordonné — ligne "+l.n,tg:"l:"+a.id});log("départ ordonné ligne "+l.n);md();poll()};
-A.edel=async a=>{if(!confirm("Supprimer cette ligne ?"))return;const n=lb(a.id)?.n||a.id;log("ligne supprimée : "+n);await js("DELETE",`prive/${S.id}/lines/${a.id}`);if(me.l===a.id)me.l="";md();poll()};
+A.edp=async a=>{if(!isReg())return;const l={...lb(a.id)};delete l.id;l.n=l.n.slice(0,3)+"2";l.o=LS().length;const id="l"+Date.now().toString(36);await js("PUT",`prive/${S.id}/lines/${id}`,l);log("ligne dupliquée : "+l.n);await poll();edl(id)};
+A.eor=async a=>{if(!isReg())return;const l=lb(a.id);await js("PATCH",`prive/${S.id}/lines/${a.id}`,{dep:Date.now()});await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x:"Départ ordonné — ligne "+l.n,tg:"l:"+a.id});log("départ ordonné ligne "+l.n);md();poll()};
+A.edel=async a=>{if(!isReg())return;if(!confirm("Supprimer cette ligne ?"))return;const n=lb(a.id)?.n||a.id;log("ligne supprimée : "+n);await js("DELETE",`prive/${S.id}/lines/${a.id}`);if(me.l===a.id)me.l="";md();poll()};
 
 document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset,b);else if(e.target.id==="md")md()});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="jc")A.jn();if(e.key==="Enter"&&e.target.id==="nk")e.target.nextElementSibling.click()});
