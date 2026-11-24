@@ -1,0 +1,201 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#162343">
+<title>Serveurs privés — Seine Sud Est</title>
+<style>
+@font-face{font-family:Parisine;src:url(Parisine-Regular.otf) format("opentype");font-weight:400;font-display:swap}
+@font-face{font-family:Parisine;src:url(Parisine-Bold.otf) format("opentype");font-weight:700;font-display:swap}
+:root{--page:#0e1628;--bar:#162343;--ink:#425ba2;--blue:#2458c4;--blue-d:#173c8c;--surface:#e6ebf5;--surface-2:#f4f6fb;--line:rgba(18,40,90,.14);--led:#ff8a00;--ok:#0a8a4a;--late:#d6281c;--tc:#2458c4;--r:16px}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{min-height:100vh;background:var(--page);color:#fff;font-family:Parisine,"Trebuchet MS",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+button,input,select,textarea{font:inherit}
+header{position:sticky;top:0;z-index:5;background:var(--bar);padding:12px 16px;display:flex;align-items:center;gap:12px;border-bottom:4px solid var(--tc)}
+h1{font-size:20px}h2{font-size:18px;margin-bottom:10px}.sp{flex:1}
+.bt,.pb,.sb{border:0;border-radius:12px;padding:11px 18px;font-weight:700;cursor:pointer;background:var(--blue);color:#fff}
+.bt{background:rgba(255,255,255,.12);padding:8px 14px}.sb{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);padding:8px 12px;font-size:14px}
+.pb:hover{background:#2f66d8}.dg{background:var(--late)}
+main{max-width:900px;margin:0 auto;padding:16px}
+.card{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:16px;margin-bottom:14px}
+.card input,.card select,.card textarea,.mb input,.mb select,.mb textarea{width:100%;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);margin:4px 0 10px}
+.card input[type=checkbox],.mb input[type=checkbox]{width:auto;margin:0 6px 0 0}.card input[type=color],.mb input[type=color]{height:44px;padding:3px}
+label{display:block;font-size:14px;color:var(--ink)}
+.tabs{display:flex;gap:6px;overflow-x:auto;margin-bottom:14px}
+.tabs button{border:0;border-radius:12px;padding:10px 16px;font-weight:700;cursor:pointer;background:rgba(255,255,255,.12);color:#fff;white-space:nowrap}
+.tabs button.on{background:var(--surface);color:var(--ink)}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.bd{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-width:56px;height:56px;padding:0 10px;border-radius:10px;background:var(--c);color:var(--k);font-weight:700;font-size:28px;letter-spacing:-.02em;font-family:Parisine,system-ui,sans-serif}
+.bd b{position:relative;z-index:1}.bd.d:after{content:"";position:absolute;inset:0;background:#000;clip-path:polygon(100% 0,100% 100%,0 100%)}
+.rer{font-style:normal;font-size:.5em;background:#000;color:#fff;border-radius:50%;padding:.35em .3em}
+.tl{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;background:#fff;color:var(--ink);border-radius:18px;padding:12px;cursor:pointer;border-left:8px solid var(--c)}
+.tl:hover{box-shadow:0 4px 14px rgba(0,0,0,.3)}.tl.x{cursor:default;box-shadow:none}.tl.x:hover{box-shadow:none}
+.inf{background:#000;color:#fff;border-radius:8px;min-height:56px;padding:8px 12px;display:flex;flex-direction:column;justify-content:center;gap:2px;font-size:15px}
+.un{color:#9aa0ac;text-align:center;font-size:14px}.tri{display:inline-block;border-left:7px solid transparent;border-bottom:12px solid var(--led);margin-right:6px}
+.tl small,.tl .ev{grid-column:1/-1}.tl small{color:var(--ink);opacity:.8}.ev{background:#f3ead3;color:#5f4a1c;border-radius:8px;padding:6px 10px;font-size:14px}
+.my{display:flex;flex-wrap:wrap;align-items:center;gap:12px;background:linear-gradient(135deg,#2358c9,var(--blue-d));border-radius:var(--r);padding:14px;margin-bottom:14px}
+.my .bs{display:flex;gap:6px;align-items:center;margin-left:auto}.pin{background:#f3ead3;color:#5f4a1c;border-radius:12px;padding:10px 14px;margin-bottom:12px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}.row:last-child{border:0}
+.on-dot{width:10px;height:10px;border-radius:50%;background:#aaa}.on-dot.o{background:var(--ok)}.tag{background:var(--ink);color:#fff;border-radius:6px;padding:1px 7px;font-size:12px}
+.late{color:var(--late);font-weight:700}.ok{color:var(--ok);font-weight:700}
+#cl{height:320px;overflow:auto;background:var(--surface-2);border-radius:10px;padding:10px;margin-bottom:8px}.cm{margin-bottom:6px}.cm b{color:var(--blue)}
+#pp{position:fixed;top:env(safe-area-inset-top);left:50%;transform:translate(-50%,-130%);width:min(560px,94vw);z-index:50;background:#fff;color:#111;border-radius:0 0 16px 16px;box-shadow:0 8px 30px rgba(0,0,0,.5);padding:14px 16px 0;transition:transform .3s;overflow:hidden}
+#pp.s{transform:translate(-50%,0)}#pp .bar{height:6px;margin:12px -16px 0;background:var(--c);transform-origin:left;transform:scaleX(1)}#pp.s .bar{transform:scaleX(0);transition:transform 3s linear}
+#md{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;place-items:center;padding:14px}
+.mb{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:18px;width:min(520px,100%);max-height:92vh;overflow:auto}.mb .bs{display:flex;gap:8px;flex-wrap:wrap}
+#tt{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;border-radius:12px;padding:10px 16px;z-index:60;display:none}
+</style></head><body>
+<div id="pp"><b id="ppf"></b><p id="ppx"></p><button class="sb" id="ppc" data-a="ppc" disabled>Fermer</button><div class="bar"></div></div>
+<div id="md"></div><div id="tt"></div>
+<header><button class="bt" id="bk" data-a="back" style="display:none">←</button><h1 id="ht">Serveurs privés</h1><span class="sp"></span><button class="bt" id="sn" data-a="snd"></button></header>
+<main id="main"></main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
+const WEBHOOK_URL="";          /* ← même webhook Discord que index.html (format {content}) */
+const RER_IMG="";              /* ← URL de l’indice RER officiel (remplace le texte « RER ») */
+const ADMIN_UIDS=[];           /* ← identifiants autorisés à voir le journal en plus du créateur */
+const $=s=>document.querySelector(s),E=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const jg=p=>fetch(`${DB}/${p}.json`).then(r=>r.json()),js=(m,p,b)=>fetch(`${DB}/${p}.json`,{method:m,body:b===undefined?undefined:JSON.stringify(b)});
+const uid=localStorage.sse_uid||(localStorage.sse_uid=Math.random().toString(36).slice(2,14));
+const rnd=n=>[...Array(n)].map(()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.random()*32|0]).join(""),mkCode=()=>"SSE-"+rnd(4)+"-"+rnd(4)+"-"+rnd(4);
+const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
+const hm=t=>new Date(t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+let T={},LC={},S=null,tab="l",me={},PT,pq=[],chan="gen",cur=null;
+const tt=m=>{const e=$("#tt");e.textContent=m;e.style.display="block";setTimeout(()=>e.style.display="none",3000)};
+const md=h=>{const m=$("#md");m.innerHTML=h?`<div class="mb">${h}</div>`:"";m.style.display=h?"grid":"none"};
+/* ---------- lignes de référence (lues dans index.html : une seule source de vérité) ---------- */
+async function loadBase(){try{const h=await(await fetch("index.html")).text();T=JSON.parse(h.match(/^const TT=(\{.*\});\s*$/m)[1]);[...h.match(/const LINE_COLOR=\{([^}]*)\}/)[1].matchAll(/"(\w+)":"(#\w{6})"/g)].forEach(x=>LC[x[1]]=x[2])}catch(e){}}
+const seed=()=>Object.fromEntries(Object.keys(T).map((n,i)=>["l"+i,{n,c:LC[n]||"#0b6f86",dg:/^(N76|135)$/.test(n)?1:0,b:n,st:"ok",o:i,cad:0,pt:["",""]}]));
+const rer=t=>t.replace(/RER/g,RER_IMG?`<img src="${RER_IMG}" style="height:.8em">`:'<i class="rer">RER</i>');
+const bd=l=>`<span class="bd${l.dg?" d":""}" style="--c:${l.c};--k:${ink(l.c)}"><b>${rer(E(l.n))}</b></span>`;
+const stp=l=>{const x=l.s||(T[l.b]||[]).map(d=>d.s);return[x[0]||[],x[1]||[]]};
+const tm=(l,k)=>(l.pt&&l.pt[k])||stp(l)[k].at(-1)||"—",isPt=(l,k)=>l.pt&&l.pt[k]&&l.pt[k]!==stp(l)[k].at(-1);
+const LS=()=>Object.entries(S.d.lines||{}).map(([id,l])=>({id,...l})).sort((a,b)=>(a.o??99)-(b.o??99)||a.n.localeCompare(b.n));
+const lb=id=>LS().find(l=>l.id===id);
+const rl=()=>S.d.meta.owner===uid?2:(S.d.members?.[uid]?.r?1:0),isOwn=()=>rl()===2,isReg=()=>rl()>=1;
+const log=x=>js("POST",`prive/${S.id}/log`,{t:Date.now(),u:me.n,x});
+/* ---------- accueil ---------- */
+function home(){S=null;clearInterval(PT);$("#ht").textContent="Serveurs privés";$("#bk").style.display="none";document.documentElement.style.setProperty("--tc","#2458c4");const m=$("#main");m.dataset.t="";
+m.innerHTML=`<div class="card"><h2>Créer un serveur privé</h2><input id="cn" maxlength="30" placeholder="Nom du serveur"><button class="pb" data-a="cr">Créer</button></div>
+<div class="card"><h2>Rejoindre avec un code</h2><input id="jc" placeholder="SSE-XXXX-XXXX-XXXX" autocapitalize="characters"><button class="pb" data-a="jn">Rejoindre</button></div>
+<div class="card"><h2>Serveurs publics</h2><div id="pl">Chargement…</div></div>`;pubLoad()}
+async function pubLoad(){try{const p=await jg("prive_pub")||{},e=$("#pl");if(!e)return;e.innerHTML=Object.entries(p).map(([id,s])=>`<div class="row"><b style="border-left:8px solid ${E(s.c)};padding-left:8px">${E(s.n)}</b><span class="sp"></span><button class="pb" data-a="jp" data-id="${id}">Rejoindre</button></div>`).join("")||"Aucun serveur public pour le moment."}catch(e){}}
+setInterval(()=>{if(!S)pubLoad()},10000);
+/* ---------- entrée dans un serveur ---------- */
+async function enter(id){const b=await jg(`prive/${id}/ban/${uid}`);if(b===1||b>Date.now())return tt("Accès refusé : vous êtes exclu de ce serveur.");
+const n=localStorage["sse_n_"+id];if(!n)return md(`<h2>Choisis ton pseudo</h2><p>Il sera propre à ce serveur.</p><input id="nk" maxlength="20" placeholder="Pseudo"><button class="pb" data-a="nk" data-id="${id}">Entrer</button>`);
+me={n};S={id,d:null};tab="l";clearInterval(PT);PT=setInterval(poll,3000);poll()}
+async function joinCode(code){code=code.trim().toUpperCase();if(!/^SSE(-[A-Z0-9]{4}){3}$/.test(code))return tt("Code invalide.");
+const c=await jg("prive_codes/"+code);if(!c)return tt("Code inconnu ou révoqué.");
+const known=await jg(`prive/${c.id}/members/${uid}`);if(!known){if(c.max&&(c.used||0)>=c.max)return tt("Ce lien a atteint sa limite d’utilisations.");js("PATCH","prive_codes/"+code,{used:(c.used||0)+1})}
+history.replaceState(null,"",location.pathname);enter(c.id)}
+function leaveSrv(m){if(S)js("PATCH",`prive/${S.id}/members/${uid}`,{l:""});me={};home();if(m)tt(m)}
+/* ---------- synchro (REST + polling, comme index.html) ---------- */
+async function poll(){if(!S)return;try{const d=await jg("prive/"+S.id);if(!d)return leaveSrv("Ce serveur n’existe plus.");
+const b=(d.ban||{})[uid];if(b===1||b>Date.now())return leaveSrv("Vous avez été exclu du serveur.");
+S.d=d;js("PATCH",`prive/${S.id}/members/${uid}`,{n:me.n,t:Date.now(),l:me.l||"",dr:me.dr||0,i:me.i||0,dl:me.dl||0});checkPop();draw();if(tab==="c")chatLoad()}catch(e){}}
+function tabsBar(){const t=[["l","Lignes"],["p","Présence"]];if(isReg())t.push(["r","Régulation"]);t.push(["c","Chat"]);if(isOwn())t.push(["g","Réglages"]);if(isOwn()||ADMIN_UIDS.includes(uid))t.push(["j","Journal"]);
+return`<div class="tabs">${t.map(([k,n])=>`<button class="${tab===k?"on":""}" data-a="tab" data-k="${k}">${n}</button>`).join("")}</div>`}
+function draw(f){if(!S)return;const d=S.d;if(!d)return;const m=$("#main");document.documentElement.style.setProperty("--tc",d.meta.color||"#2458c4");$("#ht").textContent=d.meta.name;$("#bk").style.display="";
+$("#sn").textContent=localStorage.sse_snd==="0"?"Son : non":"Son : oui";
+if(!f&&"crg".includes(tab)&&m.dataset.t===tab)return;m.dataset.t=tab;m.innerHTML=tabsBar()+V[tab]();if(tab==="c")chatLoad();if(tab==="g")qr()}
+/* ---------- vues ---------- */
+const V={};
+V.l=()=>{const d=S.d,bn=Object.values(d.banners||{}),rel=Object.values(d.msgs||{}).filter(relv).slice(-3).reverse();let h="";
+if(d.meta.pin)h+=`<div class="pin">Épinglé · ${E(d.meta.pin)}</div>`;
+bn.filter(b=>b.l==="all").forEach(b=>h+=`<div class="pin">${E(b.x)}</div>`);
+if(me.l&&lb(me.l)){const l=lb(me.l),s=stp(l)[me.dr]||[];h+=`<div class="my">${bd(l)}<div><b>→ ${E(tm(l,me.dr))}</b><div>${E(s[me.i]||"")}</div></div><div class="bs"><button class="sb" data-a="nx">Arrêt suivant</button><button class="sb" data-a="dl" data-v="-1">−</button><span>${me.dl>0?"+":""}${me.dl||0} min</span><button class="sb" data-a="dl" data-v="1">+</button><button class="sb" data-a="qt">Quitter</button></div></div>`}
+if(rel.length)h+=`<div class="card"><h2>Consignes de régulation</h2>${rel.map(m=>`<div class="cm"><b>${hm(m.t)}</b> ${E(m.x)}</div>`).join("")}</div>`;
+if(isReg())h+=`<button class="pb" style="margin-bottom:12px" data-a="edl" data-id="">+ Nouvelle ligne</button>`;
+return h+`<div class="grid">${LS().map(l=>{const x=l.st==="int",ev=bn.filter(b=>b.l===l.id).map(b=>`<div class="ev">${E(b.x)}</div>`).join(""),dp=l.dep&&Date.now()-l.dep<9e5;
+const inf=x?'<span class="un">Information indisponible</span>':[0,1].map(k=>`<div>${isPt(l,k)?'<i class="tri"></i>':"→ "}${E(tm(l,k))}</div>`).join("");
+return`<div class="tl${x?" x":""}" style="--c:${l.c}"${x?"":` data-a="take" data-id="${l.id}"`}>${bd(l)}<div class="inf">${inf}</div>${isReg()?`<button class="sb" data-a="edl" data-id="${l.id}">Modifier</button>`:"<span></span>"}${l.cad&&!x?`<small>Toutes les ${l.cad} min${dp?` · <b style="color:var(--led)">Départ ordonné à ${hm(l.dep)}</b>`:""}</small>`:""}${ev}</div>`}).join("")||"Aucune ligne."}</div>`};
+V.p=()=>{const d=S.d,ms=Object.entries(d.members||{}).sort((a,b)=>b[1].t-a[1].t);
+return`<div class="card"><h2>Présence</h2>${ms.map(([u,m])=>{const on=Date.now()-m.t<15000,l=m.l&&lb(m.l),s=l?(stp(l)[m.dr]||[])[m.i]:"",mod=u!==uid&&u!==d.meta.owner;
+return`<div class="row"><i class="on-dot${on?" o":""}"></i><b>${E(m.n)}</b>${u===d.meta.owner?'<span class="tag">Créateur</span>':m.r?'<span class="tag">Régulateur</span>':""}${on&&l?`${bd(l)}<span>→ ${E(tm(l,m.dr))} · ${E(s||"")}</span><span class="${m.dl>0?"late":"ok"}">${m.dl>0?"+":""}${m.dl||0} min</span>`:`<span>${on?"En ligne":"Hors ligne"}</span>`}<span class="sp"></span>${u!==uid?`<button class="sb" data-a="dm" data-u="${u}">Chat privé</button>`:""}${mod&&isReg()?`<button class="sb" data-a="kick" data-u="${u}">Exclure 10 min</button>`:""}${mod&&isOwn()?`<button class="sb" data-a="ban" data-u="${u}">Bannir</button><button class="sb" data-a="role" data-u="${u}">${m.r?"Retirer régulateur":"Régulateur"}</button><button class="sb" data-a="own" data-u="${u}">Transférer</button>`:""}</div>`}).join("")}</div>`};
+V.r=()=>{const d=S.d,on=Object.entries(d.members||{}).filter(([,m])=>Date.now()-m.t<15000),lo=LS().map(l=>`<option value="${l.id}">Ligne ${E(l.n)}</option>`).join("");
+return`<div class="card"><h2>Message de régulation</h2><textarea id="rx" rows="3" maxlength="300" placeholder="Message affiché en pop-up"></textarea>
+<label>Destinataires<select id="rt"><option value="all">Tout le serveur</option>${LS().map(l=>`<option value="l:${l.id}">Conducteurs de la ligne ${E(l.n)}</option>`).join("")}</select></label>
+<details><summary>Ou choisir des personnes présentes</summary>${on.map(([u,m])=>`<label><input type="checkbox" class="pu" value="${u}">${E(m.n)}</label>`).join("")||"Personne en ligne."}</details><br><button class="pb" data-a="sm">Envoyer</button></div>
+<div class="card"><h2>Bannière d’événement</h2><input id="bx" maxlength="120" placeholder="Travaux, grève…"><select id="bl"><option value="all">Tout le serveur</option>${lo}</select><button class="pb" data-a="sb">Publier</button>
+${Object.entries(d.banners||{}).map(([k,b])=>`<div class="row"><span>${E(b.x)}</span><span class="sp"></span><button class="sb" data-a="db" data-k="${k}">Retirer</button></div>`).join("")}</div>
+<div class="card"><h2>Messages envoyés</h2>${Object.entries(d.msgs||{}).slice(-20).reverse().map(([k,m])=>`<div class="row"><span>${hm(m.t)} · ${E(m.f)} → ${E(tgn(m.tg))} : ${E(m.x)}</span><span class="sp"></span><button class="sb" data-a="dmg" data-k="${k}">Supprimer</button></div>`).join("")}</div>`};
+V.c=()=>{const d=S.d;return`<div class="card"><h2>Chat</h2><select id="cc" onchange="chan=this.value;chatLoad()"><option value="gen">Général</option>${Object.entries(d.members||{}).filter(([u])=>u!==uid).map(([u,m])=>`<option value="${dmk(u)}"${chan===dmk(u)?" selected":""}>Privé · ${E(m.n)}</option>`).join("")}</select><div id="cl"></div><input id="ci" maxlength="300" placeholder="Votre message" onkeydown="if(event.key==='Enter')A.cs()"><button class="pb" data-a="cs">Envoyer</button></div>`};
+V.g=()=>{const m=S.d.meta,c=m.code,lk=location.origin+location.pathname+"#"+c,bn=Object.keys(S.d.ban||{}).filter(u=>S.d.ban[u]===1);
+return`<div class="card"><h2>Paramètres</h2><label>Nom<input id="gn" maxlength="30" value="${E(m.name)}"></label><label>Couleur thématique<input id="gc" type="color" value="${m.color}"></label>
+<label><input id="gp" type="checkbox"${m.pub?" checked":""}>Serveur public (accessible sans code)</label><br><label>Message épinglé<input id="gm" maxlength="200" value="${E(m.pin||"")}"></label><button class="pb" data-a="sv">Enregistrer</button></div>
+<div class="card"><h2>Invitation</h2><p><b>${c}</b></p><input readonly value="${lk}" onclick="this.select()"><label>Limite d’utilisations (0 = illimité)<input id="gx" type="number" min="0" value="${S.cd?.max||0}"></label>
+<div class="bs"><button class="sb" data-a="cp">Copier le lien</button><button class="sb" data-a="gx">Appliquer la limite</button><button class="pb dg" data-a="rg">Révoquer et régénérer</button></div><div id="qr" style="margin-top:12px;background:#fff;display:inline-block;padding:8px"></div></div>
+${bn.length?`<div class="card"><h2>Bannis</h2>${bn.map(u=>`<div class="row"><span>${E(S.d.members?.[u]?.n||u)}</span><span class="sp"></span><button class="sb" data-a="unban" data-u="${u}">Lever</button></div>`).join("")}</div>`:""}
+<div class="card"><button class="pb dg" data-a="delsrv">Supprimer le serveur</button></div>`};
+V.j=()=>`<div class="card"><h2>Journal d’activité</h2>${Object.values(S.d.log||{}).slice(-100).reverse().map(l=>`<div class="row"><b>${hm(l.t)}</b> ${E(l.u)} · ${E(l.x)}</div>`).join("")||"Rien à signaler."}</div>`;
+const tgn=t=>t==="all"?"tous":t.startsWith("l:")?"ligne "+(lb(t.slice(2))?.n||"?"):"personnes ciblées",dmk=u=>"dm_"+[uid,u].sort().join("_");
+const relv=m=>m.tg==="all"||m.tg==="l:"+me.l||(m.tg.startsWith("u:")&&m.tg.slice(2).split(",").includes(uid));
+/* ---------- pop-up de régulation ---------- */
+function beep(){if(localStorage.sse_snd==="0")return;try{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;g.gain.value=.05;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.25)}catch(e){}}
+function checkPop(){const k="sse_s_"+S.id,seen=+localStorage[k]||Date.now();let mx=seen;Object.values(S.d.msgs||{}).forEach(m=>{if(m.t>seen){mx=Math.max(mx,m.t);if(relv(m))pq.push(m)}});localStorage[k]=mx;if(pq.length&&!$("#pp").classList.contains("s"))showPop()}
+function showPop(){const m=pq.shift(),p=$("#pp"),l=me.l&&lb(me.l);p.style.setProperty("--c",l?l.c:"var(--tc)");$("#ppf").textContent="Régulation · "+m.f;$("#ppx").textContent=m.x;$("#ppc").disabled=true;beep();p.classList.remove("s");void p.offsetWidth;p.classList.add("s");
+setTimeout(()=>{$("#ppc").disabled=false;p.classList.remove("s");setTimeout(()=>{if(pq.length)showPop()},400)},3000)}
+/* ---------- chat ---------- */
+async function chatLoad(){const e=$("#cl");if(!e||!S)return;try{const r=await jg(`prive_chat/${S.id}/${chan}?orderBy="$key"&limitToLast=50`)||{},st=e.scrollTop+e.clientHeight>=e.scrollHeight-30;
+e.innerHTML=Object.values(r).map(m=>`<div class="cm"><b>${E(m.n)}</b> <small>${hm(m.t)}</small><br>${E(m.x)}</div>`).join("")||"Aucun message.";if(st)e.scrollTop=e.scrollHeight}catch(x){}}
+function qr(){const e=$("#qr");if(e&&window.QRCode&&S.d.meta.code){e.innerHTML="";new QRCode(e,{text:location.origin+location.pathname+"#"+S.d.meta.code,width:160,height:160})}}
+/* ---------- éditeur de ligne ---------- */
+function fillSt(){const l=cur,k=+$("#tdr").value;$("#tst").innerHTML=stp(l)[k].map((s,i)=>`<option value="${i}">${E(s)}</option>`).join("")}
+function edl(id){const l=id?lb(id):{n:"",c:"#2458c4",dg:0,cad:0,st:"ok",pt:["",""],s:[[],[]]},s=stp(l);
+md(`<h2>${id?"Modifier la ligne":"Nouvelle ligne"}</h2><label>Indice (1 à 4 caractères · « RER » = indice RER)<input id="en" maxlength="12" value="${E(l.n)}"></label>
+<label>Couleur de fond<input id="ec" type="color" value="${l.c}"></label><label><input id="ed" type="checkbox"${l.dg?" checked":""}>Diagonale noire (façon N76 / 135)</label><br>
+<label>Cadence (minutes, 0 = aucune)<input id="ek" type="number" min="0" value="${l.cad||0}"></label>
+<label>État<select id="es"><option value="ok">En service</option><option value="int"${l.st==="int"?" selected":""}>Interrompue</option></select></label>
+<label>Arrêts sens 1 (un par ligne)<textarea id="e0" rows="4">${E(s[0].join("\n"))}</textarea></label><label>Arrêts sens 2 (un par ligne)<textarea id="e1" rows="4">${E(s[1].join("\n"))}</textarea></label>
+<datalist id="dl0">${s[0].map(x=>`<option value="${E(x)}">`).join("")}</datalist><datalist id="dl1">${s[1].map(x=>`<option value="${E(x)}">`).join("")}</datalist>
+<label>Terminus partiel sens 1 (arrêt existant ou texte libre)<input id="p0" list="dl0" value="${E(l.pt?.[0]||"")}"></label><label>Terminus partiel sens 2<input id="p1" list="dl1" value="${E(l.pt?.[1]||"")}"></label>
+<div class="bs"><button class="pb" data-a="esv" data-id="${id}">Enregistrer</button>${id?`<button class="sb" data-a="edp" data-id="${id}">Dupliquer</button><button class="sb" data-a="eor" data-id="${id}">Ordonner un départ</button><button class="pb dg" data-a="edel" data-id="${id}">Supprimer</button>`:""}<button class="sb" data-a="mc">Annuler</button></div>`)}
+/* ---------- actions ---------- */
+const A={};
+A.back=()=>leaveSrv();A.mc=()=>md();A.ppc=()=>{};
+A.snd=()=>{localStorage.sse_snd=localStorage.sse_snd==="0"?"1":"0";$("#sn").textContent=localStorage.sse_snd==="0"?"Son : non":"Son : oui"};
+A.tab=a=>{tab=a.k;draw(true)};
+A.nk=a=>{const n=$("#nk").value.trim();if(!n)return;localStorage["sse_n_"+a.id]=n;md();enter(a.id)};
+A.jn=()=>joinCode($("#jc").value);A.jp=a=>enter(a.id);
+A.cr=async()=>{const name=$("#cn").value.trim();if(!name)return tt("Donne un nom au serveur.");await loadBase();const id=rnd(10),code=mkCode();
+await js("PUT","prive/"+id,{meta:{name,color:"#2458c4",pub:0,pin:"",owner:uid,code},lines:seed()});await js("PUT","prive_codes/"+code,{id,max:0,used:0});
+if(WEBHOOK_URL)fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"Régulation Bus",content:`Nouveau serveur privé : ${name.replace(/[@`]/g,"")} (${code})`,allowed_mentions:{parse:[]}})}).catch(()=>{});
+enter(id)};
+A.take=a=>{cur=lb(a.id);md(`<h2>${bd(cur)}</h2><label>Sens<select id="tdr" onchange="fillSt()">${[0,1].map(k=>`<option value="${k}">→ ${E(tm(cur,k))}</option>`).join("")}</select></label><label>Arrêt actuel<select id="tst"></select></label><div class="bs"><button class="pb" data-a="go" data-id="${a.id}">Prendre la ligne</button><button class="sb" data-a="mc">Annuler</button></div>`);fillSt()};
+A.go=a=>{me.l=a.id;me.dr=+$("#tdr").value;me.i=+$("#tst").value;me.dl=0;md();draw(true);poll()};
+A.nx=()=>{const l=lb(me.l);me.i=Math.min((me.i||0)+1,stp(l)[me.dr].length-1);poll();draw(true)};
+A.dl=a=>{me.dl=(me.dl||0)+ +a.v;draw(true);poll()};A.qt=()=>{me.l="";draw(true);poll()};
+A.dm=a=>{chan=dmk(a.u);tab="c";draw(true)};
+A.kick=async a=>{await js("PUT",`prive/${S.id}/ban/${a.u}`,Date.now()+6e5);log("a exclu "+S.d.members[a.u].n+" (10 min)");tt("Exclu pour 10 minutes.")};
+A.ban=async a=>{if(!confirm("Bannir définitivement ?"))return;await js("PUT",`prive/${S.id}/ban/${a.u}`,1);log("a banni "+S.d.members[a.u].n)};
+A.unban=async a=>{await js("DELETE",`prive/${S.id}/ban/${a.u}`);log("a levé le bannissement de "+(S.d.members[a.u]?.n||a.u));poll();setTimeout(()=>draw(true),500)};
+A.role=async a=>{const m=S.d.members[a.u];await js("PATCH",`prive/${S.id}/members/${a.u}`,{r:m.r?"":1});log((m.r?"a retiré le rôle de régulateur à ":"a nommé régulateur ")+m.n)};
+A.own=async a=>{if(!confirm("Transférer la propriété du serveur ?"))return;await js("PATCH",`prive/${S.id}/meta`,{owner:a.u});log("a transféré la propriété à "+S.d.members[a.u].n);tab="l";poll()};
+A.sm=async()=>{const x=$("#rx").value.trim();if(!x)return;const u=[...document.querySelectorAll(".pu:checked")].map(e=>e.value),tg=u.length?"u:"+u.join(","):$("#rt").value;
+await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x,tg});log("message de régulation → "+tgn(tg));poll();setTimeout(()=>draw(true),500)};
+A.sb=async()=>{const x=$("#bx").value.trim();if(!x)return;await js("POST",`prive/${S.id}/banners`,{x,l:$("#bl").value});log("bannière publiée : "+x);poll();setTimeout(()=>draw(true),500)};
+A.db=async a=>{await js("DELETE",`prive/${S.id}/banners/${a.k}`);poll();setTimeout(()=>draw(true),500)};
+A.dmg=async a=>{await js("DELETE",`prive/${S.id}/msgs/${a.k}`);poll();setTimeout(()=>draw(true),500)};
+A.cs=async()=>{const i=$("#ci"),x=i.value.trim();if(!x)return;i.value="";await js("POST",`prive_chat/${S.id}/${chan}`,{u:uid,n:me.n,x,t:Date.now()});chatLoad()};
+A.sv=async()=>{const name=$("#gn").value.trim()||S.d.meta.name,pub=$("#gp").checked?1:0,color=$("#gc").value;await js("PATCH",`prive/${S.id}/meta`,{name,color,pub,pin:$("#gm").value.trim()});
+await js(pub?"PUT":"DELETE","prive_pub/"+S.id,pub?{n:name,c:color}:undefined);log("paramètres modifiés");tt("Enregistré.");poll()};
+A.cp=()=>navigator.clipboard?.writeText(location.origin+location.pathname+"#"+S.d.meta.code).then(()=>tt("Lien copié."));
+A.gx=async()=>{await js("PATCH","prive_codes/"+S.d.meta.code,{max:+$("#gx").value||0});tt("Limite appliquée.")};
+A.rg=async()=>{if(!confirm("L’ancien lien cessera de fonctionner. Continuer ?"))return;const old=S.d.meta.code,c=mkCode(),mx=+$("#gx").value||0;await js("DELETE","prive_codes/"+old);await js("PUT","prive_codes/"+c,{id:S.id,max:mx,used:0});await js("PATCH",`prive/${S.id}/meta`,{code:c});log("lien d’invitation régénéré");await poll();draw(true)};
+A.delsrv=async()=>{if(!confirm("Supprimer définitivement ce serveur ?"))return;const id=S.id,c=S.d.meta.code;await Promise.all([js("DELETE","prive/"+id),js("DELETE","prive_codes/"+c),js("DELETE","prive_pub/"+id),js("DELETE","prive_chat/"+id)]);leaveSrv("Serveur supprimé.")};
+A.edl=a=>edl(a.id);
+A.esv=async a=>{const n=$("#en").value.trim().toUpperCase();if(!n||n.replace(/RER/g,"R").length>4)return tt("Indice : 1 à 4 caractères.");
+const old=a.id?lb(a.id):null,ln=k=>$("#e"+k).value.split("\n").map(s=>s.trim()).filter(Boolean),s=[ln(0),ln(1)],same=old&&!old.s&&JSON.stringify(s)===JSON.stringify(stp(old)),
+l={n,c:$("#ec").value,dg:$("#ed").checked?1:0,cad:+$("#ek").value||0,st:$("#es").value,pt:[$("#p0").value.trim(),$("#p1").value.trim()],o:old?.o??LS().length};
+if(old?.dep)l.dep=old.dep;if(same)l.b=old.b;else if(old?.b&&!old.s&&!s[0].length&&!s[1].length)l.b=old.b;else l.s=s;
+if(!l.b&&!l.s[0].length&&!l.s[1].length)return tt("Ajoute au moins un arrêt.");
+await js("PUT",`prive/${S.id}/lines/${a.id||"l"+Date.now().toString(36)}`,l);log((old?"ligne modifiée : ":"ligne créée : ")+n+(old&&old.st!==l.st?(l.st==="int"?" (interrompue)":" (réactivée)"):""));md();poll()};
+A.edp=async a=>{const l={...lb(a.id)};delete l.id;l.n=l.n.slice(0,3)+"2";l.o=LS().length;const id="l"+Date.now().toString(36);await js("PUT",`prive/${S.id}/lines/${id}`,l);log("ligne dupliquée : "+l.n);await poll();edl(id)};
+A.eor=async a=>{const l=lb(a.id);await js("PATCH",`prive/${S.id}/lines/${a.id}`,{dep:Date.now()});await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x:"Départ ordonné — ligne "+l.n,tg:"l:"+a.id});log("départ ordonné ligne "+l.n);md();poll()};
+A.edel=async a=>{if(!confirm("Supprimer cette ligne ?"))return;log("ligne supprimée : "+lb(a.id).n);await js("DELETE",`prive/${S.id}/lines/${a.id}`);md();poll()};
+document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset,b);else if(e.target.id==="md")md()});
+document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="jc")A.jn();if(e.key==="Enter"&&e.target.id==="nk")e.target.nextElementSibling.click()});
+addEventListener("hashchange",()=>{if(/^#SSE-/.test(location.hash))joinCode(location.hash.slice(1))});
+loadBase().then(()=>{home();if(/^#SSE-/.test(location.hash))joinCode(location.hash.slice(1))});
+</script></body></html>
