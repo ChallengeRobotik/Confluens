@@ -79,7 +79,7 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .arr-dbl{display:inline;height:1.05em;max-height:18px;width:auto;vertical-align:-.18em;margin:0 5px;object-fit:contain;pointer-events:none;filter:var(--arr)}
 .btn .arr{height:.9em;margin:0 4px}
 .btn-idl{height:24px;width:auto;object-fit:contain;border-radius:4px;vertical-align:middle;pointer-events:none}
-.rer{height:1.1em;width:auto;max-width:none;object-fit:contain;flex:none;vertical-align:-.16em;margin-left:.4em;filter:none}
+.rer{height:1.1em;width:auto;max-width:none;object-fit:contain;flex:none;vertical-align:-.16em;margin-left:15px;filter:none}
 
 /* ---------- Surfaces claires : texte encre + flèches bleues ---------- */
 .card,.row,.bcard,.lcard,.route,.srch{--arr:var(--bf)}
@@ -531,7 +531,7 @@ html.nv-open,html.nv-open body{overflow:hidden}
 .nv3-in button{background:#25303B;color:#fff;border-radius:5px;font-weight:700;padding:0 14px}
 
 .nv-busimg{height:24px;width:auto;display:block;pointer-events:none}
-.nv-rerimg{height:.8em;width:auto;vertical-align:-.04em;margin-left:.35em;pointer-events:none}
+.nv-rerimg{height:.8em;width:auto;vertical-align:-.04em;margin-left:15px;pointer-events:none}
 .nv3-h .nv-rerimg{filter:brightness(0) invert(1)}
 
 /* animations écran 3 */
@@ -563,7 +563,58 @@ html.nv-open,html.nv-open body{overflow:hidden}
   .nv-gray{min-width:0;flex:1}.nv-mini button{padding:6px 8px;font-size:12px}
 }
 
-</style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
+
+/* =========================================================
+   COMPTE · MODÉRATION · SALONS
+   ========================================================= */
+.ovl{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(14,22,40,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:nvin .25s ease-out both;overflow:auto}
+#lock{z-index:600}
+.ovl .card{width:min(440px,100%);display:flex;flex-direction:column;gap:14px;animation:in .45s cubic-bezier(.2,.8,.2,1) both}
+.ovl h2{color:var(--ink);font-size:clamp(26px,6vw,34px);margin:0}
+.ovl p{color:var(--muted);line-height:1.4}
+.ovl .badge{align-self:flex-start}
+.rm-err{min-height:1.2em;color:var(--late);font-weight:700;font-size:14px}
+.lk-t{font-variant-numeric:tabular-nums;font-weight:700;font-size:clamp(20px,5.4vw,28px);color:var(--led);background:#000;padding:10px 14px;border-radius:10px;text-align:center}
+.shake{animation:shk .28s}
+@keyframes shk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,14px);opacity:0;pointer-events:none;z-index:700;max-width:min(92vw,420px);background:#000;color:var(--led);padding:12px 18px;border-radius:12px;font-weight:700;text-align:center;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+.rm-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.rm-f{display:flex;gap:10px;margin-top:10px}.rm-f .srch{flex:1;min-width:0}
+.rm-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+button.card.rm-card{font:inherit;text-align:left;border:0;cursor:pointer;display:flex;flex-direction:column;gap:12px;color:var(--ink);transition:transform .15s,background .15s}
+button.card.rm-card:hover{transform:translateY(-2px);background:#eef2fa}
+button.card.rm-card:active{transform:scale(.99)}
+.rm-n{font-weight:700;font-size:clamp(19px,3.6vw,24px);line-height:1.1}
+.rm-meta{display:flex;align-items:center;gap:10px;justify-content:space-between}
+.rm-code,.led{font:inherit;font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:.14em;color:var(--led);background:#000;padding:5px 10px;border-radius:8px;border:0}
+button.led{cursor:pointer;height:48px;padding:0 16px;font-size:20px;transition:transform .15s}
+button.led:active{transform:scale(.97)}
+.rm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:16px;align-items:start}
+.rm-col{display:flex;flex-direction:column;gap:16px}
+.gen-list{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.gen{padding:10px 12px;border-radius:10px;background:var(--surface-2);box-shadow:inset 4px 0 0 var(--led);line-height:1.35;word-break:break-word}
+.gen small,.rm-m small{color:var(--muted);font-style:italic;margin-left:6px}
+.rm-msgs{height:min(50vh,440px);overflow:auto;display:flex;flex-direction:column;gap:8px;margin:10px 0;padding:2px}
+.rm-m{padding:8px 12px;border-radius:12px;background:var(--surface-2);align-self:flex-start;max-width:90%;word-break:break-word;line-height:1.3}
+.rm-m.me{align-self:flex-end;background:var(--blue);color:#fff}.rm-m.me small{color:rgba(255,255,255,.75)}
+.rm-in{display:flex;gap:10px}.rm-in .srch{flex:1;min-width:0}
+.mg{list-style:none;padding:0;margin:10px 0 0;display:flex;flex-direction:column;gap:8px}
+.mg li{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;border-radius:10px;background:var(--surface-2)}
+.mg small{color:var(--muted);margin-left:6px}
+.rm-gc{display:flex;gap:10px;margin-top:6px}.rm-gc .srch{flex:1;min-width:0}
+.rm-end{display:flex;justify-content:flex-end;margin-top:14px}
+@media(max-width:760px){.rm-two,.rm-grid{grid-template-columns:1fr}.rm-f,.rm-in,.rm-gc{flex-wrap:wrap}}
+
+/* canaux de discussion dans l'écran de régulation */
+.nv3-ch{display:flex;flex-wrap:wrap;gap:5px;margin-top:6px}
+.nv3-ch[hidden]{display:none}
+.nv3-ch button{background:#e4e4e4;color:#25303B;border-radius:99px;padding:3px 11px;font-size:12px;font-weight:700;transition:background .15s,color .15s}
+.nv3-ch button:hover:not(.on){background:#d2d2d2}
+.nv3-ch button.on{background:#25303B;color:#fff}
+
+</style></head><body><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button><button data-t="s">Salons</button></nav></div></header><main id="app"></main>
 <script>
 
 const GAME_OFFSET=36e5;
@@ -572,6 +623,7 @@ const GAME_OFFSET=36e5;
 const PROD=true;
 if(PROD){document.addEventListener("selectstart",e=>{if(!/^(INPUT|TEXTAREA)$/.test(e.target.tagName||""))e.preventDefault()});document.addEventListener("dragstart",e=>e.preventDefault());const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
+let acct=null,myIp=null,CFG={lines:{},svc:{},bad:[]},ROOMS={},ROOMREG={},GEN={bc:[],rm:{}},lockRec=null;
 const ARR={
   bas:"https://image.noelshack.com/fichiers/2026/47/5/1795191436-fleche-ratp-bas-blanche.png",
   haut:"https://image.noelshack.com/fichiers/2026/47/5/1795191436-fleche-ratp-haute-blanche.png",
@@ -764,7 +816,7 @@ function nextDep(n,now=Date.now()){
   return best}
 function nextStart(){
   let best=null;
-  for(const n in DATA){const ts=nextDep(n);if(ts!=null&&(!best||ts<best.ts))best={ts,n}}
+  for(const n in DATA){if(!lineOn(n))continue;const ts=nextDep(n);if(ts!=null&&(!best||ts<best.ts))best={ts,n}}
   return best}
 
 const dur=ms=>{const a=Math.abs(Math.round(ms/1000)),m=Math.floor(a/60),r=a%60;return m?`${m} min ${String(r).padStart(2,"0")} s`:`${r} s`};
@@ -812,30 +864,31 @@ addEventListener("pagehide",()=>{if(line)leave()});
 const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
 const SVC={"134":[[0,25],[7,33]],"135":[[4,31],[0,27]],"142":[[0,19],[14,33]],"149":[[0,15],[6,19]],"315":[[0,12],[13,25]],"316":[[7,30,"Narbérale - Rue de Cherbourg"],[14,37]],"433":[[19,28],[0,10]],"N76":[[21,42],[25,47,"Berthée - Rosenberg"]]};
 const PTK={"134":[0],"135":[1],"142":[0],"149":[0],"315":[0],"316":[0,1],"433":[1],"N76":[0,1]};
-const svc=(n,k)=>SVC[n]?SVC[n][k]:[0,DATA[n].s[k].length-1];
-function deps(n,k,c=2){const[a,e]=svc(n,k),p=!!SVC[n],now=Date.now(),o=[];for(const b of bases())for(const x of DATA[n].C[k]){if(x.t[a]==null||(p&&x.t[e]==null))continue;const ts=b+x.t[a]*MIN;if(ts>=now-3e4)o.push(ts)}return o.sort((q,w)=>q-w).slice(0,c)}
+const svc=(n,k)=>ovGet(n,k)||(SVC[n]?SVC[n][k]:[0,DATA[n].s[k].length-1]);
+function deps(n,k,c=2){const[a,e]=svc(n,k),p=!!SVC[n]||!!ovGet(n,k),now=Date.now(),o=[];for(const b of bases())for(const x of DATA[n].C[k]){if(x.t[a]==null||(p&&x.t[e]==null))continue;const ts=b+x.t[a]*MIN;if(ts>=now-3e4)o.push(ts)}return o.sort((q,w)=>q-w).slice(0,c)}
 const RER="https://image.noelshack.com/fichiers/2026/48/1/1795444285-design-sans-titre.png";
 const rer=s=>/ RER$/.test(s)?`<img class="rer" src="${RER}" alt="RER">`:"";
 const short=s=>s.replace(/ RER$/,"");
-const sn=s=>short(s)+rer(s);
+const sn=s=>/ RER$/.test(s)?`<span class="sn">${short(s)}${rer(s)}</span>`:short(s);
 const PLI=`<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6" cy="18" r="2.6"/><circle cx="18" cy="6" r="2.6"/><path d="M6 15.4V11a3 3 0 0 1 3-3h6.4"/></svg>`;
 const HORIZON=120*MIN;
 
 function rowH(r){
   const d=DATA[r.n],[ia,ie,lab]=svc(r.n,r.k),s=lab||d.s[r.k][ie],off=!r.t.length,tg=off?"div":"button";
   const attrs=off?"":` data-l="${r.n}" data-k="${r.k}"`;
-  const box=off?`<b class="end">service terminé</b>`:r.t.map(ts=>`<b class="mn" data-ts="${ts}"></b>`).join("");
+  const box=off?`<b class="end">${r.susp?"ligne suspendue":"service terminé"}</b>`:r.t.map(ts=>`<b class="mn" data-ts="${ts}"></b>`).join("");
   const more=`<button class="more"${off?" disabled":` data-m="${r.n}" data-k="${r.k}"`} title="Partiel libre" aria-label="Partiel libre">${PLI}</button>`;
-  return `<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="row${off?" off":""}"${attrs} style="--lc:${d.c}"><span class="lb${(PTK[r.n]||[]).includes(r.k)?" tri":""}" style="color:${ink(d.c)}">${r.n}</span><span class="dn">${sn(s)}</span><span class="tb">${box}</span></${tg}>${more}</div>`;
+  return `<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="row${off?" off":""}"${attrs} style="--lc:${d.c}"><span class="lb${isPart(r.n,r.k)?" tri":""}" style="color:${ink(d.c)}">${r.n}</span><span class="dn">${sn(s)}</span><span class="tb">${box}</span></${tg}>${more}</div>`;
 }
 function home(refresh){
   tab="d";mark();origin="home";nvHide();
   const on=[],off=[];let c=0;
   for(const n in DATA)for(const k of[0,1]){
+    if(!lineOn(n)){off.push({n,k,t:[],i:c++,susp:true});continue}
     const t=deps(n,k).filter(ts=>ts-Date.now()<=HORIZON);
     (t.length?on:off).push({n,k,t,i:c++});
   }
-  const sig=[...on,...off].map(r=>r.n+r.k+r.t.join()).join();
+  const sig=[...on,...off].map(r=>r.n+r.k+r.t.join()).join()+JSON.stringify([CFG.lines,CFG.svc]);
   if(refresh&&sig===lastSig)return;
   lastSig=sig;line=null;dir=null;setLineTheme(null);
   const nx=on.length?null:nextStart();
@@ -940,8 +993,8 @@ function flip(){
   view();push();
 }
 
-function next(){if(line==null||dir===null)return;if(i<end){i++;upd();push()}else if(startIdx===0&&end===DATA[line].s[dir].length-1)flip();else quit()}
-function prev(){if(line==null||dir===null)return;if(i>startIdx){i--;upd();push()}}
+function next(){if(line==null||dir===null)return;if(i<end){nvAnc={i:i,t:Date.now(),dl:dl};i++;upd();push()}else if(startIdx===0&&end===DATA[line].s[dir].length-1)flip();else quit()}
+function prev(){if(line==null||dir===null)return;if(i>startIdx){i--;nvAnc=i>startIdx?{i:i-1,t:Date.now(),dl:dl}:null;upd();push()}}
 function ecart(v){dl+=v;upd();push()}
 addEventListener("keydown",e=>{if(line==null||dir===null||!$("#nv-ns")||/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;const m={PageDown:next,PageUp:prev,ArrowUp:()=>ecart(1),ArrowDown:()=>ecart(-1)}[e.key];if(m){e.preventDefault();m()}});
 
@@ -965,7 +1018,7 @@ function pickBus(lineCodes){
 }
 
 function pickLinesForSheet(count,prefs){
-  const all=Object.keys(DATA);
+  const all=Object.keys(DATA).filter(lineOn);
   const chosen=[];
   const validPrefs=prefs.filter(l=>DATA[l]);
   const shuffledPrefs=[...validPrefs].sort(()=>Math.random()-.5);
@@ -994,7 +1047,8 @@ const DEPOT_HLP={
 };
 const DEPOT_START=new Set([...Object.keys(DEPOT_HLP.berthee),...Object.keys(DEPOT_HLP.courcelles)]);
 let NODES=null;
-function lineNodes(){
+function lineNodes(){return lineNodesAll().filter(x=>lineOn(x.L))}
+function lineNodesAll(){
   if(NODES)return NODES;NODES=[];
   for(const L in DATA)for(const d of [0,1]){
     const st=DATA[L].s[d],seen=new Set();
@@ -1066,7 +1120,7 @@ function nvHide(){if(NVH.hidden)return;NVH.hidden=true;NVH.innerHTML="";document
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const BUSIMG=NVI+"1795474293-true.png",RERIMG=NVI+"1795474387-true.png";
 const RERB=`<img class="nv-rerimg" src="${RERIMG}" alt="RER">`;
-const nvN=s=>/ RER$/.test(s)?esc(short(s))+RERB:esc(s);
+const nvN=s=>/ RER$/.test(s)?`<span class="nv-sn">${esc(short(s))}${RERB}</span>`:esc(s);
 const TRAM='<svg class="nv-tr" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><rect x="3" y="1.5" width="10" height="10" rx="2"/><path d="M3 7h10M5 14l-1.5 1.5M11 14l1.5 1.5"/></svg>';
 const nvLineN=s=>nvN(s.replace(" §T","")) + (/§T/.test(s)?TRAM:"");
 const nvBusLogo=n=>n==="N76"?'<span class="nv-bus n">N<sup>*</sup></span>':`<img class="nv-busimg" src="${BUSIMG}" alt="BUS">`;
@@ -1154,7 +1208,10 @@ const RM=matchMedia("(prefers-reduced-motion: reduce)").matches;
 const anim=(el,kf,o)=>(RM||!el||!el.animate)?null:el.animate(kf,o);
 const EASE="cubic-bezier(.2,.8,.2,1)";
 function nvSwap(el,html,dn){if(!el||el.innerHTML===html)return;const had=el.innerHTML!=="";el.innerHTML=html;if(had)anim(el,[{opacity:0,transform:`translateY(${14*dn}px)`},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
-let nvConsSig="",nvKeys=[],nvPrevI=null,nvShown=0,nvTw=0,nvR2a=null;
+let nvConsSig="",nvKeys=[],nvPrevI=null,nvShown=0,nvTw=0,nvR2a=null,nvAnc=null,nvChan={type:"line"};
+/* Estimation : dès qu’on valide un arrêt, le bus est considéré à cet arrêt « maintenant » ;
+   l’arrivée = maintenant + temps de parcours théorique des arrêts restants (+ écart réglé). */
+function nvEta(k){const t0=sTs(k);if(!nvAnc)return t0+dl*6e4;return Math.max(Date.now(),nvAnc.t+(t0-sTs(nvAnc.i))+(dl-nvAnc.dl)*6e4)}
 function nvRenderCons(){
   const e=$("#nv-cons");if(!e||line==null||dir===null)return;
   const items=[...nvCons.map(t=>[t,1]),...nvAuto().map(t=>[t,0])];
@@ -1183,22 +1240,42 @@ function nvRenderChat(force){
   nvKeys=keys;
   if(stick||force)e.scrollTo({top:e.scrollHeight,behavior:RM?"auto":"smooth"});
 }
-const nvPseudo=()=>{try{return localStorage.getItem("regulation_pseudo")||""}catch(_){return""}};
+const nvPseudo=()=>acct?acct.pseudo:"";
+const nvChanPath=()=>nvChan.type==="room"?`rooms/${nvChan.code}/chat`:`discussions/${encodeURIComponent(line)}`;
 async function nvPoll(){
   if(NVH.hidden||line==null||dir===null)return;
-  const L=encodeURIComponent(line);
-  try{const[a,b]=await Promise.all([fetch(`${DB}/consignes/${L}.json`).then(r=>r.json()),fetch(`${DB}/consignes/all.json`).then(r=>r.json())]);
-    const n=[...nvFlat(b),...nvFlat(a)];if(n.join("|")!==nvCons.join("|")){nvCons=n;nvRenderCons()}}catch(_){}
-  try{const j=await fetch(`${DB}/discussions/${L}.json?orderBy="$key"&limitToLast=60`).then(r=>r.json());
+  const L=encodeURIComponent(line),ch=nvChan;
+  try{const[a,b]=await Promise.all([fetch(`${DB}/consignes/${L}.json`).then(r=>r.json()),fetch(`${DB}/consignes/all.json`).then(r=>r.json()),genPoll()]);
+    const n=[...nvFlat(b),...nvFlat(a),...genLines()];if(n.join("|")!==nvCons.join("|")){nvCons=n;nvRenderCons()}
+    nvChanRender()}catch(_){}
+  try{const j=await fetch(`${DB}/${nvChanPath()}.json?orderBy="$key"&limitToLast=60`).then(r=>r.json());
+    if(ch!==nvChan)return;
     if(j&&!j.error){nvMsgs=Object.values(j).filter(m=>m&&m.m);nvRenderChat()}}catch(_){}
+}
+function nvChanRender(){
+  const e=$("#nv-ch");if(!e)return;
+  const rs=myRooms();
+  if(!rs.length){e.hidden=true;e.innerHTML="";return}
+  e.hidden=false;
+  const html=`<button type="button" data-t="line" class="${nvChan.type==="line"?"on":""}">Ligne ${esc(line)}</button>`+rs.map(c=>`<button type="button" data-c="${c}" class="${nvChan.type==="room"&&nvChan.code===c?"on":""}">${esc((ROOMS[c]&&ROOMS[c].name)||c)}</button>`).join("");
+  if(e.innerHTML!==html)e.innerHTML=html;
+}
+function nvChanPick(ev){
+  const b=ev.target.closest("button");if(!b)return;
+  const nx=b.dataset.c?{type:"room",code:b.dataset.c}:{type:"line"};
+  if(nx.type===nvChan.type&&nx.code===nvChan.code)return;
+  nvChan=nx;nvLocal=[];nvMsgs=[];nvKeys=[];
+  const m=$("#nv-msgs");if(m)m.innerHTML="";
+  const inp=$("#nv-in");if(inp)inp.placeholder=nx.type==="room"?`Écrire dans ${(ROOMS[nx.code]&&ROOMS[nx.code].name)||"le salon"}…`:"Écrire un message…";
+  nvChanRender();nvRenderChat(true);nvPoll();
 }
 function nvSend(){
   const inp=$("#nv-in"),txt=inp.value.trim();if(!txt)return;
   let p=nvPseudo();
-  if(!p){p=(prompt("Choisissez votre pseudo pour les discussions :","")||"").trim().slice(0,24);if(!p)return;try{localStorage.setItem("regulation_pseudo",p)}catch(_){}}
-  const m={a:p,m:txt.slice(0,300),t:Date.now()};
+  if(!p||lockRec)return;
+  const m={a:p,u:acct&&acct.uid,m:txt.slice(0,300),t:Date.now()};
   nvLocal.push(m);inp.value="";nvRenderChat(true);
-  fetch(`${DB}/discussions/${encodeURIComponent(line)}.json`,{method:"POST",body:JSON.stringify(m)}).catch(()=>{});
+  fetch(`${DB}/${nvChanPath()}.json`,{method:"POST",body:JSON.stringify(m)}).catch(()=>{});
 }
 function nvSetDeparture(){
   const v=prompt("Heure de départ du service (HH:MM) :",fmt(sTs(startIdx)));if(!v)return;
@@ -1206,7 +1283,7 @@ function nvSetDeparture(){
   const x=new Date();x.setHours(+m[1],+m[2],0,0);
   let t=x.getTime();if(t<Date.now()-12*36e5)t+=864e5;
   const p=nearestCourse(line,dir,startIdx,end,t);
-  cur={c:p.c,base:p.base,off:t-p.ts};upd();push();
+  cur={c:p.c,base:p.base,off:t-p.ts};nvAnc=null;upd();push();
 }
 function quit(){
   const o=origin,k=dir;leave();
@@ -1216,7 +1293,7 @@ function quit(){
 }
 function view(){
   const d=DATA[line],s=R(),col=d.c;
-  setLineTheme(line);nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
+  setLineTheme(line);nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvAnc=null;nvChan={type:"line"};nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
   nvShow(`<div class="nv3" style="--lc:${col};--li:${ink(col)}">
     <header class="nv3-h">
       <button type="button" class="nv3-logo" id="nv-quit" title="Quitter la ligne">${nvBusLogo(line)}${nvPill(line)}</button>
@@ -1253,6 +1330,7 @@ function view(){
       </div>
       <section class="nv3-c nv3-r" style="--d:.32s">
         <span class="nv3-lab">Discussions</span>
+        <div class="nv3-ch" id="nv-ch" hidden></div>
         <div class="nv3-msgs" id="nv-msgs"></div>
         <div class="nv3-in"><input id="nv-in" type="text" maxlength="300" placeholder="Écrire un message…" autocomplete="off"><button type="button" id="nv-send">Envoyer</button></div>
       </section>
@@ -1264,6 +1342,7 @@ function view(){
   $("#nv-send").onclick=nvSend;
   $("#nv-in").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();nvSend()}};
   if(window.ResizeObserver){const ro=new ResizeObserver(()=>{if(line!=null&&dir!==null&&$("#nv-ls"))nvList(i-startIdx,dl*60000,1,true)});ro.observe($("#nv-ls"))}
+  $("#nv-ch").onclick=nvChanPick;nvChanRender();
   clearInterval(nvT);nvT=setInterval(nvPoll,4000);nvPoll();
   upd();
 }
@@ -1353,11 +1432,11 @@ function upd(){
   const full=startIdx===0&&end===DATA[line].s[dir].length-1;
   $("#nv-prev").disabled=i<=startIdx;
   nvSwap($("#nv-nl"),i<end?"Arrêt suivant":(full?"Changer de sens":"Fin du partiel"),1);
-  nvSwap($("#ar1n"),nvN(s[last]),1);$("#ar1t").dataset.ts=sTs(end)+dm;
+  nvSwap($("#ar1n"),nvN(s[last]),1);$("#ar1t").dataset.ts=nvEta(end);
   const r2=$("#ar2");
   if(rel<last){
     if(nvR2a){nvR2a.onfinish=null;nvR2a.cancel();nvR2a=null}
-    $("#ar2t").dataset.ts=sTs(i)+dm;nvSwap($("#ar2n"),nvN(s[rel]),dn);
+    $("#ar2t").dataset.ts=nvEta(i);nvSwap($("#ar2n"),nvN(s[rel]),dn);
     if(r2.hidden){r2.hidden=false;anim(r2,[{opacity:0,transform:"translateY(10px)"},{opacity:1,transform:"none"}],{duration:340,easing:EASE})}
   }else if(!r2.hidden){
     const a2=anim(r2,[{opacity:1,transform:"none"},{opacity:0,transform:"translateY(10px)"}],{duration:260,easing:EASE,fill:"forwards"});
@@ -1521,6 +1600,302 @@ function renderSheetView(){
 
 let tab="d";
 function mark(){document.querySelectorAll("#hdr nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===tab));clock()}
-document.querySelectorAll("#hdr nav button").forEach(b=>b.onclick=()=>{if(line!=null&&dir!==null)leave();line=null;dir=null;b.dataset.t==="f"?fichesMenu():home()});
-home();
+document.querySelectorAll("#hdr nav button").forEach(b=>b.onclick=()=>{if(line!=null&&dir!==null)leave();line=null;dir=null;b.dataset.t==="f"?fichesMenu():b.dataset.t==="s"?roomsMenu():home()});
+/* =========================================================
+   COMPTES · MODÉRATION · CONFIG · SALONS
+   ========================================================= */
+const WEBHOOK_URL="";   /* ← colle ici l’URL de ton webhook (format Discord : {content}) */
+const AK="reg_account_v1",RK="reg_rooms_v1";
+const ls={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(_){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(_){}},del(k){try{localStorage.removeItem(k)}catch(_){}}};
+const jget=async p=>{const r=await fetch(`${DB}/${p}.json`);if(!r.ok)throw new Error(r.status);return r.json()};
+const jsend=(m,p,b)=>fetch(`${DB}/${p}.json`,{method:m,body:b===undefined?undefined:JSON.stringify(b)});
+const ipKey=ip=>String(ip).replace(/[.:]/g,"_");
+/* L’appli décale l’horloge (GAME_OFFSET) : toute date stockée pour les comptes, sanctions et messages généraux est en heure RÉELLE. */
+const rn=()=>Date.now()-GAME_OFFSET;
+const gt=t=>fmt(t+GAME_OFFSET);
+const live=r=>!!r&&(r.until===0||r.until>rn());
+const myRooms=()=>ls.get(RK)||[];
+const addRoom=c=>{const r=myRooms();if(!r.includes(c))ls.set(RK,[...r,c])};
+function dropRoom(c){ls.set(RK,myRooms().filter(x=>x!==c));delete ROOMS[c];delete ROOMREG[c];delete GEN.rm[c];if(nvChan.type==="room"&&nvChan.code===c)nvChan={type:"line"}}
+
+let toastT=null;
+function toast(t){let e=document.getElementById("toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";e.setAttribute("role","status");document.body.appendChild(e)}e.textContent=t;e.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("on"),3600)}
+
+/* ---------- configuration pilotée par l’administration ---------- */
+async function cfgLoad(){try{const c=await jget("config")||{};CFG={lines:c.lines||{},svc:c.svc||{},bad:Object.values(c.bad||{})}}catch(_){}}
+function lineOn(n){return!(CFG.lines[n]&&CFG.lines[n].on===false)}
+function ovGet(n,k){
+  const o=CFG.svc&&CFG.svc[n]&&CFG.svc[n][k];if(!o||!DATA[n])return null;
+  const st=DATA[n].s[k],a=st[o.a]===o.from?o.a:st.indexOf(o.from),e=st[o.e]===o.to?o.e:st.lastIndexOf(o.to);
+  return a>=0&&e>a?[a,e]:null;
+}
+function isPart(n,k){const o=ovGet(n,k);return o?(o[0]>0||o[1]<DATA[n].s[k].length-1):(PTK[n]||[]).includes(k)}
+function cfgApply(){
+  if(line!=null&&!lineOn(line)){toast("Cette ligne vient d’être désactivée.");leave();line=null;dir=null;nvHide();home();return}
+  if(tab==="d"&&line==null&&!lockRec)home(true);
+}
+
+/* ---------- compte & webhook ---------- */
+async function getIp(){try{const c=new AbortController(),t=setTimeout(()=>c.abort(),2500);const r=await fetch("https://api.ipify.org?format=json",{signal:c.signal});clearTimeout(t);myIp=(await r.json()).ip||null}catch(_){myIp=null}}
+function hook(p,uid){
+  if(!WEBHOOK_URL)return;
+  const safe=p.replace(/[@`*_~|>]/g,"");
+  fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"Régulation Bus",content:`Nouveau compte : ${safe} (id ${uid})`,allowed_mentions:{parse:[]}})}).catch(()=>{});
+}
+function pseudoCheck(p){
+  if(p.length<3)return"Au moins 3 caractères.";
+  if(p.length>20)return"20 caractères maximum.";
+  if(!/^[\p{L}\p{N} ._-]+$/u.test(p))return"Lettres, chiffres, espace, point, tiret et underscore uniquement.";
+  const k=normS(p);
+  if(CFG.bad.some(w=>{const x=normS(String(w||""));return x&&k.includes(x)}))return"Ce pseudo n’est pas autorisé.";
+  return"";
+}
+function signup(){
+  return new Promise(res=>{
+    if(document.getElementById("signup"))return;
+    const o=document.createElement("div");o.className="ovl";o.id="signup";
+    o.innerHTML=`<form class="card" autocomplete="off" novalidate>
+      <h2>Bienvenue</h2>
+      <p>Choisis un pseudo : il sera visible dans les discussions et les salons.</p>
+      <label class="srch"><input id="su-p" maxlength="20" placeholder="Ton pseudo" autocomplete="off" autocapitalize="off" spellcheck="false" aria-label="Pseudo"></label>
+      <p class="rm-err" id="su-e" role="alert"></p>
+      <button class="btn" id="su-b" type="submit">Entrer</button></form>`;
+    document.body.appendChild(o);
+    const f=o.querySelector("form"),inp=o.querySelector("#su-p"),err=o.querySelector("#su-e"),btn=o.querySelector("#su-b");
+    setTimeout(()=>inp.focus(),60);
+    const fail=m=>{err.textContent=m;btn.disabled=false;f.classList.remove("shake");void f.offsetWidth;f.classList.add("shake")};
+    f.onsubmit=async ev=>{
+      ev.preventDefault();err.textContent="";
+      const p=inp.value.trim().replace(/\s+/g," "),bad=pseudoCheck(p);
+      if(bad)return fail(bad);
+      btn.disabled=true;
+      try{
+        await modCheck();if(lockRec){btn.disabled=false;return}
+        const all=await jget("accounts"),k=normS(p);
+        if(Object.values(all||{}).some(a=>a&&(a.key||normS(a.pseudo||""))===k))return fail("Ce pseudo est déjà pris.");
+        const uid="u"+Math.random().toString(36).slice(2,8)+Date.now().toString(36).slice(-4);
+        const rec={pseudo:p,key:k,created:rn(),seen:rn(),ip:myIp||null};
+        const r=await jsend("PUT",`accounts/${uid}`,rec);if(!r.ok)throw new Error("put");
+        acct={uid,pseudo:p};ls.set(AK,acct);hook(p,uid);
+        o.remove();res();
+      }catch(_){fail("Connexion impossible. Réessaie dans un instant.")}
+    };
+  });
+}
+function beat(){if(!acct||lockRec)return;const b={seen:rn()};if(myIp)b.ip=myIp;jsend("PATCH",`accounts/${acct.uid}`,b).catch(()=>{})}
+
+/* ---------- modération : exclusion, bannissement compte / IP ---------- */
+async function modCheck(){
+  let u=null,ip=null,a=true;
+  try{[u,ip,a]=await Promise.all([acct?jget(`mod/users/${acct.uid}`):null,myIp?jget(`mod/ips/${ipKey(myIp)}`):null,acct?jget(`accounts/${acct.uid}`):true])}catch(_){return}
+  if(acct&&a===null){
+    ls.del(AK);acct=null;if(line!=null){leave();line=null;dir=null}nvHide();
+    toast("Ton compte a été supprimé.");await signup();home();return;
+  }
+  if(acct&&a&&a!==true&&a.pseudo&&a.pseudo!==acct.pseudo){acct.pseudo=a.pseudo;ls.set(AK,acct);toast(`Ton pseudo est maintenant « ${a.pseudo} »`)}
+  setLock(live(u)?{...u}:live(ip)?{...ip,type:"ban",ipban:true}:null);
+}
+function setLock(rec){
+  let el=document.getElementById("lock");
+  if(!rec){lockRec=null;if(el)el.remove();return}
+  const fresh=!lockRec;lockRec=rec;
+  if(fresh){if(line!=null){leave();line=null;dir=null}nvHide();home()}
+  if(!el){el=document.createElement("div");el.id="lock";el.className="ovl";document.body.appendChild(el)}
+  const kind=rec.ipban?"Adresse IP bannie":rec.type==="kick"?"Exclusion temporaire":"Compte banni";
+  const title=rec.type==="kick"&&!rec.ipban?"Tu as été exclu":"Accès bloqué";
+  el.innerHTML=`<div class="card" role="alertdialog" aria-live="assertive"><span class="badge">${kind}</span><h2>${title}</h2>${rec.reason?`<p>Motif : ${esc(rec.reason)}</p>`:""}<div class="lk-t" id="lk-t"></div></div>`;
+  lockTick();
+}
+function lockTick(){
+  if(!lockRec)return;
+  const t=document.getElementById("lk-t");
+  if(lockRec.until===0){if(t)t.textContent="Définitif";return}
+  const d=lockRec.until-rn();
+  if(d<=0){setLock(null);modCheck();return}
+  if(t)t.textContent="Retour dans "+dur(d);
+}
+
+/* ---------- messages généraux (administration + salons) ---------- */
+async function genPoll(){
+  try{const bc=await fetch(`${DB}/broadcast.json?orderBy="$key"&limitToLast=20`).then(r=>r.json());GEN.bc=bc&&!bc.error?Object.entries(bc).map(([id,v])=>({id,...v})):[]}catch(_){}
+  await Promise.all(myRooms().map(async c=>{
+    try{
+      const[m,mem]=await Promise.all([jget(`rooms/${c}/meta`),jget(`rooms/${c}/members/${acct?acct.uid:"x"}`)]);
+      if(!m||!mem){dropRoom(c);toast(m?"Tu as été retiré d’un salon.":"Un de tes salons a été supprimé.");return}
+      ROOMS[c]=m;
+      const g=await fetch(`${DB}/rooms/${c}/general.json?orderBy="$key"&limitToLast=10`).then(r=>r.json());
+      GEN.rm[c]=g&&!g.error?Object.entries(g).map(([id,v])=>({id,...v})):[];
+    }catch(_){}
+  }));
+}
+function genLines(){
+  const now=rn(),mine=myRooms(),out=[];
+  GEN.bc.filter(x=>x&&x.m&&(!x.exp||x.exp>now)).sort((a,b)=>a.t-b.t).forEach(x=>{
+    const rs=Object.keys(x.rooms||{}).filter(c=>mine.includes(c));
+    if(x.pub)out.push(x.m);
+    if(x.priv&&mine.length&&!x.pub)out.push(x.m);
+    else if(rs.length&&!x.pub)out.push(`[${(ROOMS[rs[0]]&&ROOMS[rs[0]].name)||rs[0]}] ${x.m}`);
+  });
+  mine.forEach(c=>(GEN.rm[c]||[]).filter(x=>x&&x.m&&(x.exp?x.exp>now:x.t+4*36e5>now)).sort((a,b)=>a.t-b.t).forEach(x=>out.push(`[${(ROOMS[c]&&ROOMS[c].name)||c}] ${x.m}`)));
+  return out;
+}
+
+/* ---------- écran « Salons » ---------- */
+const RCH="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+const rcode=()=>Array.from({length:6},()=>RCH[Math.floor(Math.random()*RCH.length)]).join("");
+let rmT=null;
+const roleOf=(m,c)=>m.owner===acct.uid?"Créateur":(ROOMREG[c]&&ROOMREG[c][acct.uid])?"Régulateur":"Membre";
+
+async function roomJoin(code){
+  code=code.trim().toUpperCase();
+  if(code.length!==6)return"Le code compte 6 caractères.";
+  const m=await jget(`rooms/${code}/meta`);
+  if(!m)return"Aucun salon avec ce code.";
+  const r=await jsend("PUT",`rooms/${code}/members/${acct.uid}`,{p:acct.pseudo,t:rn()});
+  if(!r.ok)throw new Error("join");
+  addRoom(code);ROOMS[code]=m;return"";
+}
+async function roomCreate(name){
+  name=name.trim().replace(/\s+/g," ");
+  if(name.length<2)return{err:"Donne un nom d’au moins 2 caractères."};
+  let code=null;
+  for(let t=0;t<6&&!code;t++){const c=rcode();if(!(await jget(`rooms/${c}/meta`)))code=c}
+  if(!code)throw new Error("code");
+  const meta={name,owner:acct.uid,ownerName:acct.pseudo,created:rn()};
+  if(!(await jsend("PUT",`rooms/${code}/meta`,meta)).ok)throw new Error("meta");
+  await jsend("PUT",`rooms/${code}/members/${acct.uid}`,{p:acct.pseudo,t:rn()});
+  addRoom(code);ROOMS[code]=meta;return{code};
+}
+
+function roomsMenu(){
+  tab="s";mark();setLineTheme(null);nvHide();clearInterval(rmT);
+  A.classList.remove("pop");
+  A.innerHTML=`<div class="hero v"><h2>Salons</h2><p class="hint">Un salon privé réunit tes collègues grâce à un code. Le créateur choisit qui peut envoyer des messages généraux.</p></div>
+  <div class="rm-two v">
+    <section class="card"><div class="lab">Rejoindre un salon</div>
+      <div class="rm-f"><label class="srch"><input id="rj-c" maxlength="6" placeholder="Code à 6 caractères" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code du salon"></label><button type="button" class="btn" id="rj-b">Rejoindre</button></div>
+      <p class="rm-err" id="rj-e" role="alert"></p></section>
+    <section class="card"><div class="lab">Créer un salon</div>
+      <div class="rm-f"><label class="srch"><input id="cr-n" maxlength="30" placeholder="Nom du salon" autocomplete="off" aria-label="Nom du salon"></label><button type="button" class="btn" id="cr-b">Créer</button></div>
+      <p class="rm-err" id="cr-e" role="alert"></p></section>
+  </div>
+  <div class="sec">Mes salons</div><div class="rm-list" id="rm-list"></div>`;
+  const rjc=$("#rj-c");
+  rjc.oninput=()=>{rjc.value=rjc.value.toUpperCase().replace(/[^A-Z0-9]/g,"")};
+  const join=async()=>{
+    const b=$("#rj-b"),e=$("#rj-e"),code=rjc.value;e.textContent="";b.disabled=true;
+    try{const er=await roomJoin(code);if(er){e.textContent=er}else{toast("Salon rejoint");roomView(code.toUpperCase());return}}
+    catch(_){e.textContent="Connexion impossible."}
+    b.disabled=false;
+  };
+  const create=async()=>{
+    const b=$("#cr-b"),e=$("#cr-e");e.textContent="";b.disabled=true;
+    try{const r=await roomCreate($("#cr-n").value);if(r.err){e.textContent=r.err}else{toast(`Salon créé · code ${r.code}`);roomView(r.code);return}}
+    catch(_){e.textContent="Connexion impossible."}
+    b.disabled=false;
+  };
+  $("#rj-b").onclick=join;$("#cr-b").onclick=create;
+  rjc.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();join()}};
+  $("#cr-n").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();create()}};
+  $("#rm-list").onclick=e=>{const b=e.target.closest("[data-c]");if(b)roomView(b.dataset.c)};
+  roomsRefresh();
+}
+async function roomsRefresh(){
+  const L=$("#rm-list");if(!L)return;
+  if(!myRooms().length){L.innerHTML=`<p class="hint">Aucun salon pour l’instant : crée-en un ou entre un code.</p>`;return}
+  const draw=()=>{
+    const L2=$("#rm-list");if(!L2)return;
+    const rs=myRooms();
+    L2.innerHTML=rs.length?rs.map(c=>{const m=ROOMS[c];
+      return m?`<button type="button" class="card rm-card" data-c="${c}"><span class="rm-n">${esc(m.name)}</span><span class="rm-meta"><span class="badge">${roleOf(m,c)}</span><span class="rm-code">${c}</span></span></button>`
+              :`<div class="card rm-card"><span class="rm-n">${c}</span><span class="lab">Chargement…</span></div>`}).join("")
+      :`<p class="hint">Aucun salon pour l’instant : crée-en un ou entre un code.</p>`;
+  };
+  draw();
+  await Promise.all(myRooms().map(async c=>{try{const[m,g]=await Promise.all([jget(`rooms/${c}/meta`),jget(`rooms/${c}/regs`)]);if(!m)dropRoom(c);else{ROOMS[c]=m;ROOMREG[c]=g||{}}}catch(_){}}));
+  draw();
+}
+
+function roomView(code){
+  tab="s";mark();nvHide();clearInterval(rmT);
+  A.classList.remove("pop");
+  A.innerHTML=`<div id="rm-view"><div class="top"><button type="button" class="btn g" id="rv-back">${ic("g")} Salons</button><button type="button" class="led" id="rv-code" title="Copier le code">${code}</button></div>
+  <div class="hero v"><h2 id="rv-name">Salon</h2><p class="hint" id="rv-sub"></p></div>
+  <div class="rm-grid v">
+    <div class="rm-col">
+      <section class="card"><div class="lab">Messages généraux</div><div class="gen-list" id="rv-gen"></div>
+        <div id="rv-gc" hidden><div class="rm-gc"><label class="srch"><input id="rv-gi" maxlength="300" placeholder="Message général pour tout le salon" autocomplete="off" aria-label="Message général"></label><button type="button" class="btn" id="rv-gs">Envoyer à tous</button></div></div></section>
+      <section class="card" id="rv-mg" hidden><div class="lab">Régulateurs</div><ul class="mg" id="rv-ml"></ul></section>
+      <div class="rm-end"><button type="button" class="btn g" id="rv-out">Quitter le salon</button></div>
+    </div>
+    <section class="card"><div class="lab">Discussion</div><div class="rm-msgs" id="rv-msgs"></div>
+      <div class="rm-in"><label class="srch"><input id="rv-in" maxlength="300" placeholder="Écrire un message…" autocomplete="off" aria-label="Message"></label><button type="button" class="btn" id="rv-send">Envoyer</button></div></section>
+  </div></div>`;
+  const st={meta:null,regs:{},sg:"",sc:"",sm:"",first:true};
+  const isOwner=()=>st.meta&&st.meta.owner===acct.uid,canGen=()=>isOwner()||!!st.regs[acct.uid];
+  $("#rv-back").onclick=roomsMenu;
+  $("#rv-code").onclick=()=>{if(navigator.clipboard)navigator.clipboard.writeText(code).then(()=>toast("Code copié")).catch(()=>{})};
+  const gone=m=>{clearInterval(rmT);dropRoom(code);toast(m);roomsMenu()};
+  const poll=async()=>{
+    if(!$("#rv-msgs")||tab!=="s"){clearInterval(rmT);return}
+    let meta,regs,mem,gen,chat;
+    try{[meta,regs,mem,gen,chat]=await Promise.all([jget(`rooms/${code}/meta`),jget(`rooms/${code}/regs`),jget(`rooms/${code}/members`),
+      fetch(`${DB}/rooms/${code}/general.json?orderBy="$key"&limitToLast=30`).then(r=>r.json()),
+      fetch(`${DB}/rooms/${code}/chat.json?orderBy="$key"&limitToLast=80`).then(r=>r.json())])}catch(_){return}
+    if(!$("#rv-msgs"))return;
+    if(!meta)return gone("Ce salon n’existe plus.");
+    if(!mem||!mem[acct.uid])return gone("Tu as été retiré du salon.");
+    st.meta=meta;st.regs=regs||{};ROOMS[code]=meta;ROOMREG[code]=st.regs;
+    $("#rv-name").textContent=meta.name;
+    const n=Object.keys(mem).length;
+    $("#rv-sub").textContent=`Créé par ${meta.ownerName||"—"} · ${n} membre${n>1?"s":""} · ${roleOf(meta,code)}`;
+    $("#rv-gc").hidden=!canGen();
+    $("#rv-mg").hidden=!isOwner();
+    $("#rv-out").textContent=isOwner()?"Supprimer le salon":"Quitter le salon";
+    const G=Object.values(gen&&!gen.error?gen:{}).filter(x=>x&&x.m).sort((a,b)=>b.t-a.t);
+    const sg=JSON.stringify(G);
+    if(sg!==st.sg){st.sg=sg;$("#rv-gen").innerHTML=G.length?G.map(x=>`<div class="gen">${esc(x.m)}<small>${esc(x.a||"")} · ${gt(x.t)}</small></div>`).join(""):`<p class="lab">Aucun message général pour l’instant.</p>`}
+    if(isOwner()){
+      const rows=Object.entries(mem).sort((a,b)=>(a[1].p||"").localeCompare(b[1].p||""));
+      const sm=JSON.stringify([rows,st.regs]);
+      if(sm!==st.sm){st.sm=sm;$("#rv-ml").innerHTML=rows.map(([u,v])=>u===meta.owner?`<li><span>${esc(v.p||"?")}<small>Créateur</small></span></li>`
+        :`<li><span>${esc(v.p||"?")}${st.regs[u]?"<small>Régulateur</small>":""}</span><button type="button" class="btn g sm" data-u="${u}" data-r="${st.regs[u]?0:1}">${st.regs[u]?"Retirer":"Nommer régulateur"}</button></li>`).join("")}
+    }
+    const C=Object.values(chat&&!chat.error?chat:{}).filter(x=>x&&x.m).sort((a,b)=>a.t-b.t);
+    const sc=JSON.stringify(C);
+    if(sc!==st.sc){
+      st.sc=sc;const box=$("#rv-msgs"),stick=st.first||box.scrollHeight-box.scrollTop-box.clientHeight<40;
+      box.innerHTML=C.length?C.map(x=>`<div class="rm-m${x.u===acct.uid?" me":""}"><b>${esc(x.a||"?")}</b><small>${fmt(x.t)}</small><br>${esc(x.m)}</div>`).join(""):`<p class="lab">Aucun message. Lance la discussion.</p>`;
+      if(stick)box.scrollTo({top:box.scrollHeight,behavior:st.first||RM?"auto":"smooth"});
+    }
+    st.first=false;
+  };
+  const send=async()=>{const i=$("#rv-in"),t=i.value.trim();if(!t||lockRec)return;i.value="";await jsend("POST",`rooms/${code}/chat`,{a:acct.pseudo,u:acct.uid,m:t.slice(0,300),t:Date.now()}).catch(()=>{});poll()};
+  const sendGen=async()=>{const i=$("#rv-gi"),t=i.value.trim();if(!t||!canGen()||lockRec)return;i.value="";await jsend("POST",`rooms/${code}/general`,{a:acct.pseudo,u:acct.uid,m:t.slice(0,300),t:rn()}).catch(()=>{});toast("Message général envoyé");poll()};
+  $("#rv-send").onclick=send;$("#rv-in").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();send()}};
+  $("#rv-gs").onclick=sendGen;$("#rv-gi").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();sendGen()}};
+  $("#rv-ml").onclick=async e=>{
+    const b=e.target.closest("[data-u]");if(!b||!isOwner())return;b.disabled=true;
+    await jsend(+b.dataset.r?"PUT":"DELETE",`rooms/${code}/regs/${b.dataset.u}`,+b.dataset.r?true:undefined).catch(()=>{});poll();
+  };
+  $("#rv-out").onclick=async()=>{
+    if(isOwner()){if(!confirm("Supprimer ce salon pour tous ses membres ?"))return;await jsend("DELETE",`rooms/${code}`).catch(()=>{});gone("Salon supprimé.")}
+    else{await jsend("DELETE",`rooms/${code}/members/${acct.uid}`).catch(()=>{});gone("Tu as quitté le salon.")}
+  };
+  rmT=setInterval(poll,3000);poll();
+}
+
+/* ---------- démarrage ---------- */
+async function boot(){
+  acct=ls.get(AK);
+  await Promise.all([getIp(),cfgLoad()]);
+  await modCheck();
+  if(!acct)await signup();
+  home();
+  setInterval(modCheck,6000);
+  setInterval(()=>cfgLoad().then(cfgApply),15000);
+  setInterval(beat,60000);setInterval(lockTick,1000);beat();
+}
+
+boot();
 </script></body></html>
