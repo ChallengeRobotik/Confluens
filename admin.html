@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#162343">
+<meta name="robots" content="noindex,nofollow">
+<title>Administration · Régulation Bus</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300266b'/%3E%3Ctext x='32' y='46' font-family='Arial' font-weight='700' font-size='40' text-anchor='middle' fill='%23ff8a00'%3EA%3C/text%3E%3C/svg%3E">
+<style>
+@font-face{font-family:Parisine;src:url(Parisine-Regular.otf) format("opentype");font-weight:400;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Bold.otf) format("opentype");font-weight:700;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Italic.otf) format("opentype");font-weight:400;font-style:italic;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-BoldItalic.otf) format("opentype");font-weight:700;font-style:italic;font-display:swap}
+/* Même identité que le site de régulation : marine / bleu RATP / orange LED */
+:root{
+  --page:#0e1628;--bar:#162343;--ink:#425ba2;--blue:#2458c4;--blue-h:#2f66d8;--blue-d:#173c8c;
+  --surface:#e6ebf5;--surface-2:#f4f6fb;--muted:#425ba2;--line:rgba(18,40,90,.14);
+  --on-dark:#fff;--on-dark-2:rgba(255,255,255,.72);--glass:rgba(255,255,255,.12);
+  --led:#ff8a00;--ok:#0a8a4a;--late:#d6281c;--lc:#2458c4;--r:16px
+}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--page);min-height:100%}
+body{min-height:100vh;background:var(--page);color:var(--on-dark);font-family:Parisine,"Trebuchet MS",system-ui,sans-serif;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);overflow-x:hidden}
+button,input,select,textarea{font-family:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid var(--led);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+main{max-width:1100px;margin:auto;padding:clamp(16px,4vw,40px);padding-bottom:calc(60px + env(safe-area-inset-bottom))}
+h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margin:.1em 0 .25em;font-weight:700}
+.hint{color:var(--on-dark-2);margin:6px 0 0;font-size:16px;line-height:1.4;max-width:620px}
+.sec{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;color:var(--on-dark-2);margin:28px 0 12px}
+.hero{margin:6px 0 20px}
+.v{animation:in .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes in{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+
+#hdr{position:sticky;top:0;z-index:30;padding-top:env(safe-area-inset-top);background:var(--bar);border-bottom:1px solid rgba(255,255,255,.08)}
+#hdr .hi{max-width:1100px;margin:auto;display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;padding:10px clamp(16px,4vw,40px)}
+.gt{margin-right:auto;min-width:0}
+#hg{display:block;font-size:clamp(22px,5vw,32px);font-weight:700;line-height:1.05;letter-spacing:-.01em}
+#hd{display:block;font-size:13px;color:var(--on-dark-2);margin-top:2px}
+#hc{font-variant-numeric:tabular-nums;font-weight:700;font-size:clamp(18px,3.6vw,24px);color:var(--led);background:#000;padding:6px 12px;border-radius:9px}
+#nav{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--glass);flex-wrap:wrap}
+#nav button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:9px 13px;background:transparent;color:#fff;cursor:pointer;opacity:.78;transition:.2s}
+#nav button:hover{opacity:1}
+#nav button.on{background:var(--surface);color:var(--ink);opacity:1}
+
+.card{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:clamp(18px,3vw,26px);box-shadow:0 4px 14px rgba(0,0,0,.25)}
+.lab{color:var(--muted);font-style:italic;font-size:15px}
+.badge{display:inline-block;background:rgba(18,40,90,.1);color:var(--ink);padding:3px 11px;border-radius:99px;font-size:13.5px;font-weight:700;white-space:nowrap}
+.badge.ok{background:rgba(10,138,74,.14);color:var(--ok)}
+.badge.ko{background:rgba(214,40,28,.14);color:var(--late)}
+.badge.warn{background:#f3ead3;color:#5f4a1c}
+.btn{font:inherit;font-weight:700;border:0;border-radius:12px;padding:12px 20px;cursor:pointer;background:var(--blue);color:#fff;transition:transform .15s,background .2s,opacity .2s;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn:hover{background:var(--blue-h)}.btn:active{transform:scale(.97)}
+.btn.sm{padding:8px 13px;font-size:14px}
+.btn[disabled]{opacity:.45;pointer-events:none}
+.btn.g{background:var(--glass);color:#fff}.btn.g:hover{background:rgba(255,255,255,.2)}
+.card .btn.g,.dlg .btn.g{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--line)}
+.card .btn.g:hover,.dlg .btn.g:hover{background:#eef2fb}
+.btn.red{background:var(--late)}.btn.red:hover{background:#e5372b}
+.srch,.fld{display:flex;align-items:center;gap:10px;padding:0 14px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px #c5cde0;color:var(--muted)}
+.srch:focus-within,.fld:focus-within{box-shadow:inset 0 0 0 2px var(--blue)}
+.srch input,.fld input,.fld select,.fld textarea{flex:1;min-width:0;border:0;outline:0;background:none;font:inherit;color:var(--ink);padding:13px 0}
+.fld textarea{resize:vertical;min-height:84px;line-height:1.4}
+.fld select{cursor:pointer}
+.stack{display:flex;flex-direction:column;gap:12px}
+.frow{display:flex;gap:10px;flex-wrap:wrap}.frow>*{flex:1;min-width:140px}
+.msg-err{min-height:1.2em;color:var(--late);font-weight:700;font-size:14px}
+
+/* lignes de liste (même gabarit que les départs) */
+.bd{display:flex;flex-direction:column;gap:12px}
+.urow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:in .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*30ms)}
+.urow.sanc{background:#e9d3d2}
+.av{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;font-weight:700;font-size:22px;background:var(--lc);color:var(--li,#fff)}
+.ub{flex:1;min-width:180px;display:flex;flex-direction:column;gap:3px}
+.ub b{font-size:clamp(18px,3.4vw,24px);line-height:1.1;word-break:break-word}
+.ub small{color:var(--muted);font-size:13px;line-height:1.3;overflow-wrap:anywhere}
+.acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.led{font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:.14em;color:var(--led);background:#000;padding:5px 10px;border-radius:8px}
+.stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.stat{background:var(--glass);border-radius:14px;padding:10px 16px;display:flex;flex-direction:column;min-width:120px}
+.stat b{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}.stat small{font-size:12.5px;color:var(--on-dark-2)}
+.tools{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px}.tools .srch{flex:1;min-width:220px}
+.seg{display:flex;gap:4px;padding:4px;border-radius:14px;background:var(--glass)}
+.seg button{font:inherit;font-weight:700;border:0;border-radius:10px;padding:9px 16px;background:transparent;color:#fff;cursor:pointer;opacity:.78}
+.seg button.on{background:var(--surface);color:var(--ink);opacity:1}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;box-shadow:inset 0 0 0 1px var(--line);border-radius:99px;padding:5px 6px 5px 13px;font-weight:700}
+.chip button{border:0;background:rgba(18,40,90,.1);color:var(--ink);width:24px;height:24px;border-radius:50%;cursor:pointer;font-weight:700}
+.chip button:hover{background:rgba(214,40,28,.2);color:var(--late)}
+.empty{color:var(--on-dark-2);padding:18px 4px;font-style:italic}
+
+/* lignes */
+.lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
+.lcard{display:flex;flex-direction:column;gap:14px}
+.lhd{display:flex;align-items:center;gap:14px}
+.lb{flex:none;min-width:76px;height:54px;padding:0 12px;border-radius:12px;display:grid;place-items:center;font-size:30px;font-weight:700;background:var(--lc);color:var(--li)}
+.lhd .ub{min-width:0}
+.sw{position:relative;flex:none;width:58px;height:32px;border-radius:99px;border:0;background:#aab3cc;cursor:pointer;transition:background .25s}
+.sw:after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.3,1.4,.5,1)}
+.sw[aria-checked=true]{background:var(--ok)}.sw[aria-checked=true]:after{transform:translateX(26px)}
+.lcard.offl .lb{opacity:.45;filter:grayscale(.6)}
+.dirbox{border-radius:12px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);padding:12px;display:flex;flex-direction:column;gap:10px}
+.dirbox .t{display:flex;justify-content:space-between;gap:8px;align-items:center;font-weight:700}
+.dirbox .frow>*{min-width:120px}
+.dirbox .fld{padding:0 10px}.dirbox .fld select{padding:10px 0;font-size:14.5px}
+.sub{font-size:12.5px;color:var(--muted);font-style:italic}
+
+/* messages / discussions */
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.chk{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;font-weight:700}
+.chk input{width:20px;height:20px;accent-color:var(--blue)}
+.rooms-pick{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto;padding:2px}
+.hist{display:flex;flex-direction:column;gap:10px}
+.hitem{background:var(--surface-2);box-shadow:inset 4px 0 0 var(--led);border-radius:10px;padding:10px 12px;display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.hitem .tx{line-height:1.35;word-break:break-word;min-width:0}
+.hitem small{display:block;color:var(--muted);margin-top:4px;font-size:12.5px}
+.tg{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.cmsg{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;padding:8px 12px;border-radius:10px;background:var(--surface-2);word-break:break-word}
+.cmsg small{color:var(--muted);margin-left:6px;font-style:italic}
+.cmsg .x{flex:none}
+.xbtn{border:0;background:rgba(214,40,28,.12);color:var(--late);border-radius:8px;width:30px;height:30px;cursor:pointer;font-weight:700;font-size:16px}
+.xbtn:hover{background:rgba(214,40,28,.25)}
+
+/* fenêtres */
+.ovl{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(14,22,40,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:fade .25s ease-out both;overflow:auto}
+.dlg{width:min(460px,100%);display:flex;flex-direction:column;gap:14px;animation:in .4s cubic-bezier(.2,.8,.2,1) both}
+.dlg h2{color:var(--ink);font-size:clamp(24px,5vw,30px);margin:0}
+.dlg p{color:var(--muted);line-height:1.4}
+.dlg .frow{justify-content:flex-end}.dlg .frow>*{flex:0 0 auto}
+.dlg.wide{width:min(860px,100%)}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,14px);opacity:0;pointer-events:none;z-index:700;max-width:min(92vw,440px);background:#000;color:var(--led);padding:12px 18px;border-radius:12px;font-weight:700;text-align:center;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+#gate .dlg{--x:0}
+@media(max-width:760px){.two{grid-template-columns:1fr}.acts{justify-content:flex-start}}
+</style></head>
+<body>
+<header id="hdr" hidden><div class="hi"><div class="gt"><b id="hg">Administration</b><small id="hd">Régulation Bus</small></div><time id="hc">--:--:--</time>
+<nav id="nav"><button data-t="acc">Comptes</button><button data-t="lig">Lignes</button><button data-t="sal">Salons</button><button data-t="msg">Messages</button><button data-t="dis">Discussions</button></nav>
+<button type="button" class="btn g sm" id="out">Quitter</button></div></header>
+<main id="app" hidden></main>
+<div class="ovl" id="gate"><form class="card dlg" id="gf" autocomplete="off" novalidate><h2 id="gt">Administration</h2><p id="gp">Chargement…</p>
+<label class="fld"><input id="gp1" type="password" placeholder="Mot de passe" autocomplete="current-password" aria-label="Mot de passe"></label>
+<label class="fld" id="gl2" hidden><input id="gp2" type="password" placeholder="Confirmer le mot de passe" autocomplete="new-password" aria-label="Confirmer le mot de passe"></label>
+<p class="msg-err" id="ge" role="alert"></p><button class="btn" id="gb" type="submit" disabled>Continuer</button></form></div>
+<script>
+const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
+const LINES={"134":{"c":"#9a0e54","s":[["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Hôtel de Ville de Chaillot-Batignolles","Les Lotis - République","Boris Vian","Église Saint-Louis","Saussaye - Castillon","Jaurès - Poirée","Jaurès - Ferry","Groupe Scolaire Bergmann","Bourveuil","Amélie Nothomb","Rue des Défenseurs de Verdun","Henri Barbusse","Saint-Marc","République - Oradour-sur-Glâne","Valmy - Europe","Dampierre - Grenelle","Les Hauts d’Arlande","Les Barentins","Place du Général Leclerc","Sous-Préfecture – Champagne","Nicola Leuthe","Les Moulins","Giraudoux - Prett","Ampère","Parc de la Brèche","Aimé Césaire","Brévannes-lès-Roses - Lazare Carnot"],["Brévannes-lès-Roses - Lazare Carnot","Aimé Césaire","Parc de la Brèche","Ampère","Giraudoux - Prett","Les Moulins","Nicola Leuthe","Sous-Préfecture – Champagne","Place du Général Leclerc","Les Barentins","Les Hauts d’Arlande","Dampierre - Grenelle","Valmy - Europe","République - Oradour-sur-Glâne","Saint-Marc","Henri Barbusse","Rue des Défenseurs de Verdun","Amélie Nothomb","Bourveuil","Groupe Scolaire Bergmann","Jaurès - Ferry","Jaurès - Poirée","Saussaye - Castillon","Église Saint-Louis","Boris Vian","Les Lotis - République","Barrès - République","Hôtel de Ville de Chaillot-Batignolles","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"]],"svc":[[0,25],[7,33]]},"135":{"c":"#ffbe00","s":[["Bonneuil-sur-Marne - Place Stensele","Les Sillons","Dumont d’Urville","Saint-Maur - Courboules","Bismarck - Courboules","Saint-Gilles","Blanche - Saint-Louis","Benjamin","Lion d’Or","Fort de Limeil","Berthéopôle","Marguerite - Alexandre Dumas","8 Mai 1945","Auriol","Saint-Sever","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","La Vallée","Rue de l’Arche","Finlande","Narbérale RER","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Jean-Baptiste Clément","Roses","Pénélope","Chaillot-Batignolles RER"],["Chaillot-Batignolles RER","Pénélope","Roses","Jean-Baptiste Clément","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Finlande","Rue de l’Arche","La Vallée","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Saint-Sever","Auriol","8 Mai 1945","Marguerite - Alexandre Dumas","Berthéopôle","Fort de Limeil","Lion d’Or","Benjamin","Blanche - Saint-Louis","Saint-Gilles","Bismarck - Courboules","Courboules - Jean Moulin","Rabelais","Commerce","Bonneuil-sur-Marne - Place Stensele"]],"svc":[[4,31],[0,27]]},"142":{"c":"#c4a2cb","s":[["Chaillot-Batignolles RER","Carnot","Estivallière","Villette","Corentin - Laitières","Vercingetorix","Voltaire","Pradier – St-Sébastien","Rue de Cherbourg","Robert-André Vivien","Pont de Narbérale - Quai Bourbon","Bourbon - Arsenal","Alma","Labille-Guiard","Les Clamarts","Pont d’Austerlitz","Insurrection - Pont d’Arlande","Marceau","Bleuzen","Port-Perret - Village","Berthier","Pont de Perret","Le Grand Mail","Mayenne","Wilson - Diderot","Frédéric Clément","Archevêché","Joliot-Curie - Lénine","Mairie du Port-Perret","Noailles – Port-Perret - Métro","Cauchoise","Rue des Étudiants","Aspern-Essling","Noailles-le-Pont - Place Charras"],["Noailles(-le-Pont) - Place Charras","Aspern-Essling","Rue des Étudiants","Cauchoise","Noailles – Port-Perret - Métro","Mairie du Port-Perret","Joliot-Curie - Lénine","Archevêché","Frédéric Clément","Wilson - Diderot","Mayenne","Le Grand Mail","Pont de Perret","Berthier","Port-Perret - Village","Bleuzen","Marceau","Insurrection - Pont d’Arlande","Romanée-Conti","Les Clamarts","Armorique","Labille-Guiard","Alma","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Pradier – St-Sébastien","Vercingetorix","Corentin - Laitières","Olympe de Gouges","Villette","Estivallière","Carnot","Chaillot-Batignolles RER"]],"svc":[[0,19],[14,33]]},"149":{"c":"#6e6e00","s":[["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Clovis","Cimetière","Proudhon - Taine","Rue de Bréon","Molière","Allée Royale","Pagnol - Gilberte Brossolette","Ledru-Rollin","Charcot","Pasteur","Mairie du Petit-Passy","Meuniers - Bobillot","Carnot","Place des Victoires","Gambetta","Église du Petit-Passy"],["Église du Petit-Passy","Gambetta","Place des Victoires","Carnot","Meuniers - Bobillot","Mairie du Petit-Passy","Pasteur","Germaine Sablon","Arthur Rimbaud","Lycée Corneille","Rue de Bréon","Proudhon - Taine","Cimetière","Clovis","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"]],"svc":[[0,15],[6,19]]},"233":{"c":"#008080","s":[["Narbérale RER","Parmentier","L’Orme","Marcel Dassault","Maurice Barrès","Pont de Batignolles","Ernestine","Gallieni - Raffet","Hôtel de Ville de Chaillot-Batignolles"],["Hôtel de Ville de Chaillot-Batignolles","Barbès","Gallieni - Raffet","Ernestine","Pont de Batignolles","Maurice Barrès","Marcel Dassault","L’Orme","Parmentier","Narbérale RER"]],"svc":null},"242":{"c":"#003da4","s":[["Gare de Cramain - Université","Gaspard","Pyrénées","Camélinat","Saint-Siméon","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Les Évangiles","Poudre à Canon","Louison Bobet","Clemenceau","Escadrille Normandie-Niémen","Église de Cramain","Allée Marcel","Pierre Sémard","Place Galbrun","Nel Ariès","Latour du Moulin","Fraternité","Maurice Barrès","Port-Perret – Village"],["Port-Perret – Village","Maurice Barrès","Fraternité","Latour du Moulin","Place Galbrun","Pierre Sémard","Allée Marcel","Église de Cramain","Escadrille Normandie-Niémen","Clemenceau","Louison Bobet","Poudre à Canon","Les Évangiles","Hôtel de Ville de Cramain","Institut de Scandinavie","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Saint-Siméon","Camélinat","Pyrénées","Gaspard","Gare de Cramain - Université"]],"svc":null},"257":{"c":"#74dc65","s":[["Berthée - Rosenberg","Anquetil","Berthelot","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","Fédération","Verdier","Maréchal de Lattre de Tassigny","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance - Sadi Carnot","Port d’Espagne","Notre-Dame de l’Insurrection","Les Clamarts","Pont d’Austerlitz","Maréchal Lyautey","Barbusse - Pont d’Arlande","Jauneau","Pasteur","Cimetière - Floquet","Jules Bobillot","Hôtel de Ville d’Arlande","Auguste Marin","Pasqua","Les Hauts d’Arlande"],["Les Hauts d’Arlande","Barbara","Pasqua","Auguste Marin","Hôtel de Ville d’Arlande","Cimetière - Floquet","Pasteur","Jauneau","Barbusse - Pont d’Arlande","Maréchal Lyautey","Fabre d’Églantine","Les Clamarts","Notre-Dame de l’Insurrection","Port d’Espagne","Résistance - Sadi Carnot","Résistance - Joliot-Curie","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Maréchal de Lattre de Tassigny","Verdier","Fédération","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Cramain – Université RER – Berthelot","Berthée - Rosenberg"]],"svc":null},"315":{"c":"#dbac29","s":[["Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","La Prairie","Voltaire – Docteur Bauer","Stade Coubertin","Célinaire","Chemin de Fer - Pont Gabrielle","Estivallière","Lycée Christophe Colomb","Houssaye – Alphand","Houssaye – De Gaulle","André Breton","Sainte-Barbe","Félix Faure","Émile Cossonneau","Bougainville","Maurois – Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon – Ville RER","Division Leclerc","Saint-Antoine","Hôtel des Bêtes","Bréon – École Normale"],["Bréon – École Normale","Hôtel des Bêtes","Saint-Antoine","Division Leclerc","Bréon – Saint-Servan RER","Château Margaux","Hôpital René Laënnec","Maurois – Général de Maud’Huy","Bougainville","Émile Cossonneau","Félix Faure","Sainte-Barbe","André Breton","Houssaye – De Gaulle","Houssaye – Alphand","Lycée Christophe Colomb","Estivallière","Chemin de Fer - Pont Gabrielle","Célinaire","Stade Coubertin","Voltaire – Docteur Bauer","La Prairie","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER"]],"svc":[[0,12],[13,25]]},"316":{"c":"#c21727","s":[["Créteil - Valenton - Métro","Ida Grinspan","XXIe Siècle","Charles Floquet - Halévy","Charlot","Reims - Séverine","Cimetière - Carnot","Hôtel de Ville de Denfert-la-Roche","Noémie","Marronniers","Garibaldi","Saint-Éloi - Dagobert","Les Cloux","Bir-Hakeim","Watteau","Place Nationale","Boulevard National - République","Pyrénées","Gaspard","Cramain - Université RER","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Union","Cyrano de Bergerac","Mairie de Narbérale","Carrefour Joliot-Curie","Soufflot","Robert-André Vivien","Pont de Narbérale - Quai Saint-Lazare","Pont de Narbérale - Quai Bourbon","Gambetta","Paul Bert","Les Pommiers","Convention - Courcerin","Henri Barbusse","Saint-Similien","Rue Noire","Brossard - Jean Jaurès","Sidi Bel Abbès","La Miséricorde - Nina Simone","Wilson - Navigation","Dampierre - Nothomb"],["Dampierre - Nothomb","Wilson - Navigation","La Miséricorde - Nina Simone","Sidi Bel Abbès","Brossard - Jean Jaurès","Rue Noire","Saint-Similien","Henri Barbusse","Convention - Courcerin","Les Pommiers","Paul Bert","Gambetta","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Les Bergères","Soufflot","Puvis de Chavanne","Carrefour Joliot-Curie","Mairie de Narbérale","Cyrano de Bergerac","Union","Hôtel de Ville de Cramain","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Cramain - Université RER","Gaspard","Pyrénées","Place Nationale","Watteau","Bir-Hakeim","Les Cloux","Saint-Éloi - Dagobert","Garibaldi","Marronniers","Noémie","Hôtel de Ville de Denfert-la-Roche","Cimetière - Carnot","Reims - Séverine","Charlot","Charles Floquet - Halévy","XXIe Siècle","Ida Grinspan","Théâtre de Valenton","Créteil - Valenton - Métro"]],"svc":[[7,30,"Narbérale - Rue de Cherbourg"],[14,37]]},"433":{"c":"#00643c","s":[["Sarazel Place d’Armes","Alma Cité Jardins","Le Parc","Rue de Sarazel","Berthée - Duvernet Métro","Clément Ader","Henri Becquerel","Stalingrad","Buffon","Berthée - Cramain RER","Édouard Manet","Hôpital Saint-Marceau","8 Mai 1945","Paul Bert","Petit Cramain","Mirabeau","Général Duval","Lamy","Escadrille Normandie Niémen","Clemenceau","Louison Bobet","Bastion","Résistance (Lénine)","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Narbérale RER"],["Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance (Joliot-Curie)","Résistance","Bastion","Louison Bobet","Clemenceau","Escadrille Normandie Niémen","Lamy","Général Duval","Mirabeau","Petit Cramain","Paul Bert","8 Mai 1945","Hôpital Saint-Marceau","Édouard Manet","Berthée - Cramain RER","Buffon","Stalingrad","Henri Becquerel","Clément Ader","Berthée - Duvernet Métro","Rue de Sarazel","Le Parc","Alma Cité Jardins","Sarazel Place d’Armes"]],"svc":[[19,28],[0,10]]},"N76":{"c":"#f51c28","s":[["Gare de Boissy-Saint-Léger","Bretagne","Rue de l’Industrie","Camélias","Les Fontaines","Gare de Sarazel","Arago","Clément Ader - Charcot","Mail Salengro","Bel Air","Place d’Armes","Alma - Cité Jardins","Gallieni - Carnot","Pierre et Marie Curie","Métro - Coeur de Berthée","Thérèse","Gracieuse - Les Irlandais","Hôtel de Ville de Berthée","Broca - Juline","Rue de Provence","Anquetil","Berthelot","Cramain - Université RER - République","Sophie Barat","Maillol","Rubens - Banquier","Clemenceau","Louison Bobet","Bastion","Résistance","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Gare de Narbérale","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER","Lagarde","Rue Rataud","Campagne Première","Bourdelle - Moisant","Gisèle Halimi","Malar","La Roseraie - Saint-Exupéry","Aquitaine","Le Canal","Florian - Duffour","Division Leclerc","Gare de Bréon - Ville - Saint-Servan","Château Margaux","Hôpital René Laënnec","Aturéen - Général de Maud’Huy","Docteur Armand Brillard","Lamartine","18 Juin 1940","Rue des Martyrs de Châteaubriand","République","Trait d’Union","Meyer","Général Leclerc","Gare du Plessin-Mendinel - Val de Seine"],["Gare du Plessin-Mendinel - Val de Seine","Général Leclerc","Meyer","Trait d’Union","République","Rue des Martyrs de Châteaubriand","Les Platanes","Lamartine","Docteur Armand Brillard","Aturéen - Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon - Ville RER","Moulin de la Tour","Florian - Duffour","Le Canal","Aquitaine","La Roseraie - Saint-Exupéry","Malar","Gisèle Halimi","Bourdelle - Moisant","Campagne Première","Rue Rataud","Lagarde","Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance","Bastion","Louison Bobet","Clemenceau","Rubens - Banquier","Maillol","Sophie Barat","Cramain - Université RER - République","Rosenberg","Rue de Provence","Broca - Juline","Hôtel de Ville de Berthée","Gracieuse - Les Irlandais","Lacépède","Métro - Coeur de Berthée","Pierre et Marie Curie","Gallieni - Carnot","Alma - Cité Jardins","Place d’Armes","Bel Air","Mail Salengro","Clément Ader - Charcot","Arago","Sarazel RER","Les Fontaines","Camélias","Rue de l’Industrie","Bretagne","Gare de Boissy-Saint-Léger"]],"svc":[[21,42],[25,47,"Berthée - Rosenberg"]]}};
+const ORDER=["134","135","142","149","233","242","257","315","316","433","N76"];
+const GAME_OFFSET=36e5; /* l’appli de régulation décale son horloge : les messages de discussion sont en « heure appli » */
+const $=q=>document.querySelector(q);
+const esc=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const normS=t=>String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
+const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
+const short=s=>String(s).replace(/ RER$/,"");
+const ipKey=ip=>String(ip).replace(/[.:]/g,"_");
+const fdt=t=>new Date(t).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
+const fh=t=>new Date(t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+const ago=t=>{if(!t)return"jamais";const s=Math.max(0,Math.round((Date.now()-t)/1000));return s<90?"à l’instant":s<3600?`il y a ${Math.round(s/60)} min`:s<86400?`il y a ${Math.round(s/3600)} h`:`il y a ${Math.round(s/86400)} j`};
+const live=r=>!!r&&(r.until===0||r.until>Date.now());
+const untilTxt=r=>r.until===0?"définitivement":"jusqu’au "+fdt(r.until);
+async function api(m,p,b){const r=await fetch(`${DB}/${p}.json`,{method:m,body:b===undefined?undefined:JSON.stringify(b)});if(!r.ok)throw new Error(r.status);return r.json()}
+const GET=p=>api("GET",p);
+
+let toastT=null;
+function toast(t){let e=$("#toast");if(!e){e=document.createElement("div");e.id="toast";e.className="toast";e.setAttribute("role","status");document.body.appendChild(e)}e.textContent=t;e.classList.add("on");clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove("on"),3200)}
+const guard=async(fn,msg="Action impossible : vérifie la connexion.")=>{try{return await fn()}catch(e){toast(msg);return undefined}};
+
+/* ---------- fenêtre générique ---------- */
+function ask({title,text,fields=[],ok="Valider",danger=false,wide=false}){
+  return new Promise(res=>{
+    const o=document.createElement("div");o.className="ovl";
+    o.innerHTML=`<form class="card dlg${wide?" wide":""}" novalidate><h2>${esc(title)}</h2>${text?`<p>${esc(text)}</p>`:""}
+      ${fields.map(f=>`<label class="fld">${f.type==="select"?`<select id="f-${f.id}" aria-label="${esc(f.label)}">${f.options.map(([v,l])=>`<option value="${esc(v)}"${String(v)===String(f.value)?" selected":""}>${esc(l)}</option>`).join("")}</select>`
+        :`<input id="f-${f.id}" type="text" maxlength="${f.max||80}" placeholder="${esc(f.label)}" value="${esc(f.value||"")}" aria-label="${esc(f.label)}" autocomplete="off">`}</label>`).join("")}
+      <p class="msg-err" role="alert"></p>
+      <div class="frow"><button type="button" class="btn g" data-x>Annuler</button><button type="submit" class="btn${danger?" red":""}">${esc(ok)}</button></div></form>`;
+    document.body.appendChild(o);
+    const f=o.querySelector("form"),close=v=>{o.remove();res(v)};
+    const first=o.querySelector("input,select");if(first)setTimeout(()=>first.focus(),50);
+    o.querySelector("[data-x]").onclick=()=>close(null);
+    o.addEventListener("mousedown",e=>{if(e.target===o)close(null)});
+    o.addEventListener("keydown",e=>{if(e.key==="Escape")close(null)});
+    f.onsubmit=e=>{e.preventDefault();const v={};fields.forEach(x=>v[x.id]=o.querySelector("#f-"+x.id).value.trim());
+      const er=ask.validate?ask.validate(v):"";if(er){o.querySelector(".msg-err").textContent=er;return}close(v)};
+  });
+}
+
+/* ---------- accès ---------- */
+async function sha(t){
+  if(window.crypto&&crypto.subtle){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(t));return[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,"0")).join("")}
+  let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<t.length;i++){const c=t.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677)}
+  h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);
+  return(4294967296*(2097151&h2)+(h1>>>0)).toString(16);
+}
+let AUTH=null;
+async function gate(){
+  const g=$("#gate"),f=$("#gf"),err=$("#ge"),b=$("#gb");
+  try{AUTH=await GET("admin/auth")}catch(_){$("#gp").textContent="Base de données injoignable. Recharge la page.";return}
+  try{if(AUTH&&sessionStorage.getItem("adm_ok")===AUTH.hash){g.remove();start();return}}catch(_){}
+  const setup=!AUTH;
+  $("#gt").textContent=setup?"Créer l’accès":"Administration";
+  $("#gp").textContent=setup?"Choisis le mot de passe administrateur (8 caractères minimum).":"Entre le mot de passe administrateur.";
+  $("#gl2").hidden=!setup;b.disabled=false;b.textContent=setup?"Créer et entrer":"Entrer";
+  setTimeout(()=>$("#gp1").focus(),50);
+  f.onsubmit=async e=>{
+    e.preventDefault();err.textContent="";b.disabled=true;
+    const p=$("#gp1").value;
+    try{
+      if(setup){
+        if(p.length<8){err.textContent="8 caractères minimum.";b.disabled=false;return}
+        if(p!==$("#gp2").value){err.textContent="Les deux mots de passe diffèrent.";b.disabled=false;return}
+        const salt=Math.random().toString(36).slice(2,12),hash=await sha(salt+p);
+        await api("PUT","admin/auth",{salt,hash});AUTH={salt,hash};
+      }else if(await sha(AUTH.salt+p)!==AUTH.hash){err.textContent="Mot de passe incorrect.";b.disabled=false;f.animate([{transform:"translateX(-6px)"},{transform:"translateX(6px)"},{transform:"none"}],{duration:240});return}
+      try{sessionStorage.setItem("adm_ok",AUTH.hash)}catch(_){}
+      g.remove();start();
+    }catch(_){err.textContent="Connexion impossible.";b.disabled=false}
+  };
+}
+$("#out").onclick=()=>{try{sessionStorage.removeItem("adm_ok")}catch(_){}location.reload()};
+
+/* ---------- navigation ---------- */
+let tab="acc",RT=null;
+const A=$("#app");
+const VIEWS={acc:vAcc,lig:vLig,sal:vSal,msg:vMsg,dis:vDis};
+function start(){
+  $("#hdr").hidden=false;A.hidden=false;
+  setInterval(()=>{$("#hc").textContent=new Date().toLocaleTimeString("fr-FR")},1000);$("#hc").textContent=new Date().toLocaleTimeString("fr-FR");
+  $("#nav").onclick=e=>{const b=e.target.closest("button");if(b)show(b.dataset.t)};
+  show("acc");
+}
+function show(t){
+  tab=t;clearInterval(RT);
+  document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));
+  A.scrollTo&&window.scrollTo({top:0});
+  VIEWS[t]();
+}
+function autoRefresh(fn,ms){clearInterval(RT);RT=setInterval(()=>{if(!document.querySelector(".ovl")&&document.visibilityState==="visible")fn()},ms)}
+
+/* =========================================================
+   COMPTES — pseudos, exclusion, bannissement compte / IP
+   ========================================================= */
+const DURS=[["5 minutes",5],["15 minutes",15],["1 heure",60],["6 heures",360],["24 heures",1440],["7 jours",10080],["30 jours",43200],["Définitif",0]];
+let ACC={},MU={},MI={},BAD=[],accQ="",accF="all";
+const hue=s=>{let h=0;for(const c of s)h=(h*31+c.charCodeAt(0))>>>0;return["#9a0e54","#003da4","#008080","#6e6e00","#00643c","#c21727","#425ba2","#dbac29"][h%8]};
+async function accLoad(){
+  const[a,u,i,b]=await Promise.all([GET("accounts"),GET("mod/users"),GET("mod/ips"),GET("config/bad")]);
+  ACC=a||{};MU=u||{};MI=i||{};BAD=Object.entries(b||{}).map(([k,v])=>({k,v}));
+}
+function statusOf(id,a){
+  const u=MU[id];if(live(u))return{cls:"ko",t:(u.type==="kick"?"Exclu ":"Banni ")+untilTxt(u),sanc:true};
+  if(a.ip&&live(MI[ipKey(a.ip)]))return{cls:"ko",t:"IP bannie "+untilTxt(MI[ipKey(a.ip)]),sanc:true};
+  if(a.seen&&Date.now()-a.seen<150000)return{cls:"ok",t:"En ligne"};
+  return{cls:"",t:"Hors ligne"};
+}
+function accRender(){
+  const ids=Object.keys(ACC),q=normS(accQ);
+  const rows=ids.map(id=>({id,a:ACC[id]||{},s:statusOf(id,ACC[id]||{})}))
+    .filter(r=>(!q||normS((r.a.pseudo||"")+" "+r.id+" "+(r.a.ip||"")).includes(q))&&(accF==="all"||(accF==="on"&&r.s.cls==="ok")||(accF==="sanc"&&r.s.sanc)))
+    .sort((x,y)=>(y.a.seen||0)-(x.a.seen||0));
+  const online=ids.filter(i=>ACC[i]&&ACC[i].seen&&Date.now()-ACC[i].seen<150000).length;
+  const sanc=ids.filter(i=>statusOf(i,ACC[i]||{}).sanc).length;
+  $("#st").innerHTML=`<div class="stat"><b>${ids.length}</b><small>comptes</small></div><div class="stat"><b>${online}</b><small>en ligne</small></div><div class="stat"><b>${sanc}</b><small>sanctionnés</small></div>`;
+  $("#ul").innerHTML=rows.length?rows.map((r,j)=>{
+    const c=hue(r.a.pseudo||"?"),sn=!!r.s.sanc;
+    return`<div class="urow${sn?" sanc":""}" style="--i:${Math.min(j,12)}" data-u="${esc(r.id)}"><span class="av" style="--lc:${c};--li:${ink(c)}">${esc((r.a.pseudo||"?")[0].toUpperCase())}</span>
+      <div class="ub"><b>${esc(r.a.pseudo||"?")}</b><small>${esc(r.id)} · ${esc(r.a.ip||"IP inconnue")} · inscrit le ${r.a.created?fdt(r.a.created):"?"} · vu ${ago(r.a.seen)}</small></div>
+      <span class="badge ${r.s.cls}">${esc(r.s.t)}</span>
+      <div class="acts"><button class="btn g sm" data-a="rename">Renommer</button>${sn?`<button class="btn sm" data-a="lift">Lever</button>`:`<button class="btn g sm" data-a="kick">Exclure</button><button class="btn g sm" data-a="ban">Bannir</button>`}${r.a.ip?`<button class="btn g sm" data-a="banip">Bannir l’IP</button>`:""}<button class="btn g sm" data-a="del">Supprimer</button></div></div>`}).join("")
+    :`<p class="empty">Aucun compte ne correspond.</p>`;
+  const ips=Object.entries(MI).filter(([,v])=>live(v));
+  $("#ipl").innerHTML=ips.length?ips.map(([k,v])=>`<div class="urow" data-k="${esc(k)}"><span class="av" style="--lc:#c21727;--li:#fff">IP</span><div class="ub"><b>${esc(v.ip||k)}</b><small>${esc(v.reason||"Sans motif")} · ${untilTxt(v)}</small></div><div class="acts"><button class="btn sm" data-a="unip">Lever</button></div></div>`).join(""):`<p class="empty">Aucune adresse IP bannie.</p>`;
+  $("#bw").innerHTML=BAD.map(w=>`<span class="chip">${esc(w.v)}<button data-k="${esc(w.k)}" aria-label="Retirer ${esc(w.v)}">×</button></span>`).join("")||`<span class="lab">Aucun mot interdit.</span>`;
+}
+async function vAcc(){
+  A.innerHTML=`<div class="hero v"><h2>Comptes</h2><p class="hint">Régule les pseudos, exclus ou bannis temporairement un utilisateur, et bloque une adresse IP.</p><div class="stats" id="st"></div></div>
+  <div class="tools v"><label class="srch"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input id="aq" type="search" placeholder="Rechercher un pseudo, un id ou une IP…" value="${esc(accQ)}" autocomplete="off"></label>
+  <div class="seg" id="af"><button data-f="all">Tous</button><button data-f="on">En ligne</button><button data-f="sanc">Sanctionnés</button></div></div>
+  <div class="bd" id="ul"><p class="empty">Chargement…</p></div>
+  <div class="sec">Adresses IP bannies</div><div class="bd" id="ipl"></div>
+  <div class="sec">Pseudos interdits</div><section class="card"><p class="lab">Un pseudo contenant l’un de ces mots est refusé à l’inscription.</p>
+  <div class="frow" style="margin-top:10px"><label class="fld" style="flex:1"><input id="bwi" maxlength="30" placeholder="Ajouter un mot" autocomplete="off"></label><button class="btn" id="bwa" style="flex:0 0 auto">Ajouter</button></div><div class="chips" id="bw"></div></section>`;
+  const sync=()=>document.querySelectorAll("#af button").forEach(b=>b.classList.toggle("on",b.dataset.f===accF));sync();
+  $("#aq").oninput=e=>{accQ=e.target.value;accRender()};
+  $("#af").onclick=e=>{const b=e.target.closest("button");if(b){accF=b.dataset.f;sync();accRender()}};
+  const refresh=async()=>{await guard(accLoad);if(tab==="acc")accRender()};
+  await refresh();autoRefresh(refresh,10000);
+  $("#bwa").onclick=async()=>{const i=$("#bwi"),w=i.value.trim();if(!w)return;i.value="";await guard(()=>api("POST","config/bad",w));toast("Mot ajouté");refresh()};
+  $("#bwi").onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();$("#bwa").click()}};
+  $("#bw").onclick=async e=>{const b=e.target.closest("[data-k]");if(!b)return;await guard(()=>api("DELETE","config/bad/"+b.dataset.k));refresh()};
+  $("#ipl").onclick=async e=>{const b=e.target.closest("[data-a=unip]");if(!b)return;const k=b.closest("[data-k]").dataset.k;await guard(()=>api("DELETE","mod/ips/"+k));toast("IP débannie");refresh()};
+  $("#ul").onclick=async e=>{
+    const b=e.target.closest("[data-a]");if(!b)return;const id=b.closest("[data-u]").dataset.u,a=ACC[id]||{},act=b.dataset.a;
+    if(act==="rename"){
+      ask.validate=v=>{const p=v.p.replace(/\s+/g," ");if(p.length<3||p.length>20)return"Entre 3 et 20 caractères.";const k=normS(p);if(Object.entries(ACC).some(([i,x])=>i!==id&&x&&(x.key||normS(x.pseudo||""))===k))return"Ce pseudo est déjà pris.";return""};
+      const v=await ask({title:"Renommer",text:`Pseudo actuel : ${a.pseudo}. L’utilisateur verra le changement automatiquement.`,fields:[{id:"p",label:"Nouveau pseudo",value:a.pseudo,max:20}],ok:"Renommer"});ask.validate=null;
+      if(v){const p=v.p.replace(/\s+/g," ");await guard(()=>api("PATCH","accounts/"+id,{pseudo:p,key:normS(p)}));toast("Pseudo modifié");refresh()}
+    }else if(act==="kick"||act==="ban"||act==="banip"){
+      const opts=DURS.filter(([,m])=>act==="kick"?m>0&&m<=1440:true).map(([l,m])=>[m,l]);
+      const t={kick:["Exclure temporairement","L’utilisateur est renvoyé à l’accueil et ne peut plus utiliser l’appli pendant la durée choisie."],ban:["Bannir le compte","Le compte est bloqué sur tous ses appareils."],banip:["Bannir l’adresse IP",`Toute personne utilisant ${a.ip} est bloquée, même avec un autre pseudo.`]}[act];
+      const v=await ask({title:t[0],text:t[1],fields:[{id:"d",label:"Durée",type:"select",options:opts,value:act==="kick"?15:60},{id:"r",label:"Motif (affiché à l’utilisateur)",max:120}],ok:t[0].split(" ")[0],danger:true});
+      if(v){const m=+v.d,rec={until:m?Date.now()+m*60000:0,reason:v.r,t:Date.now(),by:"admin"};
+        await guard(()=>act==="banip"?api("PUT","mod/ips/"+ipKey(a.ip),{...rec,ip:a.ip,type:"ban"}):api("PUT","mod/users/"+id,{...rec,type:act}));
+        toast("Sanction appliquée");refresh()}
+    }else if(act==="lift"){
+      await guard(async()=>{await api("DELETE","mod/users/"+id);if(a.ip&&live(MI[ipKey(a.ip)]))await api("DELETE","mod/ips/"+ipKey(a.ip))});toast("Sanction levée");refresh();
+    }else if(act==="del"){
+      const v=await ask({title:"Supprimer le compte",text:`${a.pseudo} sera déconnecté et devra recréer un compte.`,ok:"Supprimer",danger:true});
+      if(v){await guard(async()=>{await api("DELETE","accounts/"+id);await api("DELETE","mod/users/"+id)});toast("Compte supprimé");refresh()}
+    }
+  };
+}
+
+/* =========================================================
+   LIGNES — activer / désactiver, partiels
+   ========================================================= */
+let CF={lines:{},svc:{}};
+async function cfLoad(){const c=await GET("config")||{};CF={lines:c.lines||{},svc:c.svc||{}}}
+const svcOv=(n,k)=>{const x=CF.svc[n];return x?x[k]:null};
+const svcDef=(n,k)=>{const d=LINES[n].svc&&LINES[n].svc[k];return d?[d[0],d[1]]:[0,LINES[n].s[k].length-1]};
+const lineIsOn=n=>!(CF.lines[n]&&CF.lines[n].on===false);
+function dirBox(n,k){
+  const st=LINES[n].s[k],last=st.length-1,ov=svcOv(n,k);
+  let [a,e]=svcDef(n,k);
+  if(ov){const ia=st[ov.a]===ov.from?ov.a:st.indexOf(ov.from),ie=st[ov.e]===ov.to?ov.e:st.lastIndexOf(ov.to);if(ia>=0&&ie>ia){a=ia;e=ie}}
+  const opt=(sel,from,to)=>st.map((s,i)=>i>=from&&i<=to?`<option value="${i}"${i===sel?" selected":""}>${i+1}. ${esc(short(s))}</option>`:"").join("");
+  return`<div class="dirbox" data-n="${n}" data-k="${k}"><div class="t"><span>Sens ${k+1} · vers ${esc(short(st[last]))}</span>${ov?`<span class="badge warn">Modifié</span>`:`<span class="badge">Par défaut</span>`}</div>
+    <div class="frow"><label class="fld"><select class="sa" aria-label="Arrêt de départ">${opt(a,0,last-1)}</select></label><label class="fld"><select class="se" aria-label="Arrêt d’arrivée">${opt(e,1,last)}</select></label></div>
+    <div class="frow" style="justify-content:space-between"><span class="sub">Service assuré de l’arrêt ${a+1} à l’arrêt ${e+1}</span><span style="display:flex;gap:6px;flex:0 0 auto"><button class="btn g sm" data-a="reset"${ov?"":" disabled"}>Par défaut</button><button class="btn sm" data-a="save">Appliquer</button></span></div></div>`;
+}
+async function vLig(){
+  A.innerHTML=`<div class="hero v"><h2>Lignes</h2><p class="hint">Désactive une ligne (elle devient « suspendue » pour tout le monde) et ajuste le partiel assuré dans chaque sens.</p></div><div class="lgrid" id="lg"><p class="empty">Chargement…</p></div>`;
+  await guard(cfLoad);
+  if(tab!=="lig")return;
+  $("#lg").innerHTML=ORDER.filter(n=>LINES[n]).map((n,j)=>{const c=LINES[n].c,on=lineIsOn(n);
+    return`<section class="card lcard${on?"":" offl"}" data-n="${n}" style="--i:${j};animation:in .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:${j*35}ms"><div class="lhd"><span class="lb" style="--lc:${c};--li:${ink(c)}">${n}</span>
+      <div class="ub"><b>Ligne ${n}</b><small class="state">${on?"Active":"Désactivée"}</small></div><button type="button" class="sw" role="switch" aria-checked="${on}" aria-label="Activer la ligne ${n}"></button></div>${[0,1].map(k=>dirBox(n,k)).join("")}</section>`}).join("");
+  const L=$("#lg");
+  L.onclick=async e=>{
+    const sw=e.target.closest(".sw");
+    if(sw){const card=sw.closest(".lcard"),n=card.dataset.n,on=sw.getAttribute("aria-checked")!=="true";
+      sw.setAttribute("aria-checked",on);card.classList.toggle("offl",!on);card.querySelector(".state").textContent=on?"Active":"Désactivée";
+      const ok=await guard(()=>on?api("DELETE","config/lines/"+n):api("PUT","config/lines/"+n,{on:false,t:Date.now()}));
+      if(ok===undefined){sw.setAttribute("aria-checked",!on);card.classList.toggle("offl",on);card.querySelector(".state").textContent=on?"Désactivée":"Active";return}
+      if(on)delete CF.lines[n];else CF.lines[n]={on:false};toast(`Ligne ${n} ${on?"activée":"désactivée"}`);return}
+    const b=e.target.closest("[data-a]");if(!b)return;
+    const box=b.closest(".dirbox"),n=box.dataset.n,k=+box.dataset.k,st=LINES[n].s[k];
+    if(b.dataset.a==="save"){
+      const a=+box.querySelector(".sa").value,en=+box.querySelector(".se").value;
+      if(!(en>a)){toast("L’arrêt d’arrivée doit être après l’arrêt de départ.");return}
+      const rec={a,e:en,from:st[a],to:st[en]};
+      const r=await guard(()=>api("PUT",`config/svc/${n}/${k}`,rec));if(r===undefined)return;
+      (CF.svc[n]=CF.svc[n]||{})[k]=rec;
+    }else{const r=await guard(()=>api("DELETE",`config/svc/${n}/${k}`));if(r===undefined)return;if(CF.svc[n])delete CF.svc[n][k]}
+    box.outerHTML=dirBox(n,k);toast(`Ligne ${n} · sens ${k+1} mis à jour`);
+  };
+  L.addEventListener("change",e=>{
+    const box=e.target.closest(".dirbox");if(!box)return;
+    const sa=box.querySelector(".sa"),se=box.querySelector(".se");
+    if(+se.value<=+sa.value){const nx=Math.min(LINES[box.dataset.n].s[+box.dataset.k].length-1,+sa.value+1);se.value=nx}
+    box.querySelector(".sub").textContent=`Service assuré de l’arrêt ${+sa.value+1} à l’arrêt ${+se.value+1}`;
+  });
+}
+
+/* =========================================================
+   SALONS — liste, membres, régulateurs, suppression
+   ========================================================= */
+let RM={};
+async function roomsLoad(){
+  const codes=Object.keys(await GET("rooms?shallow=true")||{});
+  const out={};
+  await Promise.all(codes.map(async c=>{const[m,mem,rg]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`)]);if(m)out[c]={...m,members:mem||{},regs:rg||{}}}));
+  RM=out;
+}
+async function vSal(){
+  A.innerHTML=`<div class="hero v"><h2>Salons</h2><p class="hint">Tous les salons privés créés par les utilisateurs. Ouvre un salon pour modérer ses messages, gérer ses régulateurs ou le supprimer.</p></div><div class="bd" id="rl"><p class="empty">Chargement…</p></div>`;
+  const draw=()=>{const cs=Object.keys(RM).sort((x,y)=>(RM[y].created||0)-(RM[x].created||0));
+    $("#rl").innerHTML=cs.length?cs.map((c,j)=>{const m=RM[c],n=Object.keys(m.members).length;
+      return`<div class="urow" style="--i:${Math.min(j,12)}" data-c="${c}"><span class="led">${c}</span><div class="ub"><b>${esc(m.name)}</b><small>Créé par ${esc(m.ownerName||"?")} le ${m.created?fdt(m.created):"?"} · ${n} membre${n>1?"s":""} · ${Object.keys(m.regs).length} régulateur${Object.keys(m.regs).length>1?"s":""}</small></div>
+      <div class="acts"><button class="btn g sm" data-a="open">Gérer</button><button class="btn g sm" data-a="del">Supprimer</button></div></div>`}).join(""):`<p class="empty">Aucun salon pour le moment.</p>`};
+  await guard(roomsLoad);if(tab!=="sal")return;draw();
+  $("#rl").onclick=async e=>{const b=e.target.closest("[data-a]");if(!b)return;const c=b.closest("[data-c]").dataset.c;
+    if(b.dataset.a==="open")roomAdmin(c);
+    else{const v=await ask({title:"Supprimer le salon",text:`« ${RM[c].name} » et tous ses messages seront supprimés pour ses membres.`,ok:"Supprimer",danger:true});
+      if(v){await guard(()=>api("DELETE","rooms/"+c));delete RM[c];draw();toast("Salon supprimé")}}};
+}
+async function roomAdmin(c){
+  const o=document.createElement("div");o.className="ovl";
+  o.innerHTML=`<div class="card dlg wide"><h2 id="ra-t"></h2><div class="two"><div class="stack"><div class="lab">Membres</div><ul class="stack" id="ra-m" style="list-style:none;padding:0"></ul><div class="lab">Message général</div><div class="frow"><label class="fld" style="flex:1"><input id="ra-gi" maxlength="300" placeholder="Envoyer à tout le salon" autocomplete="off"></label><button class="btn" id="ra-gs">Envoyer</button></div><div class="lab">Messages généraux</div><div class="stack" id="ra-g"></div></div>
+  <div class="stack"><div class="lab">Discussion</div><div class="stack" id="ra-c" style="max-height:52vh;overflow:auto"></div></div></div><div class="frow"><button class="btn g" data-x>Fermer</button></div></div>`;
+  document.body.appendChild(o);
+  const close=()=>{o.remove()};
+  o.querySelector("[data-x]").onclick=close;o.addEventListener("mousedown",e=>{if(e.target===o)close()});o.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+  const load=async()=>{
+    const[m,mem,rg,g,ch]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`),GET(`rooms/${c}/general`),GET(`rooms/${c}/chat`)]);
+    if(!m){close();toast("Salon introuvable");return}
+    RM[c]={...m,members:mem||{},regs:rg||{}};
+    $("#ra-t").textContent=`${m.name} · ${c}`;
+    $("#ra-m").innerHTML=Object.entries(mem||{}).map(([u,v])=>`<li class="cmsg"><span>${esc(v.p||u)}<small>${u===m.owner?"Créateur":(rg||{})[u]?"Régulateur":""}</small></span>${u===m.owner?"":`<span class="x" style="display:flex;gap:6px"><button class="btn g sm" data-r="${u}" data-v="${(rg||{})[u]?0:1}">${(rg||{})[u]?"Retirer rég.":"Régulateur"}</button><button class="xbtn" data-k="${u}" title="Retirer du salon" aria-label="Retirer du salon">×</button></span>`}</li>`).join("");
+    const lst=(o2,key)=>Object.entries(o2||{}).filter(([,v])=>v&&v.m).sort((x,y)=>x[1].t-y[1].t).slice(-60).map(([id,v])=>`<div class="cmsg"><span><b>${esc(v.a||"Admin")}</b><small>${fh(key==="chat"?v.t-GAME_OFFSET:v.t)}</small><br>${esc(v.m)}</span><button class="xbtn x" data-d="${key}/${id}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Rien pour le moment.</p>`;
+    $("#ra-g").innerHTML=lst(g,"general");$("#ra-c").innerHTML=lst(ch,"chat");
+  };
+  await guard(load);
+  o.onclick=async e=>{
+    const r=e.target.closest("[data-r]"),k=e.target.closest("[data-k]"),d=e.target.closest("[data-d]");
+    if(r)await guard(()=>+r.dataset.v?api("PUT",`rooms/${c}/regs/${r.dataset.r}`,true):api("DELETE",`rooms/${c}/regs/${r.dataset.r}`));
+    else if(k)await guard(async()=>{await api("DELETE",`rooms/${c}/members/${k.dataset.k}`);await api("DELETE",`rooms/${c}/regs/${k.dataset.k}`)});
+    else if(d)await guard(()=>api("DELETE",`rooms/${c}/${d.dataset.d}`));
+    else if(e.target.id==="ra-gs"){const i=$("#ra-gi"),t=i.value.trim();if(!t)return;i.value="";await guard(()=>api("POST",`rooms/${c}/general`,{a:"Administration",m:t.slice(0,300),t:Date.now()}));toast("Message envoyé")}
+    else return;
+    guard(load);
+  };
+}
+
+/* =========================================================
+   MESSAGES GÉNÉRAUX — salons publics, privés, ou ciblés
+   ========================================================= */
+let BC={};
+const EXP=[["30 minutes",30],["1 heure",60],["4 heures",240],["12 heures",720],["24 heures",1440],["Jusqu’au retrait",0]];
+async function vMsg(){
+  A.innerHTML=`<div class="hero v"><h2>Messages généraux</h2><p class="hint">Un message général apparaît dans les consignes de régulation des utilisateurs concernés. Choisis où l’envoyer.</p></div>
+  <div class="two v"><section class="card stack"><label class="fld"><textarea id="mt" maxlength="300" placeholder="Ton message…" aria-label="Message"></textarea></label>
+    <label class="chk"><input type="checkbox" id="mp"> Tous les salons publics (lignes)</label>
+    <label class="chk"><input type="checkbox" id="mv"> Tous les salons privés</label>
+    <div class="lab">Ou des salons privés précis</div><div class="rooms-pick" id="mr"><span class="lab">Chargement…</span></div>
+    <label class="fld"><select id="me" aria-label="Durée d’affichage">${EXP.map(([l,m])=>`<option value="${m}"${m===240?" selected":""}>Affiché : ${l}</option>`).join("")}</select></label>
+    <p class="msg-err" id="mer" role="alert"></p><button class="btn" id="ms">Envoyer</button></section>
+  <section class="card"><div class="lab">Historique</div><div class="hist" id="mh" style="margin-top:10px"><p class="lab">Chargement…</p></div></section></div>`;
+  const drawH=()=>{const es=Object.entries(BC).filter(([,v])=>v&&v.m).sort((a,b)=>b[1].t-a[1].t);
+    $("#mh").innerHTML=es.length?es.map(([id,v])=>{const on=!v.exp||v.exp>Date.now();
+      const tg=[v.pub?`<span class="badge">Salons publics</span>`:"",v.priv?`<span class="badge">Tous les salons privés</span>`:"",...Object.keys(v.rooms||{}).map(c=>`<span class="badge">${esc((RM[c]&&RM[c].name)||c)}</span>`)].join("");
+      return`<div class="hitem"><div class="tx">${esc(v.m)}<div class="tg">${tg}<span class="badge ${on?"ok":""}">${on?"Actif":"Expiré"}</span></div><small>${fdt(v.t)}${v.exp?" · jusqu’à "+fh(v.exp):""}</small></div><button class="xbtn" data-id="${id}" aria-label="Retirer">×</button></div>`}).join(""):`<p class="lab">Aucun message envoyé.</p>`};
+  const load=async()=>{const[b]=await Promise.all([GET("broadcast"),roomsLoad()]);BC=b||{};
+    if(tab!=="msg")return;
+    const keep=new Set([...document.querySelectorAll("#mr input:checked")].map(i=>i.value));
+    $("#mr").innerHTML=Object.keys(RM).length?Object.entries(RM).map(([c,m])=>`<label class="chk"><input type="checkbox" value="${c}"${keep.has(c)?" checked":""}> ${esc(m.name)} <span class="led" style="margin-left:auto">${c}</span></label>`).join(""):`<span class="lab">Aucun salon privé pour le moment.</span>`;
+    drawH()};
+  await guard(load);
+  $("#mh").onclick=async e=>{const b=e.target.closest("[data-id]");if(!b)return;await guard(()=>api("DELETE","broadcast/"+b.dataset.id));delete BC[b.dataset.id];drawH();toast("Message retiré")};
+  $("#ms").onclick=async()=>{
+    const t=$("#mt").value.trim(),pub=$("#mp").checked,priv=$("#mv").checked,rooms={};
+    document.querySelectorAll("#mr input:checked").forEach(i=>rooms[i.value]=true);
+    const er=$("#mer");er.textContent="";
+    if(!t){er.textContent="Écris un message.";return}
+    if(!pub&&!priv&&!Object.keys(rooms).length){er.textContent="Choisis au moins une destination.";return}
+    const m=+$("#me").value,rec={m:t,t:Date.now(),by:"Administration",pub,priv:priv&&!pub?true:priv,rooms:Object.keys(rooms).length?rooms:null,exp:m?Date.now()+m*60000:0};
+    if(!rec.rooms)delete rec.rooms;
+    const id=await guard(()=>api("POST","broadcast",rec));if(!id)return;
+    $("#mt").value="";document.querySelectorAll("#mp,#mv,#mr input").forEach(i=>i.checked=false);toast("Message envoyé");guard(load);
+  };
+}
+
+/* =========================================================
+   DISCUSSIONS — modération des messages
+   ========================================================= */
+let dsel="L:"+ORDER[0];
+async function vDis(){
+  A.innerHTML=`<div class="hero v"><h2>Discussions</h2><p class="hint">Relis et supprime les messages des salons publics (lignes) et privés.</p></div>
+  <section class="card stack v"><label class="fld"><select id="dc" aria-label="Salon"><option>Chargement…</option></select></label><div class="stack" id="dm"></div></section>`;
+  await guard(roomsLoad);if(tab!=="dis")return;
+  $("#dc").innerHTML=`<optgroup label="Salons publics">${ORDER.map(n=>`<option value="L:${n}">Ligne ${n}</option>`).join("")}</optgroup>`+
+    (Object.keys(RM).length?`<optgroup label="Salons privés">${Object.entries(RM).map(([c,m])=>`<option value="R:${c}">${esc(m.name)} (${c})</option>`).join("")}</optgroup>`:"");
+  if(![...$("#dc").options].some(o=>o.value===dsel))dsel="L:"+ORDER[0];
+  $("#dc").value=dsel;
+  const path=()=>dsel[0]==="L"?`discussions/${dsel.slice(2)}`:`rooms/${dsel.slice(2)}/chat`;
+  const draw=async()=>{
+    const d=await GET(path());if(tab!=="dis")return;
+    const es=Object.entries(d||{}).filter(([,v])=>v&&v.m).sort((a,b)=>a[1].t-b[1].t).slice(-80);
+    $("#dm").innerHTML=es.length?es.map(([id,v])=>`<div class="cmsg"><span><b>${esc(v.a||"?")}</b><small>${fdt(v.t-GAME_OFFSET)}</small><br>${esc(v.m)}</span><button class="xbtn x" data-id="${id}" aria-label="Supprimer">×</button></div>`).join(""):`<p class="lab">Aucun message dans ce salon.</p>`;
+  };
+  $("#dc").onchange=e=>{dsel=e.target.value;guard(draw)};
+  $("#dm").onclick=async e=>{const b=e.target.closest("[data-id]");if(!b)return;await guard(()=>api("DELETE",`${path()}/${b.dataset.id}`));b.closest(".cmsg").remove();toast("Message supprimé")};
+  await guard(draw);autoRefresh(()=>guard(draw),6000);
+}
+
+gate();
+</script></body></html>
