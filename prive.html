@@ -38,7 +38,10 @@ label{display:block;font-size:14px;color:var(--ink)}
 #pp{position:fixed;top:env(safe-area-inset-top);left:50%;transform:translate(-50%,-130%);width:min(560px,94vw);z-index:50;background:#fff;color:#111;border-radius:0 0 16px 16px;box-shadow:0 8px 30px rgba(0,0,0,.5);padding:14px 16px 0;transition:transform .3s;overflow:hidden}
 #pp.s{transform:translate(-50%,0)}#pp .bar{height:6px;margin:12px -16px 0;background:var(--c);transform-origin:left;transform:scaleX(1)}#pp.s .bar{transform:scaleX(0);transition:transform 3s linear}
 #md{position:fixed;inset:0;z-index:40;background:rgba(0,0,0,.6);display:none;place-items:center;padding:14px}
-.mb{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:18px;width:min(520px,100%);max-height:92vh;overflow:auto}.mb .bs{display:flex;gap:8px;flex-wrap:wrap}
+.mb{background:var(--surface);color:var(--ink);border-radius:var(--r);padding:18px;width:min(520px,100%);max-height:92vh;overflow:auto}.mb .bs{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.del-list{max-height:320px;overflow:auto;margin:8px 0;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);padding:6px 10px}
+.del-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);cursor:pointer}
+.del-item:last-child{border:0}
 #tt{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#000;color:#fff;border-radius:12px;padding:10px 16px;z-index:60;display:none}
 
 /* ===== Écran d'accueil « Prochains départs » — repris à l'identique d'index.html ===== */
@@ -78,6 +81,8 @@ button.drow:active{transform:scale(.99)}
   .more{width:42px}.rowx{gap:6px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.ib{position:relative;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;min-width:1.9em;height:1.45em;padding:0 .4em;margin:0 .1em;border-radius:.35em;background:var(--c);color:var(--k);font-weight:700;line-height:1;vertical-align:-.28em;font-size:.95em;letter-spacing:-.02em}
+.ib b{position:relative;z-index:1}.ib.d:after{content:"";position:absolute;inset:0;background:#000;clip-path:polygon(100% 0,100% 100%,0 100%)}
 </style></head><body>
 <div id="pp"><b id="ppf"></b><p id="ppx"></p><button class="sb" id="ppc" data-a="ppc" disabled>Fermer</button><div class="bar"></div></div>
 <div id="md"></div><div id="tt"></div>
@@ -91,21 +96,30 @@ const RER_IMG="https://image.noelshack.com/fichiers/2026/48/1/1795444285-design-
 const ADMIN_UIDS=[];           /* ← identifiants autorisés à voir le journal en plus du créateur */
 const $=s=>document.querySelector(s),E=s=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const jg=p=>fetch(`${DB}/${p}.json`).then(r=>r.json()),js=(m,p,b)=>fetch(`${DB}/${p}.json`,{method:m,body:b===undefined?undefined:JSON.stringify(b)});
+const okRes=async res=>{if(!res.ok)return false;try{const d=await res.clone().json();return!(d&&d.error)}catch{return true}};
 const uid=localStorage.sse_uid||(localStorage.sse_uid=Math.random().toString(36).slice(2,14));
 const rnd=n=>[...Array(n)].map(()=>"ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.random()*32|0]).join(""),mkCode=()=>"SSE-"+rnd(4)+"-"+rnd(4)+"-"+rnd(4);
-const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
+const ink=h=>{const n=parseInt((h||"#2458c4").slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
 const hm=t=>new Date(t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
+const rich=t=>{const s0=String(t??""),S_=typeof S!=="undefined"?S:null,ix=!(S_&&S_.d&&S_.d.meta&&S_.d.meta.ix===0),m={};
+if(ix&&S_&&S_.d&&S_.d.lines)Object.values(S_.d.lines).forEach(l=>{if(l&&l.n&&!/RER/i.test(l.n))m[String(l.n).toUpperCase()]=l});
+const ks=Object.keys(m).sort((a,b)=>b.length-a.length).map(k=>k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")),
+parts=["RER",...ks],
+re=parts.length?new RegExp("(?<![\\wÀ-ÿ])("+parts.join("|")+")(?![\\wÀ-ÿ])","gi"):null;
+const esc=E(s0);
+if(!re)return esc;
+return esc.replace(re,x=>{const u=x.toUpperCase();if(u==="RER")return RER_IMG?`<img src="${RER_IMG}" alt="RER" style="height:1em;vertical-align:-.15em">`:'<i class="rer">RER</i>';const l=m[u];return l?`<span class="ib${l.dg?" d":""}" style="--c:${E(l.c||"#2458c4")};--k:${ink(l.c||"#2458c4")}"><b>${E(l.n)}</b></span>`:x})};
 let T={},LC={},S=null,tab="l",me={},PT,pq=[],chan="gen",cur=null;
-const tt=m=>{const e=$("#tt");e.textContent=m;e.style.display="block";setTimeout(()=>e.style.display="none",3000)};
+const tt=m=>{const e=$("#tt");e.textContent=m;e.style.display="block";clearTimeout(tt._t);tt._t=setTimeout(()=>e.style.display="none",3000)};
 const md=h=>{const m=$("#md");m.innerHTML=h?`<div class="mb">${h}</div>`:"";m.style.display=h?"grid":"none"};
 /* ---------- lignes de référence (lues dans index.html : une seule source de vérité) ---------- */
 async function loadBase(){try{const h=await(await fetch("index.html")).text();T=JSON.parse(h.match(/^const TT=(\{.*\});\s*$/m)[1]);[...h.match(/const LINE_COLOR=\{([^}]*)\}/)[1].matchAll(/"(\w+)":"(#\w{6})"/g)].forEach(x=>LC[x[1]]=x[2])}catch(e){}}
 const seed=()=>Object.fromEntries(Object.keys(T).map((n,i)=>["l"+i,{n,c:LC[n]||"#0b6f86",dg:/^(N76|135)$/.test(n)?1:0,b:n,st:"ok",o:i,cad:0,pt:["",""]}]));
 const rer=t=>t.replace(/RER/g,RER_IMG?`<img src="${RER_IMG}" style="height:.8em">`:'<i class="rer">RER</i>');
-const bd=l=>`<span class="bd${l.dg?" d":""}" style="--c:${l.c};--k:${ink(l.c)}"><b>${rer(E(l.n))}</b></span>`;
+const bd=l=>`<span class="bd${l.dg?" d":""}" style="--c:${E(l.c||"#2458c4")};--k:${ink(l.c||"#2458c4")}"><b>${rer(E(l.n))}</b></span>`;
 const stp=l=>{const x=l.s||(T[l.b]||[]).map(d=>d.s);return[x[0]||[],x[1]||[]]};
 const tm=(l,k)=>(l.pt&&l.pt[k])||stp(l)[k].at(-1)||"—",isPt=(l,k)=>l.pt&&l.pt[k]&&l.pt[k]!==stp(l)[k].at(-1);
-const LS=()=>Object.entries(S.d.lines||{}).map(([id,l])=>({id,...l})).sort((a,b)=>(a.o??99)-(b.o??99)||a.n.localeCompare(b.n));
+const LS=()=>Object.entries(S?.d?.lines||{}).filter(([,l])=>l&&l.n).map(([id,l])=>({id,...l})).sort((a,b)=>(a.o??99)-(b.o??99)||String(a.n).localeCompare(String(b.n)));
 const lb=id=>LS().find(l=>l.id===id);
 const rl=()=>S.d.meta.owner===uid?2:(S.d.members?.[uid]?.r?1:0),isOwn=()=>rl()===2,isReg=()=>rl()>=1;
 const log=x=>js("POST",`prive/${S.id}/log`,{t:Date.now(),u:me.n,x});
@@ -136,16 +150,19 @@ const seen={},row=r=>{const{l,k}=r,off=!r.t.length,tg=off?"div":"button",at=off?
 box=off?`<b class="end">${r.msg}</b>`:r.t.map(ts=>`<b class="mn" data-ts="${ts}"></b>`).join(""),
 mo=isReg()||!off?`data-a="${isReg()?"edl":"take"}" data-id="${l.id}" data-k="${k}"`:"disabled",
 dp=l.dep&&Date.now()-l.dep<9e5,ev=[...(seen[l.id]?[]:bn.filter(b=>b.l===l.id).map(b=>b.x)),...(!seen[l.id]&&dp?["Départ ordonné à "+hm(l.dep)]:[])];seen[l.id]=1;
-return`<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="drow${off?" off":""}"${at} style="--lc:${l.c}"><span class="lb${isPt(l,k)?" tri":""}" style="color:${ink(l.c)}">${E(l.n)}</span><span class="dn">${sn(tm(l,k))}</span><span class="tb">${box}</span></${tg}><button class="more" ${mo} title="${isReg()?"Modifier la ligne":"Prendre la ligne"}" aria-label="${isReg()?"Modifier la ligne":"Prendre la ligne"}">${PLI}</button></div>`+ev.map(x=>`<div class="ev evx">${E(x)}</div>`).join("")};
+return`<div class="rowx${off?" off":""}" style="--i:${r.i}"><${tg} class="drow${off?" off":""}"${at} style="--lc:${E(l.c||"#2458c4")}"><span class="lb${isPt(l,k)?" tri":""}" style="color:${ink(l.c||"#2458c4")}">${E(l.n)}</span><span class="dn">${sn(tm(l,k))}</span><span class="tb">${box}</span></${tg}><button class="more" ${mo} title="${isReg()?"Modifier la ligne":"Prendre la ligne"}" aria-label="${isReg()?"Modifier la ligne":"Prendre la ligne"}">${PLI}</button></div>`+ev.map(x=>`<div class="ev evx">${rich(x)}</div>`).join("")};
 return`<div class="hero${POP?" v":""}"><h2>${on.length?"Prochains départs":all.length?"Plus de départ pour le moment":"Aucune ligne."}</h2>${nx?`<p class="hint">Reprise du service à <b>${fmtT(nx.ts)}</b> · ligne <b>${E(nx.n)}</b>.</p>`:""}</div>`+(all.length?`<div class="bdx${POP?" pop":""}">${all.map(row).join("")}</div>`:"")}
 function tickMn(){const now=gnow();document.querySelectorAll(".mn[data-ts]").forEach(e=>{const ts=+e.dataset.ts,d=ts-now,c=d>=36e5;e.classList.toggle("clk",c);e.textContent=c?fmtT(ts):Math.max(0,Math.floor(d/6e4))})}
 setInterval(tickMn,1000);
 /* ---------- accueil ---------- */
 function home(){S=null;clearInterval(PT);$("#ht").textContent="Serveurs privés";$("#bk").style.display="none";document.documentElement.style.setProperty("--tc","#2458c4");const m=$("#main");m.dataset.t="";
-m.innerHTML=`<div class="card"><h2>Créer un serveur privé</h2><input id="cn" maxlength="30" placeholder="Nom du serveur"><button class="pb" data-a="cr">Créer</button></div>
+m.innerHTML=`<div class="card"><h2>Créer un serveur</h2><input id="cn" maxlength="30" placeholder="Nom du serveur"><label><input id="cp" type="checkbox">Serveur public (visible par tous dans la liste)</label><br><button class="pb" data-a="cr">Créer</button></div>
 <div class="card"><h2>Rejoindre avec un code</h2><input id="jc" placeholder="SSE-XXXX-XXXX-XXXX" autocapitalize="characters"><button class="pb" data-a="jn">Rejoindre</button></div>
 <div class="card"><h2>Serveurs publics</h2><div id="pl">Chargement…</div></div>`;pubLoad()}
-async function pubLoad(){try{const p=await jg("prive_pub")||{},e=$("#pl");if(!e)return;e.innerHTML=Object.entries(p).map(([id,s])=>`<div class="row"><b style="border-left:8px solid ${E(s.c)};padding-left:8px">${E(s.n)}</b><span class="sp"></span><button class="pb" data-a="jp" data-id="${id}">Rejoindre</button></div>`).join("")||"Aucun serveur public pour le moment."}catch(e){}}
+async function pubLoad(){const e=$("#pl");try{const p=await jg("prive_pub");if(!e)return;
+if(p&&p.error)return e.textContent="Liste indisponible : accès refusé par la base de données (règles Firebase).";
+const l=Object.entries(p||{}).filter(([,x])=>x&&x.n);
+e.innerHTML=l.map(([id,x])=>`<div class="row"><b style="border-left:8px solid ${E(x.c||"#2458c4")};padding-left:8px">${E(x.n)}</b><span class="sp"></span><button class="pb" data-a="jp" data-id="${E(id)}">Rejoindre</button></div>`).join("")||"Aucun serveur public pour le moment."}catch(x){if(e)e.textContent="Liste indisponible (connexion)."}}
 setInterval(()=>{if(!S)pubLoad()},10000);
 /* ---------- entrée dans un serveur ---------- */
 async function enter(id){const b=await jg(`prive/${id}/ban/${uid}`);if(b===1||b>Date.now())return tt("Accès refusé : vous êtes exclu de ce serveur.");
@@ -157,9 +174,9 @@ const known=await jg(`prive/${c.id}/members/${uid}`);if(!known){if(c.max&&(c.use
 history.replaceState(null,"",location.pathname);enter(c.id)}
 function leaveSrv(m){if(S)js("PATCH",`prive/${S.id}/members/${uid}`,{l:""});me={};home();if(m)tt(m)}
 /* ---------- synchro (REST + polling, comme index.html) ---------- */
-async function poll(){if(!S)return;try{const d=await jg("prive/"+S.id);if(!d)return leaveSrv("Ce serveur n’existe plus.");
+async function poll(){if(!S)return;try{const d=await jg("prive/"+S.id);if(!d){js("DELETE","prive_pub/"+S.id);return leaveSrv("Ce serveur n’existe plus.")}
 const b=(d.ban||{})[uid];if(b===1||b>Date.now())return leaveSrv("Vous avez été exclu du serveur.");
-S.d=d;js("PATCH",`prive/${S.id}/members/${uid}`,{n:me.n,t:Date.now(),l:me.l||"",dr:me.dr||0,i:me.i||0,dl:me.dl||0});checkPop();draw();if(tab==="c")chatLoad()}catch(e){}}
+S.d=d;if(d.meta.owner===uid&&d.meta.pub&&!S.healed){S.healed=1;await js("PUT","prive_pub/"+S.id,{n:d.meta.name,c:d.meta.color||"#2458c4"})}js("PATCH",`prive/${S.id}/members/${uid}`,{n:me.n,t:Date.now(),l:me.l||"",dr:me.dr||0,i:me.i||0,dl:me.dl||0});checkPop();draw();if(tab==="c")chatLoad()}catch(e){}}
 function tabsBar(){const t=[["l","Lignes"],["p","Présence"]];if(isReg())t.push(["r","Régulation"]);t.push(["c","Chat"]);if(isOwn())t.push(["g","Réglages"]);if(isOwn()||ADMIN_UIDS.includes(uid))t.push(["j","Journal"]);
 return`<div class="tabs">${t.map(([k,n])=>`<button class="${tab===k?"on":""}" data-a="tab" data-k="${k}">${n}</button>`).join("")}</div>`}
 function draw(f){if(!S)return;const d=S.d;if(!d)return;const m=$("#main");document.documentElement.style.setProperty("--tc",d.meta.color||"#2458c4");$("#ht").textContent=d.meta.name;$("#bk").style.display="";
@@ -168,11 +185,11 @@ if(!f&&"crg".includes(tab)&&m.dataset.t===tab)return;const first=m.dataset.t!==t
 /* ---------- vues ---------- */
 const V={};
 V.l=()=>{const d=S.d,bn=Object.values(d.banners||{}),rel=Object.values(d.msgs||{}).filter(relv).slice(-3).reverse();let h="";
-if(d.meta.pin)h+=`<div class="pin">Épinglé · ${E(d.meta.pin)}</div>`;
-bn.filter(b=>b.l==="all").forEach(b=>h+=`<div class="pin">${E(b.x)}</div>`);
+if(d.meta.pin)h+=`<div class="pin">Épinglé · ${rich(d.meta.pin)}</div>`;
+bn.filter(b=>b.l==="all").forEach(b=>h+=`<div class="pin">${rich(b.x)}</div>`);
 if(me.l&&lb(me.l)){const l=lb(me.l),s=stp(l)[me.dr]||[];h+=`<div class="my">${bd(l)}<div><b>→ ${E(tm(l,me.dr))}</b><div>${E(s[me.i]||"")}</div></div><div class="bs"><button class="sb" data-a="nx">Arrêt suivant</button><button class="sb" data-a="dl" data-v="-1">−</button><span>${me.dl>0?"+":""}${me.dl||0} min</span><button class="sb" data-a="dl" data-v="1">+</button><button class="sb" data-a="qt">Quitter</button></div></div>`}
-if(rel.length)h+=`<div class="card"><h2>Consignes de régulation</h2>${rel.map(m=>`<div class="cm"><b>${hm(m.t)}</b> ${E(m.x)}</div>`).join("")}</div>`;
-if(isReg())h+=`<button class="pb" style="margin-bottom:12px" data-a="edl" data-id="">+ Nouvelle ligne</button>`;
+if(rel.length)h+=`<div class="card"><h2>Consignes de régulation</h2>${rel.map(m=>`<div class="cm"><b>${hm(m.t)}</b> ${rich(m.x)}</div>`).join("")}</div>`;
+if(isReg())h+=`<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px"><button class="pb" data-a="edl" data-id="">+ Nouvelle ligne</button>${LS().length?`<button class="sb" data-a="dellines">Supprimer des lignes</button>`:""}</div>`;
 return h+lignesHome(bn)};
 V.p=()=>{const d=S.d,ms=Object.entries(d.members||{}).sort((a,b)=>b[1].t-a[1].t);
 return`<div class="card"><h2>Présence</h2>${ms.map(([u,m])=>{const on=Date.now()-m.t<15000,l=m.l&&lb(m.l),s=l?(stp(l)[m.dr]||[])[m.i]:"",mod=u!==uid&&u!==d.meta.owner;
@@ -182,12 +199,12 @@ return`<div class="card"><h2>Message de régulation</h2><textarea id="rx" rows="
 <label>Destinataires<select id="rt"><option value="all">Tout le serveur</option>${LS().map(l=>`<option value="l:${l.id}">Conducteurs de la ligne ${E(l.n)}</option>`).join("")}</select></label>
 <details><summary>Ou choisir des personnes présentes</summary>${on.map(([u,m])=>`<label><input type="checkbox" class="pu" value="${u}">${E(m.n)}</label>`).join("")||"Personne en ligne."}</details><br><button class="pb" data-a="sm">Envoyer</button></div>
 <div class="card"><h2>Bannière d’événement</h2><input id="bx" maxlength="120" placeholder="Travaux, grève…"><select id="bl"><option value="all">Tout le serveur</option>${lo}</select><button class="pb" data-a="sb">Publier</button>
-${Object.entries(d.banners||{}).map(([k,b])=>`<div class="row"><span>${E(b.x)}</span><span class="sp"></span><button class="sb" data-a="db" data-k="${k}">Retirer</button></div>`).join("")}</div>
-<div class="card"><h2>Messages envoyés</h2>${Object.entries(d.msgs||{}).slice(-20).reverse().map(([k,m])=>`<div class="row"><span>${hm(m.t)} · ${E(m.f)} → ${E(tgn(m.tg))} : ${E(m.x)}</span><span class="sp"></span><button class="sb" data-a="dmg" data-k="${k}">Supprimer</button></div>`).join("")}</div>`};
+${Object.entries(d.banners||{}).map(([k,b])=>`<div class="row"><span>${rich(b.x)}</span><span class="sp"></span><button class="sb" data-a="db" data-k="${k}">Retirer</button></div>`).join("")}</div>
+<div class="card"><h2>Messages envoyés</h2>${Object.entries(d.msgs||{}).slice(-20).reverse().map(([k,m])=>`<div class="row"><span>${hm(m.t)} · ${E(m.f)} → ${E(tgn(m.tg))} : ${rich(m.x)}</span><span class="sp"></span><button class="sb" data-a="dmg" data-k="${k}">Supprimer</button></div>`).join("")}</div>`};
 V.c=()=>{const d=S.d;return`<div class="card"><h2>Chat</h2><select id="cc" onchange="chan=this.value;chatLoad()"><option value="gen">Général</option>${Object.entries(d.members||{}).filter(([u])=>u!==uid).map(([u,m])=>`<option value="${dmk(u)}"${chan===dmk(u)?" selected":""}>Privé · ${E(m.n)}</option>`).join("")}</select><div id="cl"></div><input id="ci" maxlength="300" placeholder="Votre message" onkeydown="if(event.key==='Enter')A.cs()"><button class="pb" data-a="cs">Envoyer</button></div>`};
 V.g=()=>{const m=S.d.meta,c=m.code,lk=location.origin+location.pathname+"#"+c,bn=Object.keys(S.d.ban||{}).filter(u=>S.d.ban[u]===1);
 return`<div class="card"><h2>Paramètres</h2><label>Nom<input id="gn" maxlength="30" value="${E(m.name)}"></label><label>Couleur thématique<input id="gc" type="color" value="${m.color}"></label>
-<label><input id="gp" type="checkbox"${m.pub?" checked":""}>Serveur public (accessible sans code)</label><br><label>Message épinglé<input id="gm" maxlength="200" value="${E(m.pin||"")}"></label><button class="pb" data-a="sv">Enregistrer</button></div>
+<label><input id="gp" type="checkbox"${m.pub?" checked":""}>Serveur public (visible dans la liste, accessible sans code)</label><br><label><input id="gi" type="checkbox"${m.ix===0?"":" checked"}>Afficher les numéros de ligne en indices (annonces, bannières, consignes, chat)</label><br><label>Message épinglé<input id="gm" maxlength="200" value="${E(m.pin||"")}"></label><button class="pb" data-a="sv">Enregistrer</button></div>
 <div class="card"><h2>Invitation</h2><p><b>${c}</b></p><input readonly value="${lk}" onclick="this.select()"><label>Limite d’utilisations (0 = illimité)<input id="gx" type="number" min="0" value="${S.cd?.max||0}"></label>
 <div class="bs"><button class="sb" data-a="cp">Copier le lien</button><button class="sb" data-a="gx">Appliquer la limite</button><button class="pb dg" data-a="rg">Révoquer et régénérer</button></div><div id="qr" style="margin-top:12px;background:#fff;display:inline-block;padding:8px"></div></div>
 ${bn.length?`<div class="card"><h2>Bannis</h2>${bn.map(u=>`<div class="row"><span>${E(S.d.members?.[u]?.n||u)}</span><span class="sp"></span><button class="sb" data-a="unban" data-u="${u}">Lever</button></div>`).join("")}</div>`:""}
@@ -198,13 +215,13 @@ const relv=m=>m.tg==="all"||m.tg==="l:"+me.l||(m.tg.startsWith("u:")&&m.tg.slice
 /* ---------- pop-up de régulation ---------- */
 function beep(){if(localStorage.sse_snd==="0")return;try{const a=new AudioContext(),o=a.createOscillator(),g=a.createGain();o.frequency.value=880;g.gain.value=.05;o.connect(g);g.connect(a.destination);o.start();o.stop(a.currentTime+.25)}catch(e){}}
 function checkPop(){const k="sse_s_"+S.id,seen=+localStorage[k]||Date.now();let mx=seen;Object.values(S.d.msgs||{}).forEach(m=>{if(m.t>seen){mx=Math.max(mx,m.t);if(relv(m))pq.push(m)}});localStorage[k]=mx;if(pq.length&&!$("#pp").classList.contains("s"))showPop()}
-function showPop(){const m=pq.shift(),p=$("#pp"),l=me.l&&lb(me.l);p.style.setProperty("--c",l?l.c:"var(--tc)");$("#ppf").textContent="Régulation · "+m.f;$("#ppx").textContent=m.x;$("#ppc").disabled=true;beep();p.classList.remove("s");void p.offsetWidth;p.classList.add("s");
+function showPop(){const m=pq.shift(),p=$("#pp"),l=me.l&&lb(me.l);p.style.setProperty("--c",l?l.c:"var(--tc)");$("#ppf").textContent="Régulation · "+m.f;$("#ppx").innerHTML=rich(m.x);$("#ppc").disabled=true;beep();p.classList.remove("s");void p.offsetWidth;p.classList.add("s");
 setTimeout(()=>{$("#ppc").disabled=false;p.classList.remove("s");setTimeout(()=>{if(pq.length)showPop()},400)},3000)}
 /* ---------- chat ---------- */
 async function chatLoad(){const e=$("#cl");if(!e||!S)return;try{const r=await jg(`prive_chat/${S.id}/${chan}?orderBy="$key"&limitToLast=50`)||{},st=e.scrollTop+e.clientHeight>=e.scrollHeight-30;
-e.innerHTML=Object.values(r).map(m=>`<div class="cm"><b>${E(m.n)}</b> <small>${hm(m.t)}</small><br>${E(m.x)}</div>`).join("")||"Aucun message.";if(st)e.scrollTop=e.scrollHeight}catch(x){}}
+e.innerHTML=Object.values(r).map(m=>`<div class="cm"><b>${E(m.n)}</b> <small>${hm(m.t)}</small><br>${rich(m.x)}</div>`).join("")||"Aucun message.";if(st)e.scrollTop=e.scrollHeight}catch(x){}}
 function qr(){const e=$("#qr");if(e&&window.QRCode&&S.d.meta.code){e.innerHTML="";new QRCode(e,{text:location.origin+location.pathname+"#"+S.d.meta.code,width:160,height:160})}}
-/* ---------- éditeur de ligne ---------- */
+/* ---------- éditeur & suppression multiple de lignes ---------- */
 function fillSt(){const l=cur,k=+$("#tdr").value;$("#tst").innerHTML=stp(l)[k].map((s,i)=>`<option value="${i}">${E(s)}</option>`).join("")}
 function edl(id){const l=id?lb(id):{n:"",c:"#2458c4",dg:0,cad:0,st:"ok",pt:["",""],s:[[],[]]},s=stp(l);
 md(`<h2>${id?"Modifier la ligne":"Nouvelle ligne"}</h2><label>Indice (1 à 4 caractères · « RER » = indice RER)<input id="en" maxlength="12" value="${E(l.n)}"></label>
@@ -215,6 +232,11 @@ md(`<h2>${id?"Modifier la ligne":"Nouvelle ligne"}</h2><label>Indice (1 à 4 car
 <datalist id="dl0">${s[0].map(x=>`<option value="${E(x)}">`).join("")}</datalist><datalist id="dl1">${s[1].map(x=>`<option value="${E(x)}">`).join("")}</datalist>
 <label>Terminus partiel sens 1 (arrêt existant ou texte libre)<input id="p0" list="dl0" value="${E(l.pt?.[0]||"")}"></label><label>Terminus partiel sens 2<input id="p1" list="dl1" value="${E(l.pt?.[1]||"")}"></label>
 <div class="bs"><button class="pb" data-a="esv" data-id="${id}">Enregistrer</button>${id?`<button class="sb" data-a="edp" data-id="${id}">Dupliquer</button><button class="sb" data-a="eor" data-id="${id}">Ordonner un départ</button><button class="pb dg" data-a="edel" data-id="${id}">Supprimer</button>`:""}<button class="sb" data-a="mc">Annuler</button></div>`)}
+function delLinesModal(){const list=LS();
+md(`<h2>Supprimer des lignes</h2><p>Coche les lignes à supprimer de ce serveur.</p>
+<div style="display:flex;gap:8px;margin-bottom:8px"><button type="button" class="sb" data-a="selall" data-v="1">Tout cocher</button><button type="button" class="sb" data-a="selall" data-v="0">Tout décocher</button></div>
+<div class="del-list">${list.map(l=>`<label class="del-item"><input type="checkbox" class="dlchk" value="${E(l.id)}">${bd(l)}<b>Ligne ${E(l.n)}</b><span style="margin-left:auto;font-size:13px;opacity:.75">${E(tm(l,0))}</span></label>`).join("")||"Aucune ligne."}</div>
+<div class="bs"><button class="pb dg" data-a="dellines_go">Supprimer la sélection</button><button class="sb" data-a="mc">Annuler</button></div>`)}
 /* ---------- actions ---------- */
 const A={};
 A.back=()=>leaveSrv();A.mc=()=>md();A.ppc=()=>{};
@@ -223,7 +245,10 @@ A.tab=a=>{tab=a.k;draw(true)};
 A.nk=a=>{const n=$("#nk").value.trim();if(!n)return;localStorage["sse_n_"+a.id]=n;md();enter(a.id)};
 A.jn=()=>joinCode($("#jc").value);A.jp=a=>enter(a.id);
 A.cr=async()=>{const name=$("#cn").value.trim();if(!name)return tt("Donne un nom au serveur.");await loadBase();const id=rnd(10),code=mkCode();
-await js("PUT","prive/"+id,{meta:{name,color:"#2458c4",pub:0,pin:"",owner:uid,code},lines:seed()});await js("PUT","prive_codes/"+code,{id,max:0,used:0});
+const pub=$("#cp")&&$("#cp").checked?1:0;const rSrv=await js("PUT","prive/"+id,{meta:{name,color:"#2458c4",pub,ix:1,pin:"",owner:uid,code},lines:seed()});
+if(!await okRes(rSrv))return tt("Création refusée par la base de données (règles Firebase).");
+await js("PUT","prive_codes/"+code,{id,max:0,used:0});
+if(pub){const rPub=await js("PUT","prive_pub/"+id,{n:name,c:"#2458c4"});if(!await okRes(rPub))tt("Serveur créé, mais liste publique bloquée par les règles Firebase.")}
 if(WEBHOOK_URL)fetch(WEBHOOK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:"Régulation Bus",content:`Nouveau serveur privé : ${name.replace(/[@`]/g,"")} (${code})`,allowed_mentions:{parse:[]}})}).catch(()=>{});
 enter(id)};
 A.take=a=>{cur=lb(a.id);md(`<h2>${bd(cur)}</h2><label>Sens<select id="tdr" onchange="fillSt()">${[0,1].map(k=>`<option value="${k}">→ ${E(tm(cur,k))}</option>`).join("")}</select></label><label>Arrêt actuel<select id="tst"></select></label><div class="bs"><button class="pb" data-a="go" data-id="${a.id}">Prendre la ligne</button><button class="sb" data-a="mc">Annuler</button></div>`);fillSt();if(a.k!==undefined){$("#tdr").value=a.k;fillSt()}};
@@ -242,13 +267,23 @@ A.sb=async()=>{const x=$("#bx").value.trim();if(!x)return;await js("POST",`prive
 A.db=async a=>{await js("DELETE",`prive/${S.id}/banners/${a.k}`);poll();setTimeout(()=>draw(true),500)};
 A.dmg=async a=>{await js("DELETE",`prive/${S.id}/msgs/${a.k}`);poll();setTimeout(()=>draw(true),500)};
 A.cs=async()=>{const i=$("#ci"),x=i.value.trim();if(!x)return;i.value="";await js("POST",`prive_chat/${S.id}/${chan}`,{u:uid,n:me.n,x,t:Date.now()});chatLoad()};
-A.sv=async()=>{const name=$("#gn").value.trim()||S.d.meta.name,pub=$("#gp").checked?1:0,color=$("#gc").value;await js("PATCH",`prive/${S.id}/meta`,{name,color,pub,pin:$("#gm").value.trim()});
-await js(pub?"PUT":"DELETE","prive_pub/"+S.id,pub?{n:name,c:color}:undefined);log("paramètres modifiés");tt("Enregistré.");poll()};
+A.sv=async()=>{const name=$("#gn").value.trim()||S.d.meta.name,pub=$("#gp").checked?1:0,color=$("#gc").value;const r1=await js("PATCH",`prive/${S.id}/meta`,{name,color,pub,ix:$("#gi").checked?1:0,pin:$("#gm").value.trim()});
+const r2=await js(pub?"PUT":"DELETE","prive_pub/"+S.id,pub?{n:name,c:color}:undefined);log("paramètres modifiés");
+const ok1=await okRes(r1),ok2=await okRes(r2);
+if(!ok1||!ok2)tt("Enregistrement refusé par la base de données (règles Firebase).");else tt(pub?"Enregistré · serveur visible dans la liste publique.":"Enregistré.");poll();setTimeout(()=>draw(true),500)};
 A.cp=()=>navigator.clipboard?.writeText(location.origin+location.pathname+"#"+S.d.meta.code).then(()=>tt("Lien copié."));
 A.gx=async()=>{await js("PATCH","prive_codes/"+S.d.meta.code,{max:+$("#gx").value||0});tt("Limite appliquée.")};
 A.rg=async()=>{if(!confirm("L’ancien lien cessera de fonctionner. Continuer ?"))return;const old=S.d.meta.code,c=mkCode(),mx=+$("#gx").value||0;await js("DELETE","prive_codes/"+old);await js("PUT","prive_codes/"+c,{id:S.id,max:mx,used:0});await js("PATCH",`prive/${S.id}/meta`,{code:c});log("lien d’invitation régénéré");await poll();draw(true)};
 A.delsrv=async()=>{if(!confirm("Supprimer définitivement ce serveur ?"))return;const id=S.id,c=S.d.meta.code;await Promise.all([js("DELETE","prive/"+id),js("DELETE","prive_codes/"+c),js("DELETE","prive_pub/"+id),js("DELETE","prive_chat/"+id)]);leaveSrv("Serveur supprimé.")};
 A.edl=a=>edl(a.id);
+A.dellines=()=>delLinesModal();
+A.selall=a=>{const v=a.v==="1";document.querySelectorAll(".dlchk").forEach(c=>{c.checked=v})};
+A.dellines_go=async()=>{const ids=[...document.querySelectorAll(".dlchk:checked")].map(c=>c.value);if(!ids.length)return tt("Coche au moins une ligne.");
+const names=ids.map(id=>lb(id)?.n).filter(Boolean);
+if(!confirm(`Supprimer ${ids.length} ligne(s) (${names.join(", ")}) ?`))return;
+await Promise.all(ids.map(id=>js("DELETE",`prive/${S.id}/lines/${id}`)));
+if(me.l&&ids.includes(me.l))me.l="";
+log("lignes supprimées : "+names.join(", "));md();tt(`${ids.length} ligne(s) supprimée(s).`);await poll();draw(true)};
 A.esv=async a=>{const n=$("#en").value.trim().toUpperCase();if(!n||n.replace(/RER/g,"R").length>4)return tt("Indice : 1 à 4 caractères.");
 const old=a.id?lb(a.id):null,ln=k=>$("#e"+k).value.split("\n").map(s=>s.trim()).filter(Boolean),s=[ln(0),ln(1)],same=old&&!old.s&&JSON.stringify(s)===JSON.stringify(stp(old)),
 l={n,c:$("#ec").value,dg:$("#ed").checked?1:0,cad:+$("#ek").value||0,st:$("#es").value,pt:[$("#p0").value.trim(),$("#p1").value.trim()],o:old?.o??LS().length};
@@ -257,7 +292,7 @@ if(!l.b&&!l.s[0].length&&!l.s[1].length)return tt("Ajoute au moins un arrêt.");
 await js("PUT",`prive/${S.id}/lines/${a.id||"l"+Date.now().toString(36)}`,l);log((old?"ligne modifiée : ":"ligne créée : ")+n+(old&&old.st!==l.st?(l.st==="int"?" (interrompue)":" (réactivée)"):""));md();poll()};
 A.edp=async a=>{const l={...lb(a.id)};delete l.id;l.n=l.n.slice(0,3)+"2";l.o=LS().length;const id="l"+Date.now().toString(36);await js("PUT",`prive/${S.id}/lines/${id}`,l);log("ligne dupliquée : "+l.n);await poll();edl(id)};
 A.eor=async a=>{const l=lb(a.id);await js("PATCH",`prive/${S.id}/lines/${a.id}`,{dep:Date.now()});await js("POST",`prive/${S.id}/msgs`,{t:Date.now(),f:me.n,x:"Départ ordonné — ligne "+l.n,tg:"l:"+a.id});log("départ ordonné ligne "+l.n);md();poll()};
-A.edel=async a=>{if(!confirm("Supprimer cette ligne ?"))return;log("ligne supprimée : "+lb(a.id).n);await js("DELETE",`prive/${S.id}/lines/${a.id}`);md();poll()};
+A.edel=async a=>{if(!confirm("Supprimer cette ligne ?"))return;const n=lb(a.id)?.n||a.id;log("ligne supprimée : "+n);await js("DELETE",`prive/${S.id}/lines/${a.id}`);if(me.l===a.id)me.l="";md();poll()};
 document.addEventListener("click",e=>{const b=e.target.closest("[data-a]");if(b&&A[b.dataset.a])A[b.dataset.a](b.dataset,b);else if(e.target.id==="md")md()});
 document.addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.id==="jc")A.jn();if(e.key==="Enter"&&e.target.id==="nk")e.target.nextElementSibling.click()});
 addEventListener("hashchange",()=>{if(/^#SSE-/.test(location.hash))joinCode(location.hash.slice(1))});
