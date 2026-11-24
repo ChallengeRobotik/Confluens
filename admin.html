@@ -7,7 +7,6 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%2300266b'/%3E%3Ctext x='32' y='46' font-family='Arial' font-weight='700' font-size='40' text-anchor='middle' fill='%23ff8a00'%3EA%3C/text%3E%3C/svg%3E">
 <style>
 @font-face{font-family:Parisine;src:url(Parisine-Regular.otf) format("opentype");font-weight:400;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Bold.otf) format("opentype");font-weight:700;font-style:normal;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-Italic.otf) format("opentype");font-weight:400;font-style:italic;font-display:swap}@font-face{font-family:Parisine;src:url(Parisine-BoldItalic.otf) format("opentype");font-weight:700;font-style:italic;font-display:swap}
-/* Même identité que le site de régulation : marine / bleu RATP / orange LED */
 :root{
   --page:#0e1628;--bar:#162343;--ink:#425ba2;--blue:#2458c4;--blue-h:#2f66d8;--blue-d:#173c8c;
   --surface:#e6ebf5;--surface-2:#f4f6fb;--muted:#425ba2;--line:rgba(18,40,90,.14);
@@ -64,7 +63,6 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .frow{display:flex;gap:10px;flex-wrap:wrap}.frow>*{flex:1;min-width:140px}
 .msg-err{min-height:1.2em;color:var(--late);font-weight:700;font-size:14px}
 
-/* lignes de liste (même gabarit que les départs) */
 .bd{display:flex;flex-direction:column;gap:12px}
 .urow{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--surface);color:var(--ink);border-radius:14px;padding:14px 16px;box-shadow:0 4px 14px rgba(0,0,0,.25);animation:in .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i,0)*30ms)}
 .urow.sanc{background:#e9d3d2}
@@ -73,7 +71,7 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .ub b{font-size:clamp(18px,3.4vw,24px);line-height:1.1;word-break:break-word}
 .ub small{color:var(--muted);font-size:13px;line-height:1.3;overflow-wrap:anywhere}
 .acts{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
-.led{font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:.14em;color:var(--led);background:#000;padding:5px 10px;border-radius:8px}
+.led{font-variant-numeric:tabular-nums;font-weight:700;letter-spacing:.1em;color:var(--led);background:#000;padding:5px 10px;border-radius:8px;white-space:nowrap}
 .stats{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 .stat{background:var(--glass);border-radius:14px;padding:10px 16px;display:flex;flex-direction:column;min-width:120px}
 .stat b{font-size:30px;line-height:1.1;font-variant-numeric:tabular-nums}.stat small{font-size:12.5px;color:var(--on-dark-2)}
@@ -87,7 +85,6 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .chip button:hover{background:rgba(214,40,28,.2);color:var(--late)}
 .empty{color:var(--on-dark-2);padding:18px 4px;font-style:italic}
 
-/* lignes */
 .lgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(310px,1fr));gap:14px}
 .lcard{display:flex;flex-direction:column;gap:14px}
 .lhd{display:flex;align-items:center;gap:14px}
@@ -103,7 +100,6 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .dirbox .fld{padding:0 10px}.dirbox .fld select{padding:10px 0;font-size:14.5px}
 .sub{font-size:12.5px;color:var(--muted);font-style:italic}
 
-/* messages / discussions */
 .two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 .chk{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line);cursor:pointer;font-weight:700}
 .chk input{width:20px;height:20px;accent-color:var(--blue)}
@@ -119,13 +115,12 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 .xbtn{border:0;background:rgba(214,40,28,.12);color:var(--late);border-radius:8px;width:30px;height:30px;cursor:pointer;font-weight:700;font-size:16px}
 .xbtn:hover{background:rgba(214,40,28,.25)}
 
-/* fenêtres */
 .ovl{position:fixed;inset:0;z-index:500;display:grid;place-items:center;padding:20px;background:rgba(14,22,40,.88);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);animation:fade .25s ease-out both;overflow:auto}
 .dlg{width:min(460px,100%);display:flex;flex-direction:column;gap:14px;animation:in .4s cubic-bezier(.2,.8,.2,1) both}
 .dlg h2{color:var(--ink);font-size:clamp(24px,5vw,30px);margin:0}
 .dlg p{color:var(--muted);line-height:1.4}
 .dlg .frow{justify-content:flex-end}.dlg .frow>*{flex:0 0 auto}
-.dlg.wide{width:min(860px,100%)}
+.dlg.wide{width:min(900px,100%)}
 .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,14px);opacity:0;pointer-events:none;z-index:700;max-width:min(92vw,440px);background:#000;color:var(--led);padding:12px 18px;border-radius:12px;font-weight:700;text-align:center;transition:opacity .25s,transform .3s cubic-bezier(.2,.8,.2,1)}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 #gate .dlg{--x:0}
@@ -147,12 +142,12 @@ h2{font-size:clamp(28px,5.6vw,48px);line-height:1.05;letter-spacing:-.02em;margi
 const DB="https://confluens-default-rtdb.europe-west1.firebasedatabase.app";
 const LINES={"134":{"c":"#9a0e54","s":[["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Hôtel de Ville de Chaillot-Batignolles","Les Lotis - République","Boris Vian","Église Saint-Louis","Saussaye - Castillon","Jaurès - Poirée","Jaurès - Ferry","Groupe Scolaire Bergmann","Bourveuil","Amélie Nothomb","Rue des Défenseurs de Verdun","Henri Barbusse","Saint-Marc","République - Oradour-sur-Glâne","Valmy - Europe","Dampierre - Grenelle","Les Hauts d’Arlande","Les Barentins","Place du Général Leclerc","Sous-Préfecture – Champagne","Nicola Leuthe","Les Moulins","Giraudoux - Prett","Ampère","Parc de la Brèche","Aimé Césaire","Brévannes-lès-Roses - Lazare Carnot"],["Brévannes-lès-Roses - Lazare Carnot","Aimé Césaire","Parc de la Brèche","Ampère","Giraudoux - Prett","Les Moulins","Nicola Leuthe","Sous-Préfecture – Champagne","Place du Général Leclerc","Les Barentins","Les Hauts d’Arlande","Dampierre - Grenelle","Valmy - Europe","République - Oradour-sur-Glâne","Saint-Marc","Henri Barbusse","Rue des Défenseurs de Verdun","Amélie Nothomb","Bourveuil","Groupe Scolaire Bergmann","Jaurès - Ferry","Jaurès - Poirée","Saussaye - Castillon","Église Saint-Louis","Boris Vian","Les Lotis - République","Barrès - République","Hôtel de Ville de Chaillot-Batignolles","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"]],"svc":[[0,25],[7,33]]},"135":{"c":"#ffbe00","s":[["Bonneuil-sur-Marne - Place Stensele","Les Sillons","Dumont d’Urville","Saint-Maur - Courboules","Bismarck - Courboules","Saint-Gilles","Blanche - Saint-Louis","Benjamin","Lion d’Or","Fort de Limeil","Berthéopôle","Marguerite - Alexandre Dumas","8 Mai 1945","Auriol","Saint-Sever","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","La Vallée","Rue de l’Arche","Finlande","Narbérale RER","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Jean-Baptiste Clément","Roses","Pénélope","Chaillot-Batignolles RER"],["Chaillot-Batignolles RER","Pénélope","Roses","Jean-Baptiste Clément","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Finlande","Rue de l’Arche","La Vallée","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Saint-Sever","Auriol","8 Mai 1945","Marguerite - Alexandre Dumas","Berthéopôle","Fort de Limeil","Lion d’Or","Benjamin","Blanche - Saint-Louis","Saint-Gilles","Bismarck - Courboules","Courboules - Jean Moulin","Rabelais","Commerce","Bonneuil-sur-Marne - Place Stensele"]],"svc":[[4,31],[0,27]]},"142":{"c":"#c4a2cb","s":[["Chaillot-Batignolles RER","Carnot","Estivallière","Villette","Corentin - Laitières","Vercingetorix","Voltaire","Pradier – St-Sébastien","Rue de Cherbourg","Robert-André Vivien","Pont de Narbérale - Quai Bourbon","Bourbon - Arsenal","Alma","Labille-Guiard","Les Clamarts","Pont d’Austerlitz","Insurrection - Pont d’Arlande","Marceau","Bleuzen","Port-Perret - Village","Berthier","Pont de Perret","Le Grand Mail","Mayenne","Wilson - Diderot","Frédéric Clément","Archevêché","Joliot-Curie - Lénine","Mairie du Port-Perret","Noailles – Port-Perret - Métro","Cauchoise","Rue des Étudiants","Aspern-Essling","Noailles-le-Pont - Place Charras"],["Noailles(-le-Pont) - Place Charras","Aspern-Essling","Rue des Étudiants","Cauchoise","Noailles – Port-Perret - Métro","Mairie du Port-Perret","Joliot-Curie - Lénine","Archevêché","Frédéric Clément","Wilson - Diderot","Mayenne","Le Grand Mail","Pont de Perret","Berthier","Port-Perret - Village","Bleuzen","Marceau","Insurrection - Pont d’Arlande","Romanée-Conti","Les Clamarts","Armorique","Labille-Guiard","Alma","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Pradier – St-Sébastien","Vercingetorix","Corentin - Laitières","Olympe de Gouges","Villette","Estivallière","Carnot","Chaillot-Batignolles RER"]],"svc":[[0,19],[14,33]]},"149":{"c":"#6e6e00","s":[["Chaillot-Batignolles RER","Karakert","Alphand","Général de Gaulle","Chemin des Dames","Les Fleurs","Clovis","Cimetière","Proudhon - Taine","Rue de Bréon","Molière","Allée Royale","Pagnol - Gilberte Brossolette","Ledru-Rollin","Charcot","Pasteur","Mairie du Petit-Passy","Meuniers - Bobillot","Carnot","Place des Victoires","Gambetta","Église du Petit-Passy"],["Église du Petit-Passy","Gambetta","Place des Victoires","Carnot","Meuniers - Bobillot","Mairie du Petit-Passy","Pasteur","Germaine Sablon","Arthur Rimbaud","Lycée Corneille","Rue de Bréon","Proudhon - Taine","Cimetière","Clovis","Les Fleurs","Chemin des Dames","Général de Gaulle","Alphand","Karakert","Chaillot-Batignolles RER"]],"svc":[[0,15],[6,19]]},"233":{"c":"#008080","s":[["Narbérale RER","Parmentier","L’Orme","Marcel Dassault","Maurice Barrès","Pont de Batignolles","Ernestine","Gallieni - Raffet","Hôtel de Ville de Chaillot-Batignolles"],["Hôtel de Ville de Chaillot-Batignolles","Barbès","Gallieni - Raffet","Ernestine","Pont de Batignolles","Maurice Barrès","Marcel Dassault","L’Orme","Parmentier","Narbérale RER"]],"svc":null},"242":{"c":"#003da4","s":[["Gare de Cramain - Université","Gaspard","Pyrénées","Camélinat","Saint-Siméon","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Les Évangiles","Poudre à Canon","Louison Bobet","Clemenceau","Escadrille Normandie-Niémen","Église de Cramain","Allée Marcel","Pierre Sémard","Place Galbrun","Nel Ariès","Latour du Moulin","Fraternité","Maurice Barrès","Port-Perret – Village"],["Port-Perret – Village","Maurice Barrès","Fraternité","Latour du Moulin","Place Galbrun","Pierre Sémard","Allée Marcel","Église de Cramain","Escadrille Normandie-Niémen","Clemenceau","Louison Bobet","Poudre à Canon","Les Évangiles","Hôtel de Ville de Cramain","Institut de Scandinavie","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Saint-Siméon","Camélinat","Pyrénées","Gaspard","Gare de Cramain - Université"]],"svc":null},"257":{"c":"#74dc65","s":[["Berthée - Rosenberg","Anquetil","Berthelot","Cramain – Université RER","Ludwig Ahgren","Saint-Siméon","Boulevard National - Mac Mahon","Fédération","Verdier","Maréchal de Lattre de Tassigny","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance - Sadi Carnot","Port d’Espagne","Notre-Dame de l’Insurrection","Les Clamarts","Pont d’Austerlitz","Maréchal Lyautey","Barbusse - Pont d’Arlande","Jauneau","Pasteur","Cimetière - Floquet","Jules Bobillot","Hôtel de Ville d’Arlande","Auguste Marin","Pasqua","Les Hauts d’Arlande"],["Les Hauts d’Arlande","Barbara","Pasqua","Auguste Marin","Hôtel de Ville d’Arlande","Cimetière - Floquet","Pasteur","Jauneau","Barbusse - Pont d’Arlande","Maréchal Lyautey","Fabre d’Églantine","Les Clamarts","Notre-Dame de l’Insurrection","Port d’Espagne","Résistance - Sadi Carnot","Résistance - Joliot-Curie","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Maréchal de Lattre de Tassigny","Verdier","Fédération","Boulevard National - Mac Mahon","Saint-Siméon","Ludwig Ahgren","Cramain – Université RER","Cramain – Université RER – Berthelot","Berthée - Rosenberg"]],"svc":null},"315":{"c":"#dbac29","s":[["Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","La Prairie","Voltaire – Docteur Bauer","Stade Coubertin","Célinaire","Chemin de Fer - Pont Gabrielle","Estivallière","Lycée Christophe Colomb","Houssaye – Alphand","Houssaye – De Gaulle","André Breton","Sainte-Barbe","Félix Faure","Émile Cossonneau","Bougainville","Maurois – Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon – Ville RER","Division Leclerc","Saint-Antoine","Hôtel des Bêtes","Bréon – École Normale"],["Bréon – École Normale","Hôtel des Bêtes","Saint-Antoine","Division Leclerc","Bréon – Saint-Servan RER","Château Margaux","Hôpital René Laënnec","Maurois – Général de Maud’Huy","Bougainville","Émile Cossonneau","Félix Faure","Sainte-Barbe","André Breton","Houssaye – De Gaulle","Houssaye – Alphand","Lycée Christophe Colomb","Estivallière","Chemin de Fer - Pont Gabrielle","Célinaire","Stade Coubertin","Voltaire – Docteur Bauer","La Prairie","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER"]],"svc":[[0,12],[13,25]]},"316":{"c":"#c21727","s":[["Créteil - Valenton - Métro","Ida Grinspan","XXIe Siècle","Charles Floquet - Halévy","Charlot","Reims - Séverine","Cimetière - Carnot","Hôtel de Ville de Denfert-la-Roche","Noémie","Marronniers","Garibaldi","Saint-Éloi - Dagobert","Les Cloux","Bir-Hakeim","Watteau","Place Nationale","Boulevard National - République","Pyrénées","Gaspard","Cramain - Université RER","Ludwig Ahgren","Boieldieu","Cramain - Stadium","Institut de Scandinavie","Hôtel de Ville de Cramain","Union","Cyrano de Bergerac","Mairie de Narbérale","Carrefour Joliot-Curie","Soufflot","Robert-André Vivien","Pont de Narbérale - Quai Saint-Lazare","Pont de Narbérale - Quai Bourbon","Gambetta","Paul Bert","Les Pommiers","Convention - Courcerin","Henri Barbusse","Saint-Similien","Rue Noire","Brossard - Jean Jaurès","Sidi Bel Abbès","La Miséricorde - Nina Simone","Wilson - Navigation","Dampierre - Nothomb"],["Dampierre - Nothomb","Wilson - Navigation","La Miséricorde - Nina Simone","Sidi Bel Abbès","Brossard - Jean Jaurès","Rue Noire","Saint-Similien","Henri Barbusse","Convention - Courcerin","Les Pommiers","Paul Bert","Gambetta","Pont de Narbérale - Quai Bourbon","Robert-André Vivien","Rue de Cherbourg","Les Bergères","Soufflot","Puvis de Chavanne","Carrefour Joliot-Curie","Mairie de Narbérale","Cyrano de Bergerac","Union","Hôtel de Ville de Cramain","Cramain - Stadium","Boieldieu","Ludwig Ahgren","Cramain - Université RER","Gaspard","Pyrénées","Place Nationale","Watteau","Bir-Hakeim","Les Cloux","Saint-Éloi - Dagobert","Garibaldi","Marronniers","Noémie","Hôtel de Ville de Denfert-la-Roche","Cimetière - Carnot","Reims - Séverine","Charlot","Charles Floquet - Halévy","XXIe Siècle","Ida Grinspan","Théâtre de Valenton","Créteil - Valenton - Métro"]],"svc":[[7,30,"Narbérale - Rue de Cherbourg"],[14,37]]},"433":{"c":"#00643c","s":[["Sarazel Place d’Armes","Alma Cité Jardins","Le Parc","Rue de Sarazel","Berthée - Duvernet Métro","Clément Ader","Henri Becquerel","Stalingrad","Buffon","Berthée - Cramain RER","Édouard Manet","Hôpital Saint-Marceau","8 Mai 1945","Paul Bert","Petit Cramain","Mirabeau","Général Duval","Lamy","Escadrille Normandie Niémen","Clemenceau","Louison Bobet","Bastion","Résistance (Lénine)","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Narbérale RER"],["Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance (Joliot-Curie)","Résistance","Bastion","Louison Bobet","Clemenceau","Escadrille Normandie Niémen","Lamy","Général Duval","Mirabeau","Petit Cramain","Paul Bert","8 Mai 1945","Hôpital Saint-Marceau","Édouard Manet","Berthée - Cramain RER","Buffon","Stalingrad","Henri Becquerel","Clément Ader","Berthée - Duvernet Métro","Rue de Sarazel","Le Parc","Alma Cité Jardins","Sarazel Place d’Armes"]],"svc":[[19,28],[0,10]]},"N76":{"c":"#f51c28","s":[["Gare de Boissy-Saint-Léger","Bretagne","Rue de l’Industrie","Camélias","Les Fontaines","Gare de Sarazel","Arago","Clément Ader - Charcot","Mail Salengro","Bel Air","Place d’Armes","Alma - Cité Jardins","Gallieni - Carnot","Pierre et Marie Curie","Métro - Coeur de Berthée","Thérèse","Gracieuse - Les Irlandais","Hôtel de Ville de Berthée","Broca - Juline","Rue de Provence","Anquetil","Berthelot","Cramain - Université RER - République","Sophie Barat","Maillol","Rubens - Banquier","Clemenceau","Louison Bobet","Bastion","Résistance","Rue de l’Hôtel de Ville","Carrefour Joliot-Curie","Les Mordacs","Klaver","Alma","Gare de Narbérale","Cité des Érables","Pépinière","Stalingrad","Marx Dormoy","Pont de Chaillot","Pénélope","Chaillot-Batignolles RER","Lagarde","Rue Rataud","Campagne Première","Bourdelle - Moisant","Gisèle Halimi","Malar","La Roseraie - Saint-Exupéry","Aquitaine","Le Canal","Florian - Duffour","Division Leclerc","Gare de Bréon - Ville - Saint-Servan","Château Margaux","Hôpital René Laënnec","Aturéen - Général de Maud’Huy","Docteur Armand Brillard","Lamartine","18 Juin 1940","Rue des Martyrs de Châteaubriand","République","Trait d’Union","Meyer","Général Leclerc","Gare du Plessin-Mendinel - Val de Seine"],["Gare du Plessin-Mendinel - Val de Seine","Général Leclerc","Meyer","Trait d’Union","République","Rue des Martyrs de Châteaubriand","Les Platanes","Lamartine","Docteur Armand Brillard","Aturéen - Général de Maud’Huy","Hôpital René Laënnec","Château Margaux","Galvani","Bréon - Ville RER","Moulin de la Tour","Florian - Duffour","Le Canal","Aquitaine","La Roseraie - Saint-Exupéry","Malar","Gisèle Halimi","Bourdelle - Moisant","Campagne Première","Rue Rataud","Lagarde","Chaillot-Batignolles RER","Pénélope","Pont de Chaillot","Marx Dormoy","Stalingrad","Pépinière","Cité des Érables","Narbérale RER","Alma","Klaver","Les Mordacs","Carrefour Joliot-Curie","Rue de l’Hôtel de Ville","Résistance - Joliot-Curie","Résistance","Bastion","Louison Bobet","Clemenceau","Rubens - Banquier","Maillol","Sophie Barat","Cramain - Université RER - République","Rosenberg","Rue de Provence","Broca - Juline","Hôtel de Ville de Berthée","Gracieuse - Les Irlandais","Lacépède","Métro - Coeur de Berthée","Pierre et Marie Curie","Gallieni - Carnot","Alma - Cité Jardins","Place d’Armes","Bel Air","Mail Salengro","Clément Ader - Charcot","Arago","Sarazel RER","Les Fontaines","Camélias","Rue de l’Industrie","Bretagne","Gare de Boissy-Saint-Léger"]],"svc":[[21,42],[25,47,"Berthée - Rosenberg"]]}};
 const ORDER=["134","135","142","149","233","242","257","315","316","433","N76"];
-const GAME_OFFSET=36e5; /* l’appli de régulation décale son horloge : les messages de discussion sont en « heure appli » */
+const GAME_OFFSET=36e5;
 const $=q=>document.querySelector(q);
 const esc=t=>String(t==null?"":t).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const normS=t=>String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z0-9]+/g," ").trim();
-const ink=h=>{const n=parseInt(h.slice(1),16);return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
-const short=s=>String(s).replace(/ RER$/,"");
+const ink=h=>{const n=parseInt((h||"#2458c4").replace("#",""),16);if(Number.isNaN(n))return"#fff";return(((n>>16)*299+((n>>8)&255)*587+(n&255)*114)/1000>150)?"#000":"#fff"};
+const short=s=>String(s||"").replace(/ RER$/,"");
 const ipKey=ip=>String(ip).replace(/[.:]/g,"_");
 const fdt=t=>new Date(t).toLocaleString("fr-FR",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"});
 const fh=t=>new Date(t).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"});
@@ -414,114 +409,190 @@ async function vLig(){
 }
 
 /* =========================================================
-   SALONS — liste, membres, régulateurs, suppression
+   SALONS PRIVÉS (prive/<id>) — membres, régulateurs, lignes, msgs
    ========================================================= */
 let RM={};
 async function roomsLoad(){
-  const codes=Object.keys(await GET("rooms?shallow=true")||{});
+  const[raw,pub]=await Promise.all([GET("prive"),GET("prive_pub")]);
   const out={};
-  await Promise.all(codes.map(async c=>{const[m,mem,rg]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`)]);if(m)out[c]={...m,members:mem||{},regs:rg||{}}}));
+  Object.entries(raw||{}).forEach(([id,d])=>{
+    if(!d||!d.meta)return;
+    const members=d.members||{},regs={};
+    Object.entries(members).forEach(([u,m])=>{if(m&&m.r)regs[u]=true});
+    out[id]={
+      id,
+      ...d.meta,
+      pub:!!(d.meta.pub||(pub&&pub[id])),
+      members,
+      regs,
+      lines:d.lines||{},
+      msgs:d.msgs||{},
+      ban:d.ban||{}
+    };
+  });
   RM=out;
 }
 async function vSal(){
-  A.innerHTML=`<div class="hero v"><h2>Salons</h2><p class="hint">Tous les salons privés créés par les utilisateurs. Ouvre un salon pour modérer ses messages, gérer ses régulateurs ou le supprimer.</p></div><div class="bd" id="rl"><p class="empty">Chargement…</p></div>`;
-  const draw=()=>{const cs=Object.keys(RM).sort((x,y)=>(RM[y].created||0)-(RM[x].created||0));
-    $("#rl").innerHTML=cs.length?cs.map((c,j)=>{const m=RM[c],n=Object.keys(m.members).length;
-      return`<div class="urow" style="--i:${Math.min(j,12)}" data-c="${c}"><span class="led">${c}</span><div class="ub"><b>${esc(m.name)}</b><small>Créé par ${esc(m.ownerName||"?")} le ${m.created?fdt(m.created):"?"} · ${n} membre${n>1?"s":""} · ${Object.keys(m.regs).length} régulateur${Object.keys(m.regs).length>1?"s":""}</small></div>
-      <div class="acts"><button class="btn g sm" data-a="open">Gérer</button><button class="btn g sm" data-a="del">Supprimer</button></div></div>`}).join(""):`<p class="empty">Aucun salon pour le moment.</p>`};
+  A.innerHTML=`<div class="hero v"><h2>Salons privés</h2><p class="hint">Tous les serveurs/salons privés actifs dans la base. Ouvre un salon pour gérer ses membres, ses régulateurs, ses lignes, ses messages ou le supprimer.</p></div><div class="bd" id="rl"><p class="empty">Chargement…</p></div>`;
+  const draw=()=>{const ids=Object.keys(RM).sort((x,y)=>(RM[y].created||0)-(RM[x].created||0));
+    $("#rl").innerHTML=ids.length?ids.map((id,j)=>{
+      const m=RM[id],n=Object.keys(m.members).length,rgCount=Object.keys(m.regs).length,lnCount=Object.keys(m.lines).length;
+      const ownerName=(m.members[m.owner]&&m.members[m.owner].n)||m.ownerName||m.owner||"?";
+      return`<div class="urow" style="--i:${Math.min(j,12)}" data-c="${esc(id)}"><span class="led">${esc(m.code||id)}</span>
+        <div class="ub"><b>${esc(m.name)} <span class="badge ${m.pub?"ok":""}">${m.pub?"Public":"Privé"}</span></b>
+        <small>Créateur : ${esc(ownerName)} · ${n} membre${n>1?"s":""} · ${rgCount} régulateur${rgCount>1?"s":""} · ${lnCount} ligne${lnCount>1?"s":""}</small></div>
+        <div class="acts"><button class="btn g sm" data-a="open">Gérer</button><button class="btn g sm" data-a="del">Supprimer</button></div></div>`
+    }).join(""):`<p class="empty">Aucun salon privé pour le moment.</p>`};
   await guard(roomsLoad);if(tab!=="sal")return;draw();
-  $("#rl").onclick=async e=>{const b=e.target.closest("[data-a]");if(!b)return;const c=b.closest("[data-c]").dataset.c;
-    if(b.dataset.a==="open")roomAdmin(c);
-    else{const v=await ask({title:"Supprimer le salon",text:`« ${RM[c].name} » et tous ses messages seront supprimés pour ses membres.`,ok:"Supprimer",danger:true});
-      if(v){await guard(()=>api("DELETE","rooms/"+c));delete RM[c];draw();toast("Salon supprimé")}}};
+  $("#rl").onclick=async e=>{
+    const b=e.target.closest("[data-a]");if(!b)return;const id=b.closest("[data-c]").dataset.c,m=RM[id];
+    if(b.dataset.a==="open")roomAdmin(id);
+    else{
+      const v=await ask({title:"Supprimer le salon",text:`« ${m.name} » et toutes ses données seront supprimés.`,ok:"Supprimer",danger:true});
+      if(v){
+        await guard(async()=>{
+          await api("DELETE","prive/"+id);
+          await api("DELETE","prive_pub/"+id);
+          await api("DELETE","prive_chat/"+id);
+          if(m.code)await api("DELETE","prive_codes/"+m.code);
+        });
+        delete RM[id];draw();toast("Salon supprimé");
+      }
+    }
+  };
 }
-async function roomAdmin(c){
+async function roomAdmin(id){
   const o=document.createElement("div");o.className="ovl";
-  o.innerHTML=`<div class="card dlg wide"><h2 id="ra-t"></h2><div class="two"><div class="stack"><div class="lab">Membres</div><ul class="stack" id="ra-m" style="list-style:none;padding:0"></ul><div class="lab">Lignes du salon</div><div class="stack" id="ra-ln"></div><div class="lab">Message général</div><div class="frow"><label class="fld" style="flex:1"><input id="ra-gi" maxlength="300" placeholder="Envoyer à tout le salon" autocomplete="off"></label><button class="btn" id="ra-gs">Envoyer</button></div><div class="lab">Messages généraux</div><div class="stack" id="ra-g"></div></div>
-  <div class="stack"><div class="lab">Discussion</div><div class="stack" id="ra-c" style="max-height:52vh;overflow:auto"></div></div></div><div class="frow"><button class="btn g" data-x>Fermer</button></div></div>`;
+  o.innerHTML=`<div class="card dlg wide"><h2 id="ra-t"></h2>
+    <div class="two">
+      <div class="stack">
+        <div class="lab">Membres & régulateurs</div>
+        <ul class="stack" id="ra-m" style="list-style:none;padding:0"></ul>
+        <div class="lab">Lignes du salon</div>
+        <div class="stack" id="ra-ln"></div>
+        <div class="lab">Message de régulation au salon</div>
+        <div class="frow"><label class="fld" style="flex:1"><input id="ra-gi" maxlength="300" placeholder="Envoyer un message à tout le salon" autocomplete="off"></label><button class="btn" id="ra-gs">Envoyer</button></div>
+        <div class="lab">Messages de régulation actifs</div>
+        <div class="stack" id="ra-g"></div>
+      </div>
+      <div class="stack">
+        <div class="lab">Discussion générale du salon</div>
+        <div class="stack" id="ra-c" style="max-height:52vh;overflow:auto"></div>
+      </div>
+    </div>
+    <div class="frow"><button class="btn g" data-x>Fermer</button></div></div>`;
   document.body.appendChild(o);
-  const close=()=>{o.remove()};
-  o.querySelector("[data-x]").onclick=close;o.addEventListener("mousedown",e=>{if(e.target===o)close()});o.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
+  const close=()=>o.remove();
+  o.querySelector("[data-x]").onclick=close;
+  o.addEventListener("mousedown",e=>{if(e.target===o)close()});
+  o.addEventListener("keydown",e=>{if(e.key==="Escape")close()});
   const load=async()=>{
-    const[m,mem,rg,g,ch,ln]=await Promise.all([GET(`rooms/${c}/meta`),GET(`rooms/${c}/members`),GET(`rooms/${c}/regs`),GET(`rooms/${c}/general`),GET(`rooms/${c}/chat`),GET(`rooms/${c}/lines`)]);
-    if(!m){close();toast("Salon introuvable");return}
-    RM[c]={...m,members:mem||{},regs:rg||{}};
-    $("#ra-t").textContent=`${m.name} · ${c}`;
-    $("#ra-m").innerHTML=Object.entries(mem||{}).map(([u,v])=>`<li class="cmsg"><span>${esc(v.p||u)}<small>${u===m.owner?"Créateur":(rg||{})[u]?"Régulateur":""}</small></span>${u===m.owner?"":`<span class="x" style="display:flex;gap:6px"><button class="btn g sm" data-r="${u}" data-v="${(rg||{})[u]?0:1}">${(rg||{})[u]?"Retirer rég.":"Régulateur"}</button><button class="xbtn" data-k="${u}" title="Retirer du salon" aria-label="Retirer du salon">×</button></span>`}</li>`).join("");
-    const lst=(o2,key)=>Object.entries(o2||{}).filter(([,v])=>v&&v.m).sort((x,y)=>x[1].t-y[1].t).slice(-60).map(([id,v])=>`<div class="cmsg"><span><b>${esc(v.a||"Admin")}</b><small>${fh(key==="chat"?v.t-GAME_OFFSET:v.t)}</small><br>${esc(v.m)}</span><button class="xbtn x" data-d="${key}/${id}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Rien pour le moment.</p>`;
-    $("#ra-ln").innerHTML=Object.entries(ln||{}).map(([n,r])=>`<div class="cmsg"><span><b>${esc(n)}</b><small>${esc(short(Object.values(r.s[0])[0]||""))} ⇄ ${esc(short(Object.values(r.s[0]).at(-1)||""))}</small></span><button class="xbtn x" data-d="lines/${esc(n)}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Aucune ligne.</p>`;
-    $("#ra-g").innerHTML=lst(g,"general");$("#ra-c").innerHTML=lst(ch,"chat");
+    const[d,ch]=await Promise.all([GET(`prive/${id}`),GET(`prive_chat/${id}/gen`)]);
+    if(!d||!d.meta){close();toast("Salon introuvable");return}
+    const m=d.meta,mem=d.members||{},msgs=d.msgs||{},ln=d.lines||{};
+    $("#ra-t").textContent=`${m.name} · ${m.code||id}`;
+    $("#ra-m").innerHTML=Object.entries(mem).map(([u,v])=>{
+      const isOwner=u===m.owner,isReg=!!(v&&v.r),on=v&&v.t&&(Date.now()-v.t<15000);
+      return`<li class="cmsg"><span><b>${esc(v.n||u)}</b><small>${on?"En ligne · ":""}${isOwner?"Créateur":isReg?"Régulateur":"Membre"}</small></span>
+        ${isOwner?"":`<span class="x" style="display:flex;gap:6px">
+          <button class="btn g sm" data-r="${esc(u)}" data-v="${isReg?0:1}">${isReg?"Retirer rég.":"Régulateur"}</button>
+          <button class="xbtn" data-k="${esc(u)}" title="Exclure du salon" aria-label="Exclure du salon">×</button>
+        </span>`}</li>`;
+    }).join("")||`<p class="lab">Aucun membre.</p>`;
+    $("#ra-ln").innerHTML=Object.entries(ln).map(([lid,r])=>{
+      const s0=Array.isArray(r.s&&r.s[0])?r.s[0]:[];
+      return`<div class="cmsg"><span><b>Ligne ${esc(r.n||lid)}</b><small>${esc(short(s0[0]||""))} ⇄ ${esc(short(s0.at(-1)||""))}</small></span><button class="xbtn x" data-d="lines/${esc(lid)}" aria-label="Supprimer">×</button></div>`;
+    }).join("")||`<p class="lab">Aucune ligne.</p>`;
+    $("#ra-g").innerHTML=Object.entries(msgs).filter(([,v])=>v&&v.x).sort((a,b)=>b[1].t-a[1].t).slice(-20).map(([mid,v])=>`<div class="cmsg"><span><b>${esc(v.f||"Administration")}</b><small>${fh(v.t)}</small><br>${esc(v.x)}</span><button class="xbtn x" data-d="msgs/${esc(mid)}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Aucun message de régulation.</p>`;
+    $("#ra-c").innerHTML=Object.entries(ch||{}).filter(([,v])=>v&&v.x).sort((a,b)=>a[1].t-b[1].t).slice(-60).map(([cid,v])=>`<div class="cmsg"><span><b>${esc(v.n||"?")}</b><small>${fdt(v.t)}</small><br>${esc(v.x)}</span><button class="xbtn x" data-cd="${esc(cid)}" aria-label="Supprimer">×</button></div>`).join("")||`<p class="lab">Aucun message dans le chat.</p>`;
   };
   await guard(load);
   o.onclick=async e=>{
-    const r=e.target.closest("[data-r]"),k=e.target.closest("[data-k]"),d=e.target.closest("[data-d]");
-    if(r)await guard(()=>+r.dataset.v?api("PUT",`rooms/${c}/regs/${r.dataset.r}`,true):api("DELETE",`rooms/${c}/regs/${r.dataset.r}`));
-    else if(k)await guard(async()=>{await api("DELETE",`rooms/${c}/members/${k.dataset.k}`);await api("DELETE",`rooms/${c}/regs/${k.dataset.k}`)});
-    else if(d)await guard(()=>api("DELETE",`rooms/${c}/${d.dataset.d}`));
-    else if(e.target.id==="ra-gs"){const i=$("#ra-gi"),t=i.value.trim();if(!t)return;i.value="";await guard(()=>api("POST",`rooms/${c}/general`,{a:"Administration",m:t.slice(0,300),t:Date.now()}));toast("Message envoyé")}
+    const r=e.target.closest("[data-r]"),k=e.target.closest("[data-k]"),d=e.target.closest("[data-d]"),cd=e.target.closest("[data-cd]");
+    if(r)await guard(()=>api("PATCH",`prive/${id}/members/${r.dataset.r}`,{r:+r.dataset.v?1:""}));
+    else if(k)await guard(async()=>{await api("PUT",`prive/${id}/ban/${k.dataset.k}`,1);await api("DELETE",`prive/${id}/members/${k.dataset.k}`)});
+    else if(d)await guard(()=>api("DELETE",`prive/${id}/${d.dataset.d}`));
+    else if(cd)await guard(()=>api("DELETE",`prive_chat/${id}/gen/${cd.dataset.cd}`));
+    else if(e.target.id==="ra-gs"){const i=$("#ra-gi"),t=i.value.trim();if(!t)return;i.value="";await guard(()=>api("POST",`prive/${id}/msgs`,{t:Date.now(),f:"Administration",x:t.slice(0,300),tg:"all"}));toast("Message envoyé")}
     else return;
     guard(load);
   };
 }
 
 /* =========================================================
-   MESSAGES GÉNÉRAUX — salons publics, privés, ou ciblés
+   MESSAGES GÉNÉRAUX — diffusion vers les salons privés
    ========================================================= */
-let BC={};
-const EXP=[["30 minutes",30],["1 heure",60],["4 heures",240],["12 heures",720],["24 heures",1440],["Jusqu’au retrait",0]];
 async function vMsg(){
-  A.innerHTML=`<div class="hero v"><h2>Messages généraux</h2><p class="hint">Un message général apparaît dans les consignes de régulation des utilisateurs concernés. Choisis où l’envoyer.</p></div>
-  <div class="two v"><section class="card stack"><label class="fld"><textarea id="mt" maxlength="300" placeholder="Ton message…" aria-label="Message"></textarea></label>
-    <label class="chk"><input type="checkbox" id="mp"> Tous les salons publics (lignes)</label>
+  A.innerHTML=`<div class="hero v"><h2>Messages généraux</h2><p class="hint">Envoie un message de régulation dans un ou plusieurs salons privés (il apparaît en pop-up et dans les consignes des membres).</p></div>
+  <div class="two v"><section class="card stack">
+    <label class="fld"><textarea id="mt" maxlength="300" placeholder="Ton message de régulation…" aria-label="Message"></textarea></label>
     <label class="chk"><input type="checkbox" id="mv"> Tous les salons privés</label>
-    <div class="lab">Ou des salons privés précis</div><div class="rooms-pick" id="mr"><span class="lab">Chargement…</span></div>
-    <label class="fld"><select id="me" aria-label="Durée d’affichage">${EXP.map(([l,m])=>`<option value="${m}"${m===240?" selected":""}>Affiché : ${l}</option>`).join("")}</select></label>
-    <p class="msg-err" id="mer" role="alert"></p><button class="btn" id="ms">Envoyer</button></section>
-  <section class="card"><div class="lab">Historique</div><div class="hist" id="mh" style="margin-top:10px"><p class="lab">Chargement…</p></div></section></div>`;
-  const drawH=()=>{const es=Object.entries(BC).filter(([,v])=>v&&v.m).sort((a,b)=>b[1].t-a[1].t);
-    $("#mh").innerHTML=es.length?es.map(([id,v])=>{const on=!v.exp||v.exp>Date.now();
-      const tg=[v.pub?`<span class="badge">Salons publics</span>`:"",v.priv?`<span class="badge">Tous les salons privés</span>`:"",...Object.keys(v.rooms||{}).map(c=>`<span class="badge">${esc((RM[c]&&RM[c].name)||c)}</span>`)].join("");
-      return`<div class="hitem"><div class="tx">${esc(v.m)}<div class="tg">${tg}<span class="badge ${on?"ok":""}">${on?"Actif":"Expiré"}</span></div><small>${fdt(v.t)}${v.exp?" · jusqu’à "+fh(v.exp):""}</small></div><button class="xbtn" data-id="${id}" aria-label="Retirer">×</button></div>`}).join(""):`<p class="lab">Aucun message envoyé.</p>`};
-  const load=async()=>{const[b]=await Promise.all([GET("broadcast"),roomsLoad()]);BC=b||{};
+    <div class="lab">Ou sélectionner des salons privés</div>
+    <div class="rooms-pick" id="mr"><span class="lab">Chargement…</span></div>
+    <p class="msg-err" id="mer" role="alert"></p>
+    <button class="btn" id="ms">Envoyer</button>
+  </section>
+  <section class="card"><div class="lab">Messages récents par salon</div><div class="hist" id="mh" style="margin-top:10px"><p class="lab">Chargement…</p></div></section></div>`;
+  const load=async()=>{
+    await roomsLoad();
     if(tab!=="msg")return;
     const keep=new Set([...document.querySelectorAll("#mr input:checked")].map(i=>i.value));
-    $("#mr").innerHTML=Object.keys(RM).length?Object.entries(RM).map(([c,m])=>`<label class="chk"><input type="checkbox" value="${c}"${keep.has(c)?" checked":""}> ${esc(m.name)} <span class="led" style="margin-left:auto">${c}</span></label>`).join(""):`<span class="lab">Aucun salon privé pour le moment.</span>`;
-    drawH()};
+    const entries=Object.entries(RM);
+    $("#mr").innerHTML=entries.length?entries.map(([id,m])=>`<label class="chk"><input type="checkbox" value="${esc(id)}"${keep.has(id)?" checked":""}> ${esc(m.name)} <span class="led" style="margin-left:auto">${esc(m.code||id)}</span></label>`).join(""):`<span class="lab">Aucun salon privé pour le moment.</span>`;
+    const allMsgs=[];
+    entries.forEach(([id,m])=>{
+      Object.entries(m.msgs||{}).forEach(([mid,v])=>{
+        if(v&&v.x)allMsgs.push({id,mid,roomName:m.name,code:m.code||id,...v});
+      });
+    });
+    allMsgs.sort((a,b)=>b.t-a.t);
+    $("#mh").innerHTML=allMsgs.slice(0,30).map(v=>`<div class="hitem"><div class="tx"><b>${esc(v.roomName)}</b> · ${esc(v.x)}<div class="tg"><span class="badge">${esc(v.code)}</span><span class="badge">${esc(v.f||"Administration")}</span></div><small>${fdt(v.t)}</small></div><button class="xbtn" data-r="${esc(v.id)}" data-m="${esc(v.mid)}" aria-label="Retirer">×</button></div>`).join("")||`<p class="lab">Aucun message envoyé.</p>`;
+  };
   await guard(load);
-  $("#mh").onclick=async e=>{const b=e.target.closest("[data-id]");if(!b)return;await guard(()=>api("DELETE","broadcast/"+b.dataset.id));delete BC[b.dataset.id];drawH();toast("Message retiré")};
+  $("#mh").onclick=async e=>{
+    const b=e.target.closest("[data-r][data-m]");if(!b)return;
+    await guard(()=>api("DELETE",`prive/${b.dataset.r}/msgs/${b.dataset.m}`));
+    toast("Message retiré");guard(load);
+  };
   $("#ms").onclick=async()=>{
-    const t=$("#mt").value.trim(),pub=$("#mp").checked,priv=$("#mv").checked,rooms={};
-    document.querySelectorAll("#mr input:checked").forEach(i=>rooms[i.value]=true);
+    const t=$("#mt").value.trim(),allPriv=$("#mv").checked;
+    const selected=[...document.querySelectorAll("#mr input:checked")].map(i=>i.value);
+    const targets=allPriv?Object.keys(RM):selected;
     const er=$("#mer");er.textContent="";
     if(!t){er.textContent="Écris un message.";return}
-    if(!pub&&!priv&&!Object.keys(rooms).length){er.textContent="Choisis au moins une destination.";return}
-    const m=+$("#me").value,rec={m:t,t:Date.now(),by:"Administration",pub,priv:priv&&!pub?true:priv,rooms:Object.keys(rooms).length?rooms:null,exp:m?Date.now()+m*60000:0};
-    if(!rec.rooms)delete rec.rooms;
-    const id=await guard(()=>api("POST","broadcast",rec));if(!id)return;
-    $("#mt").value="";document.querySelectorAll("#mp,#mv,#mr input").forEach(i=>i.checked=false);toast("Message envoyé");guard(load);
+    if(!targets.length){er.textContent="Choisis au moins un salon privé.";return}
+    await guard(async()=>{
+      await Promise.all(targets.map(id=>api("POST",`prive/${id}/msgs`,{t:Date.now(),f:"Administration",x:t,tg:"all"})));
+    });
+    $("#mt").value="";
+    document.querySelectorAll("#mv,#mr input").forEach(i=>i.checked=false);
+    toast(`Envoyé à ${targets.length} salon(s)`);
+    guard(load);
   };
 }
 
 /* =========================================================
-   DISCUSSIONS — modération des messages
+   DISCUSSIONS — modération des chats de salons privés
    ========================================================= */
-let dsel="L:"+ORDER[0];
+let dsel="";
 async function vDis(){
-  A.innerHTML=`<div class="hero v"><h2>Discussions</h2><p class="hint">Relis et supprime les messages des salons publics (lignes) et privés.</p></div>
+  A.innerHTML=`<div class="hero v"><h2>Discussions</h2><p class="hint">Relis et supprime les messages des salons privés (canal général).</p></div>
   <section class="card stack v"><label class="fld"><select id="dc" aria-label="Salon"><option>Chargement…</option></select></label><div class="stack" id="dm"></div></section>`;
   await guard(roomsLoad);if(tab!=="dis")return;
-  $("#dc").innerHTML=`<optgroup label="Salons publics">${ORDER.map(n=>`<option value="L:${n}">Ligne ${n}</option>`).join("")}</optgroup>`+
-    (Object.keys(RM).length?`<optgroup label="Salons privés">${Object.entries(RM).map(([c,m])=>`<option value="R:${c}">${esc(m.name)} (${c})</option>`).join("")}</optgroup>`:"");
-  if(![...$("#dc").options].some(o=>o.value===dsel))dsel="L:"+ORDER[0];
+  const ids=Object.keys(RM);
+  $("#dc").innerHTML=ids.length
+    ?`<optgroup label="Salons privés">${ids.map(id=>`<option value="${esc(id)}">${esc(RM[id].name)} (${esc(RM[id].code||id)})</option>`).join("")}</optgroup>`
+    :`<option value="">Aucun salon privé</option>`;
+  if(!dsel||!RM[dsel])dsel=ids[0]||"";
   $("#dc").value=dsel;
-  const path=()=>dsel[0]==="L"?`discussions/${dsel.slice(2)}`:`rooms/${dsel.slice(2)}/chat`;
   const draw=async()=>{
-    const d=await GET(path());if(tab!=="dis")return;
-    const es=Object.entries(d||{}).filter(([,v])=>v&&v.m).sort((a,b)=>a[1].t-b[1].t).slice(-80);
-    $("#dm").innerHTML=es.length?es.map(([id,v])=>`<div class="cmsg"><span><b>${esc(v.a||"?")}</b><small>${fdt(v.t-GAME_OFFSET)}</small><br>${esc(v.m)}</span><button class="xbtn x" data-id="${id}" aria-label="Supprimer">×</button></div>`).join(""):`<p class="lab">Aucun message dans ce salon.</p>`;
+    if(!dsel){$("#dm").innerHTML=`<p class="lab">Aucun salon sélectionné.</p>`;return}
+    const d=await GET(`prive_chat/${dsel}/gen`);if(tab!=="dis")return;
+    const es=Object.entries(d||{}).filter(([,v])=>v&&v.x).sort((a,b)=>a[1].t-b[1].t).slice(-80);
+    $("#dm").innerHTML=es.length?es.map(([mid,v])=>`<div class="cmsg"><span><b>${esc(v.n||"?")}</b><small>${fdt(v.t)}</small><br>${esc(v.x)}</span><button class="xbtn x" data-id="${esc(mid)}" aria-label="Supprimer">×</button></div>`).join(""):`<p class="lab">Aucun message dans ce salon.</p>`;
   };
   $("#dc").onchange=e=>{dsel=e.target.value;guard(draw)};
-  $("#dm").onclick=async e=>{const b=e.target.closest("[data-id]");if(!b)return;await guard(()=>api("DELETE",`${path()}/${b.dataset.id}`));b.closest(".cmsg").remove();toast("Message supprimé")};
+  $("#dm").onclick=async e=>{const b=e.target.closest("[data-id]");if(!b)return;await guard(()=>api("DELETE",`prive_chat/${dsel}/gen/${b.dataset.id}`));b.closest(".cmsg").remove();toast("Message supprimé")};
   await guard(draw);autoRefresh(()=>guard(draw),6000);
 }
 
