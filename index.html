@@ -133,8 +133,8 @@ button.row:active{transform:scale(.99)}
 .rowx.off .dn{color:#7a839e}
 .rowx.off .tb b{opacity:.5}
 .rowx.off .more{cursor:default;pointer-events:none;opacity:.35}
-.lb{position:relative;flex:0 0 128px;width:128px;display:flex;align-items:center;justify-content:center;font-size:clamp(38px,8vw,56px);font-weight:700;letter-spacing:-.02em;background:var(--lc)}
-.lb.tri:after{content:"";position:absolute;inset:0;background:rgba(255,255,255,.5);clip-path:polygon(100% 0,100% 100%,0 100%);animation:pt 2s linear infinite}
+.lb{position:relative;isolation:isolate;flex:0 0 128px;width:128px;display:flex;align-items:center;justify-content:center;font-size:clamp(38px,8vw,56px);font-weight:700;letter-spacing:-.02em;background:var(--lc)}
+.lb.tri:after{content:"";position:absolute;inset:0;z-index:-1;background:rgba(255,255,255,.5);clip-path:polygon(100% 0,100% 100%,0 100%);animation:pt 2s linear infinite}
 .dn{flex:1;min-width:0;display:flex;align-items:center;gap:6px;padding:0 18px;color:var(--ink);font-weight:700;font-size:clamp(18px,3.8vw,30px);line-height:1.1}
 .tb{display:grid;grid-template-columns:repeat(2,92px);gap:8px;align-items:center;padding:0 14px 0 6px}
 .tb b{height:48px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:#000;color:var(--led);font-size:26px;font-variant-numeric:tabular-nums}
@@ -768,11 +768,53 @@ html,body{background:var(--bgx) fixed,var(--page)}
 .tr-next{background:var(--blue);color:#fff}
 .tr-next:hover{background:var(--blue-h)}
 .pg-ghost{position:fixed;z-index:300;pointer-events:none;overflow:hidden}
+
+/* ===== v8 : ligne de service stylisée (trait cerné de noir, pastilles grises, correspondances) ===== */
+.nv3-trk{display:none}
+.nv3-ls li{flex:0 0 auto;align-items:flex-start;gap:12px}
+.nv3-ls li::before{content:"";position:absolute;left:4px;width:22px;top:calc(var(--rh,44px)/2);bottom:calc(var(--rh,44px)/-2);background:var(--lc);border-left:4px solid #000;border-right:4px solid #000;box-sizing:border-box;z-index:0;pointer-events:none}
+.nv3-ls li.l::before,.nv3-ls li.cut::before,.nv3-ls li.nv3-endn::before{display:none}
+.nv3-ls li .nv-dot,.nv3-ls li.l .nv-dot{box-sizing:content-box;width:22px;height:22px;margin:calc((var(--rh,44px) - 30px)/2) 0 0;background:#d9d9d9;border:4px solid #000;box-shadow:none}
+.nv3-ls li.cut::after{left:4px;top:calc(var(--rh,44px)/2);width:22px;height:calc(var(--rh,44px)*1.1);background:linear-gradient(90deg,#000 4px,var(--lc) 4px calc(100% - 4px),#000 calc(100% - 4px));-webkit-mask-image:linear-gradient(to bottom,#000 10%,transparent);mask-image:linear-gradient(to bottom,#000 10%,transparent)}
+.nv3-ls .tx{display:flex;flex-direction:column;align-items:flex-start;min-width:0;max-width:100%;flex:0 1 auto}
+.nv3-ls li b{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:clamp(15px,1.5vw,19px);font-weight:400;line-height:var(--rh,44px);color:#fff}
+.nv3-ls li.l .tx b{display:inline-block;margin-top:3px;line-height:calc(var(--rh,44px) - 6px);padding:0 12px;border-radius:6px;background:#000;font-size:clamp(16px,1.6vw,20px);box-sizing:border-box}
+.nv3-ls li em{align-self:flex-start;line-height:var(--rh,44px)}
+.nv3-cr{display:flex;align-items:center;gap:6px;height:20px;overflow:hidden;white-space:nowrap}
+.nv3-cr:empty{display:none}
+#nv-nc{margin-top:6px}
+.nv3-bl{display:inline-flex;align-items:center;flex:none}
+.nv3-busl{height:16px;width:auto;display:block;pointer-events:none}
+.nv3-p{flex:none;font-style:normal;font-weight:800;font-size:11px;line-height:20px;height:20px;min-width:30px;padding:0 8px;text-align:center;border-radius:5px;background:var(--pc);color:var(--pi)}
 </style></head><body><div id="pre"><div class="pre-in"><div class="pre-sp"></div><b id="pre-t">Chargement…</b><i><u id="pre-b"></u></i></div></div><header id="hdr"><div class="hi"><div class="gt"><div><b id="hg">Bonjour</b><small id="hd"></small></div></div><time id="hc">--:--:--</time><nav><button data-t="d">Départs</button><button data-t="f">Fiches</button></nav></div></header><main id="app"></main>
 <script>
 
 const GAME_OFFSET=36e5;
-(()=>{const D=Date,n=D.now.bind(D);class G extends D{constructor(...a){a.length?super(...a):super(n()+GAME_OFFSET)}static now(){return n()+GAME_OFFSET}}window.Date=G})();
+/* Heure du jeu = heure de Paris + 1 h, quel que soit le fuseau de l'appareil */
+(()=>{const D=Date,n=D.now.bind(D),TZ="Europe/Paris";
+const fm=new Intl.DateTimeFormat("en-GB",{timeZone:TZ,hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric",hour:"numeric",minute:"numeric",second:"numeric",weekday:"short"});
+const WD={Sun:0,Mon:1,Tue:2,Wed:3,Thu:4,Fri:5,Sat:6};
+const parts=t=>{const o={};for(const q of fm.formatToParts(t))o[q.type]=q.value;return{y:+o.year,mo:+o.month-1,d:+o.day,h:+o.hour,mi:+o.minute,s:+o.second,wd:WD[o.weekday]}};
+const off=t=>{const q=parts(t);return D.UTC(q.y,q.mo,q.d,q.h,q.mi,q.s)-Math.floor(t/1000)*1000};
+const fromWall=W=>{let t=W-off(W);t=W-off(t);return t};
+const msOf=t=>((t%1000)+1000)%1000;
+class G extends D{
+  constructor(...a){a.length?super(...a):super(n()+GAME_OFFSET)}
+  static now(){return n()+GAME_OFFSET}
+  getFullYear(){return parts(this.getTime()).y}
+  getMonth(){return parts(this.getTime()).mo}
+  getDate(){return parts(this.getTime()).d}
+  getDay(){return parts(this.getTime()).wd}
+  getHours(){return parts(this.getTime()).h}
+  getMinutes(){return parts(this.getTime()).mi}
+  getSeconds(){return parts(this.getTime()).s}
+  setHours(h,mi,sec,ms){const t=this.getTime(),q=parts(t);return this.setTime(fromWall(D.UTC(q.y,q.mo,q.d,h,mi??q.mi,sec??q.s,ms??msOf(t))))}
+  setDate(d){const t=this.getTime(),q=parts(t);return this.setTime(fromWall(D.UTC(q.y,q.mo,d,q.h,q.mi,q.s,msOf(t))))}
+  toLocaleTimeString(l,o){return super.toLocaleTimeString(l,{timeZone:TZ,...o})}
+  toLocaleDateString(l,o){return super.toLocaleDateString(l,{timeZone:TZ,...o})}
+  toDateString(){return super.toLocaleDateString("en-CA",{timeZone:TZ})}
+}
+window.Date=G})();
 
 const PROD=true;
 if(PROD){document.addEventListener("selectstart",e=>{if(!/^(INPUT|TEXTAREA)$/.test(e.target.tagName||""))e.preventDefault()});document.addEventListener("dragstart",e=>e.preventDefault());const k=e=>e.preventDefault();addEventListener("contextmenu",k);addEventListener("keydown",e=>{const c=e.key.toLowerCase();if(e.key==="F12"||(e.ctrlKey&&e.shiftKey&&"ijc".includes(c))||(e.ctrlKey&&(c==="u"||c==="s"))||(e.metaKey&&e.altKey&&"iuj".includes(c)))k(e)})}
@@ -909,7 +951,7 @@ let fState=JSON.parse(localStorage.getItem(F_PREF_KEY)||"null")||{
   prefLines:[],
   generated:null
 };
-if(fState.generated&&fState.generated.v!==3)fState.generated=null;
+if(fState.generated&&fState.generated.v!==4)fState.generated=null;
 fState.selectedPaid=(fState.selectedPaid||[]).filter(b=>PAID_BUSES.includes(b));
 function saveFState(){
   try{localStorage.setItem(F_PREF_KEY,JSON.stringify({
@@ -1157,15 +1199,6 @@ function prev(){if(line==null||dir===null)return;if(i>startIdx){i--;nvAnc=i>star
 function ecart(v){dl+=v;upd();push()}
 addEventListener("keydown",e=>{if(line==null||dir===null||!$("#nv-ns")||/^(INPUT|TEXTAREA)$/.test(e.target.tagName))return;const m={PageDown:next,PageUp:prev,ArrowUp:()=>ecart(1),ArrowDown:()=>ecart(-1)}[e.key];if(m){e.preventDefault();m()}});
 
-function pickDepotForLine(lineCode){
-  const stops=DATA[lineCode].s.flat().map(x=>x.toLowerCase());
-  const matchB=DEPOTS.berthee.keywords.some(kw=>stops.some(st=>st.includes(kw)));
-  const matchC=DEPOTS.courcelles.keywords.some(kw=>stops.some(st=>st.includes(kw)));
-  if(matchB&&!matchC)return "berthee";
-  if(matchC&&!matchB)return "courcelles";
-  return Math.random()<0.65?"berthee":"courcelles";
-}
-
 const BUS18=["Solaris Urbino 18 GNV","Volvo 7800E"];
 function pickBus(lineCodes){
   const pool=[...fState.selectedPaid,...FREE_BUSES];
@@ -1176,20 +1209,6 @@ function pickBus(lineCodes){
   return pool[0];
 }
 
-function pickLinesForSheet(count,prefs){
-  const all=Object.keys(DATA).filter(lineOn);
-  const chosen=[];
-  const validPrefs=prefs.filter(l=>DATA[l]);
-  const shuffledPrefs=[...validPrefs].sort(()=>Math.random()-.5);
-  for(const l of shuffledPrefs){
-    if(chosen.length<count&&!chosen.includes(l))chosen.push(l);
-  }
-  const rest=all.filter(l=>!chosen.includes(l)).sort(()=>Math.random()-.5);
-  for(const l of rest){
-    if(chosen.length<count)chosen.push(l);
-  }
-  return chosen;
-}
 function canonStop(t){const n=normS(t);
   if(n.includes("chaillot batignolles rer"))return"chaillot";
   if(n.includes("rosenberg"))return"rosenberg";
@@ -1204,65 +1223,123 @@ const DEPOT_HLP={
   berthee:{vallee:3,macmahon:5,federation:6,narberale:5,cramain:8,chaillot:15},
   courcelles:{chaillot:4}
 };
-const DEPOT_START=new Set([...Object.keys(DEPOT_HLP.berthee),...Object.keys(DEPOT_HLP.courcelles)]);
-let NODES=null;
-function lineNodes(){return lineNodesAll().filter(x=>lineOn(x.L))}
-function lineNodesAll(){
-  if(NODES)return NODES;NODES=[];
-  for(const L in DATA)if(!DATA[L].custom)for(const d of [0,1]){
-    const st=DATA[L].s[d],[a,b]=svc(L,d);
-    if(DATA[L].C[d].some(c=>c.t[a]!=null&&c.t[b]!=null))NODES.push({L,d,a,b,from:canonStop(st[a]),to:canonStop(st[b])})}
-  return NODES}
-const MAX_WAIT=20;
-function legEnd(n,cur,first){
-  const hl=first?(DEPOT_HLP[n.from==="chaillot"?"courcelles":"berthee"][n.from]||5):4;
-  const p=nextExact(n.L,n.d,n.a,n.b,cur+hl*MIN);
-  if(!p)return{wait:Infinity,end:cur,dep:cur,hl};
-  return{wait:(p.ts-cur)/MIN-hl,dep:p.ts,end:p.base+p.c.t[n.b]*MIN,hl}}
-function buildChain(count,prefs,mw=MAX_WAIT){
-  const nodes=lineNodes();
-  const run=rep=>{let best=[],bs=-1;
-    for(let t=0;t<500;t++){
-      const ch=[];let cur=null,ts=nowRound();
-      while(ch.length<count){
-        const c=nodes.filter(n=>(cur===null?DEPOT_START.has(n.from):n.from===cur)&&(rep||!ch.some(x=>x.L===n.L))&&legEnd(n,ts,cur===null).wait<=mw);
-        if(!c.length)break;
-        const w=c.map(n=>(prefs.includes(n.L)?5:1)*(0.3+Math.random()));
-        let r=Math.random()*w.reduce((x,y)=>x+y,0),k=0;while(k<c.length-1&&(r-=w[k])>0)k++;
-        ts=legEnd(c[k],ts,cur===null).end;ch.push(c[k]);cur=c[k].to}
-      const sc=ch.length*100+ch.filter(n=>prefs.includes(n.L)).length*10+Math.random();
-      if(sc>bs){bs=sc;best=ch}}
-    return best};
-  let best=run(false);if(best.length<count){const b2=run(true);if(b2.length>best.length)best=b2}
+/* =========================================================
+   FICHES DE SERVICE v2
+   - une fiche = N lignes DIFFÉRENTES (1 à 5), un trajet par ligne
+   - chaque ligne disponible a exactement la même chance à chaque tirage
+     (1/10 en journée, 1/11 le soir avec la N76…), quel que soit N
+   - ligne préférée : +2/10 de chance (ex. 1/10 -> 3/10)
+   - entre deux lignes : pause sur place, ou haut-le-pied calculé sur le réseau réel
+   ========================================================= */
+const PREF_BONUS=0.2;
+const FS_HZ=60;          /* une ligne est « disponible » si un départ est possible dans l'heure */
+const FS_LAYOVER=4;      /* battement (min) quand on enchaîne sur le même arrêt */
+const FS_REPEAT=0.1;     /* une ligne déjà tirée peut revenir (en aller-retour) avec 1/10 de sa chance normale */
+const FS_SPEED=1.15;     /* haut-le-pied = temps théorique du réseau x 1,15 */
+const stopKey=t=>canonStop(String(t).replace(/ §T/,""));
+let FS_GRAPH=null;
+function fsGraph(){
+  if(FS_GRAPH)return FS_GRAPH;
+  const E={};
+  const add=(u,v,w)=>{if(u===v)return;(E[u]||(E[u]={}));(E[v]||(E[v]={}));
+    if(E[u][v]==null||w<E[u][v])E[u][v]=w;if(E[v][u]==null||w<E[v][u])E[v][u]=w};
+  for(const L in DATA)for(const d of [0,1]){
+    const st=DATA[L].s[d];
+    for(let i=0;i<st.length-1;i++){
+      const ds=[];for(const c of DATA[L].C[d])if(c.t[i]!=null&&c.t[i+1]!=null)ds.push(c.t[i+1]-c.t[i]);
+      if(!ds.length)continue;ds.sort((x,y)=>x-y);
+      add(stopKey(st[i]),stopKey(st[i+1]),Math.max(.5,ds[ds.length>>1])*FS_SPEED)}}
+  return FS_GRAPH=E}
+/* plus courts temps (min) depuis un ou plusieurs points de départ {arrêt:coût initial} */
+function fsDist(src){
+  const E=fsGraph(),D={},Q=new Set(Object.keys(E));
+  for(const k in src)if(E[k])D[k]=src[k];
+  while(Q.size){let u=null;for(const n of Q)if(D[n]!=null&&(u==null||D[n]<D[u]))u=n;
+    if(u==null)break;Q.delete(u);
+    for(const v in E[u]){const nd=D[u]+E[u][v];if(D[v]==null||nd<D[v])D[v]=nd}}
+  return D}
+let FS_DEPOT=null,FS_DC=new Map();
+const fsDepots=()=>FS_DEPOT||(FS_DEPOT={berthee:fsDist(DEPOT_HLP.berthee),courcelles:fsDist(DEPOT_HLP.courcelles)});
+const fsFrom=p=>{let d=FS_DC.get(p);if(!d){d=fsDist({[p]:0});FS_DC.set(p,d)}return d};
+const fsEndName=(L,d)=>{const v=svc(L,d);return v[2]||DATA[L].s[d][v[1]]};
+
+/* un trajet de la ligne L dans le sens d, depuis la position pos (null = dépôt) à partir de ts */
+function fsLeg(L,d,pos,ts,hz){
+  const [a,b]=svc(L,d),o=stopKey(DATA[L].s[d][a]);let hl,depot=null;
+  if(pos===null){const dd=fsDepots(),x=dd.berthee[o]??Infinity,y=dd.courcelles[o]??Infinity;
+    if(!isFinite(Math.min(x,y)))return null;depot=x<=y?"berthee":"courcelles";hl=Math.round(Math.min(x,y))}
+  else{const x=fsFrom(pos)[o];if(x==null)return null;hl=o===pos?0:Math.max(1,Math.round(x))}
+  const lead=pos===null?hl:(o===pos?FS_LAYOVER:hl+1);
+  const ready=ts+lead*MIN,p=nextCourse(L,d,a,b,ready);
+  if(!p||(p.ts-ready)/MIN>hz)return null;
+  return{L,d,a,b,hl,depot,o,dep:p.ts,end:p.base+p.c.t[b]*MIN}}
+/* lignes pouvant partir maintenant (au moins un sens possible) */
+function fsAvail(ts,hz){return Object.keys(DATA).filter(L=>!DATA[L].custom&&lineOn(L)&&[0,1].some(d=>fsLeg(L,d,null,ts,hz)))}
+/* même chance pour chaque ligne ; +2/10 pour une ligne préférée */
+function lineWeights(Ls,prefs){
+  const N=Ls.length,P=Ls.filter(l=>prefs.includes(l)),Q=N-P.length;
+  if(!P.length||!Q)return Ls.map(()=>1);
+  const tp=Math.min(.95,P.length*(1/N+PREF_BONUS));
+  return Ls.map(l=>P.includes(l)?tp/P.length:(1-tp)/Q)}
+/* 1) tirage des lignes : chance égale ; une ligne déjà tirée ne peut revenir que rarement, en aller-retour */
+function fsDrawSet(count,prefs,av){
+  const w0=lineWeights(av,prefs),items=[];let legs=0;
+  while(legs<count){
+    const w=av.map((L,i)=>{const it=items.find(x=>x.L===L);
+      if(!it)return w0[i];
+      return(!it.double&&legs+1<=count)?w0[i]*FS_REPEAT:0});
+    const tot=w.reduce((x,y)=>x+y,0);if(tot<=0)break;
+    let r=Math.random()*tot,k=0;while(k<av.length-1&&(r-=w[k])>0)k++;
+    const it=items.find(x=>x.L===av[k]);
+    if(it){it.double=true;legs+=1}else{items.push({L:av[k],double:false});legs+=1}}
+  return items}
+/* 2) optimisation : meilleur ordre et meilleurs sens (fin de fiche la plus tôt = moins de pause et de haut-le-pied) */
+function fsOptimize(items,ts0,hz){
+  let best=null,bestEnd=Infinity;
+  const go=(rest,pos,ts,acc)=>{
+    if(ts>=bestEnd)return;
+    if(!rest.length){bestEnd=ts;best=acc;return}
+    for(let i=0;i<rest.length;i++){
+      const it=rest[i],others=rest.filter((_,j)=>j!==i);
+      const variants=it.double?[[0,1],[1,0]]:[[0],[1]];
+      for(const dirs of variants){
+        let p=pos,t=ts;const legs=[];let ok=true;
+        for(const d of dirs){const lg=fsLeg(it.L,d,p,t,hz);if(!lg){ok=false;break}legs.push(lg);p=stopKey(DATA[it.L].s[d][lg.b]);t=lg.end}
+        if(ok)go(others,p,t,acc.concat(legs))}}};
+  go(items.slice().sort(()=>Math.random()-.5),null,ts0,[]);
   return best}
+function fsBuild(count,prefs,hz){
+  FS_DC=new Map();const ts0=nowRound(),av=fsAvail(ts0,hz);
+  if(!av.length)return[];
+  for(let need=count;need>=1;need--)
+    for(let t=0;t<40;t++){const ch=fsOptimize(fsDrawSet(need,prefs,av),ts0,hz);if(ch)return ch}
+  return[]}
 
 function generateDaySheet(){
   const count=Math.min(5,Math.max(1,fState.lineCount||2));
+  const prefs=(fState.prefLines||[]).filter(l=>DATA[l]);
   let chain=[];
-  for(const mw of [MAX_WAIT,60,180,600,Infinity]){chain=buildChain(count,fState.prefLines||[],mw);if(chain.length)break}
-  const assignedLines=chain.map(n=>n.L);
-  const bus=pickBus(assignedLines);
-  const startKey=chain[0].from;
-  const depotKey=startKey==="chaillot"?"courcelles":"berthee";
-  const firstDepot=DEPOTS[depotKey];
-  const hlpMin=DEPOT_HLP[depotKey][startKey]||5;
-  let curTs=nowRound();
-  const segments=[{type:"walk",bus,depot:firstDepot.name,startTime:fmt(curTs)}];
+  for(const hz of [FS_HZ,180,720]){chain=fsBuild(count,prefs,hz);if(chain.length)break}
+  if(!chain.length){fState.generated=null;saveFState();return}
+  const bus=pickBus(chain.map(n=>n.L));
+  const firstDepot=DEPOTS[chain[0].depot];
+  const segments=[{type:"walk",bus,depot:firstDepot.name,startTime:fmt(nowRound())}];
+  let prevEnd=0,prevName="",prevKey="";
   chain.forEach((n,idx)=>{
-    const lCode=n.L,dirIdx=n.d,d=DATA[lCode],st=d.s[dirIdx];
-    const originStop=st[n.a],destStop=svc(lCode,dirIdx)[2]||st[n.b];
-    const leg=legEnd(n,curTs,idx===0);
-    const matchedDep=leg.dep;
+    const L=n.L,d=DATA[L],st=d.s[n.d],originStop=st[n.a],destStop=fsEndName(L,n.d);
     if(idx===0){
-      segments.push({type:"hlp",line:lCode,color:d.c,depot:firstDepot.name,to:originStop,vers:destStop,mins:hlpMin,depTime:fmt(matchedDep-hlpMin*MIN),arrTime:fmt(matchedDep)});
+      segments.push({type:"hlp",line:L,color:d.c,depot:firstDepot.name,to:originStop,vers:destStop,mins:n.hl,depTime:fmt(n.dep-n.hl*MIN),arrTime:fmt(n.dep)});
+    }else if(prevKey===n.o){
+      segments.push({type:"break",line:L,color:d.c,at:originStop,startTime:fmt(prevEnd),endTime:fmt(n.dep),mins:Math.max(1,Math.round((n.dep-prevEnd)/MIN))});
     }else{
-      segments.push({type:"break",line:lCode,color:d.c,at:originStop,startTime:fmt(curTs),endTime:fmt(matchedDep),mins:Math.max(1,Math.round((matchedDep-curTs)/MIN))});
+      const hs=n.dep-n.hl*MIN;
+      if(hs-prevEnd>=MIN)segments.push({type:"break",line:L,color:d.c,at:prevName,startTime:fmt(prevEnd),endTime:fmt(hs),mins:Math.max(1,Math.round((hs-prevEnd)/MIN))});
+      segments.push({type:"hlp",line:L,color:d.c,depot:prevName,to:originStop,vers:destStop,mins:n.hl,depTime:fmt(hs),arrTime:fmt(n.dep)});
     }
-    const arrTs=leg.end;
-    segments.push({type:"run",line:lCode,color:d.c,dirIdx,startIdx:n.a,endIdx:n.b,depTs:matchedDep,from:originStop,to:destStop,startTime:fmt(matchedDep),endTime:fmt(arrTs),mins:Math.max(1,Math.round((arrTs-matchedDep)/MIN))});
-    curTs=arrTs;
+    segments.push({type:"run",line:L,color:d.c,dirIdx:n.d,startIdx:n.a,endIdx:n.b,depTs:n.dep,from:originStop,to:destStop,startTime:fmt(n.dep),endTime:fmt(n.end),mins:Math.max(1,Math.round((n.end-n.dep)/MIN))});
+    prevEnd=n.end;prevName=destStop;prevKey=stopKey(st[n.b]);
   });
-  fState.generated={v:3,createdAt:Date.now(),bus,depot:firstDepot,lineCount:chain.length,lines:assignedLines,segments};
+  fState.generated={v:4,createdAt:Date.now(),bus,depot:firstDepot,lineCount:chain.length,lines:chain.map(n=>n.L),segments};
   saveFState();
 }
 
@@ -1452,10 +1529,18 @@ function quit(){
   else{dir=null;home()}
 }
 const termLab=s=>{const v=svc(line,dir);return v&&v[2]&&end===v[1]?v[2]:s.at(-1)};
+let CORR=null;
+function corrOf(st){
+  if(!CORR){CORR={};for(const L in DATA){if(!lineOn(L))continue;for(const d of DATA[L].s)for(const x of d){const k=canonStop(x.replace(/ §T/,""));(CORR[k]||(CORR[k]=new Set())).add(L)}}}
+  const o=CORR[canonStop(st.replace(/ §T/,""))];
+  return o?NV_LINE_ORDER.filter(l=>l!==line&&o.has(l)):[]}
+const nvCorrInner=st=>{const c=corrOf(st);return c.length?`<span class="nv3-bl"><img class="nv3-busl" src="${BUSIMG}" alt="BUS"></span>`+c.map(n=>{const col=LINE_COLOR[n]||"#0b6f86";return `<i class="nv3-p" style="--pc:${col};--pi:${ink(col)}">${n}</i>`}).join(""):""};
+const nvCorrRow=st=>{const h=nvCorrInner(st);return h?`<div class="nv3-cr">${h}</div>`:""};
+const NV_CR_H=20;
 const nvImp=n=>/\bRER\b|\bGare\b|Métro|Tramway|\bTram\b|\bT[0-9]{1,2}\b|Transilien|Pôle d.échanges|Aéroport/i.test(n);
 function view(){
   const d=DATA[line],s=R(),col=d.c;
-  setLineTheme(line);nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvAnc=null;nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
+  setLineTheme(line);CORR=null;nvChatSig="";nvCons=[];nvMsgs=[];nvLocal=[];nvConsSig="";nvKeys=[];nvPrevI=null;nvAnc=null;nvShown=0;cancelAnimationFrame(nvTw);nvR2a=null;
   nvShow(`<div class="nv3" style="--lc:${col};--li:${ink(col)}">
     <header class="nv3-h">
       <button type="button" class="nv3-home" id="nv-home" title="Retour à l’accueil" aria-label="Accueil"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v10h13V10"/><path d="M10 20v-6h4v6"/></svg></button>
@@ -1467,6 +1552,7 @@ function view(){
       <section class="nv3-c nv3-l" style="--d:0s">
         <span class="nv3-lab">Prochain arrêt / Next stop / Proxima parada</span>
         <div class="nv3-ns"><span id="nv-ns"></span><em id="nv-nt"></em></div>
+        <div class="nv3-cr" id="nv-nc"></div>
         <ul class="nv3-ls" id="nv-ls"></ul>
       </section>
       <div class="nv3-bar"></div>
@@ -1511,11 +1597,13 @@ function view(){
 function nvList(rel,dm,dn,quiet){
   const ul=$("#nv-ls"),s=R(),last=s.length-1;
   if(!ul)return;
-  const rh=Math.max(28,Math.min(52,Math.floor(ul.clientHeight/9)||44));
+  const rh=Math.max(36,Math.min(46,Math.floor(ul.clientHeight/8)||40));
   const rhChanged=ul.style.getPropertyValue("--rh")!==rh+"px";
   ul.style.setProperty("--rh",rh+"px");
   /* 1 pastille = 1 arrêt restant après le prochain (terminus inclus), 9 au maximum */
-  const want=[];for(let k=rel+1;k<=last&&want.length<9;k++)want.push(k);
+  const want=[];{const avail=ul.clientHeight||rh*8,fade=rh*.8;let used=0,fit=0;
+    for(let k=rel+1;k<=last&&k-rel<=14;k++){used+=rh+(corrOf(s[k]).length?NV_CR_H:0);if(used+(k<last?fade:0)<=avail)fit=k-rel}
+    for(let k=rel+1;k<=rel+Math.max(1,fit)&&k<=last;k++)want.push(k)}
   let trk=ul.querySelector(".nv3-trk");
   if(!trk){trk=document.createElement("i");trk.className="nv3-trk";ul.prepend(trk)}
   const setTrk=n=>{trk.style.height=Math.max(0,n-1)*rh+"px"};
@@ -1546,7 +1634,7 @@ function nvList(rel,dm,dn,quiet){
   const first=old.size===0;
   want.forEach((k,j)=>{
     let li=old.get(k);
-    if(!li){li=document.createElement("li");li.dataset.k=k;li.innerHTML=`<i class="nv-dot"></i><b>${nvN(s[k])}</b><em></em>`}
+    if(!li){li=document.createElement("li");li.dataset.k=k;li.innerHTML=`<i class="nv-dot"></i><div class="tx"><b title="${esc(short(s[k]))}">${nvN(s[k])}</b>${nvCorrRow(s[k])}</div><em></em>`}
     const isEnd=j===want.length-1;
     li.className=isEnd?(k===last?"l":"cut"):"";
     stamp(li);
@@ -1590,6 +1678,7 @@ function upd(){
   const dn=nvPrevI==null||i>=nvPrevI?1:-1;nvPrevI=i;
   nvSwap(ns,nvN(s[rel]),dn);
   nvSwap($("#nv-nt"),fmt(sTs(i)+dm),dn);
+  nvSwap($("#nv-nc"),nvCorrInner(s[rel]),dn);
   nvList(rel,dm,dn);
   nvDelta();
   const full=isFullRun(line,dir,startIdx,end);
